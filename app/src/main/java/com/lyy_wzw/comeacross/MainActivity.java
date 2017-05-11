@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private NavigationView navigationView;
     private DrawerLayout drawer;
-    private Toolbar toolbar;
+    public Toolbar toolbar;
 
 
     private ViewPager viewPager;
@@ -94,12 +94,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initViewPager();
 
         //禁止ViewPager滑动
-//        viewPager.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                return true;
-//            }
-//        });
+        viewPager.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
 
         viewPager.setOnPageChangeListener(this);
 
