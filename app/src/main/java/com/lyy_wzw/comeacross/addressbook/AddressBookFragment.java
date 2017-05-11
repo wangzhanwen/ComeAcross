@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
 
 /**
@@ -14,11 +15,16 @@ import com.lyy_wzw.comeacross.R;
  */
 public class AddressBookFragment extends Fragment {
 
+    private static MainActivity mainActivity;
 
     public AddressBookFragment() {
-        // Required empty public constructor
+
     }
 
+    public static AddressBookFragment instance(MainActivity activity){
+         mainActivity = activity;
+        return new AddressBookFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

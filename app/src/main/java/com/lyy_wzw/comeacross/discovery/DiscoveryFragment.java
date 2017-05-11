@@ -7,17 +7,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
+import com.lyy_wzw.comeacross.chat.ChatFragment;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class DiscoveryFragment extends Fragment {
 
+    private static MainActivity mainActivity;
 
     public DiscoveryFragment() {
         // Required empty public constructor
     }
+
+    public static DiscoveryFragment instance(MainActivity activity){
+        mainActivity = activity;
+        return new DiscoveryFragment();
+    }
+
 
 
     @Override

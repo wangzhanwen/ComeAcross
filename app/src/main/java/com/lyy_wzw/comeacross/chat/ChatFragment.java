@@ -7,18 +7,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
+import com.lyy_wzw.comeacross.addressbook.AddressBookFragment;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ChatFragment extends Fragment {
-
+    private static MainActivity mainActivity;
 
     public ChatFragment() {
         // Required empty public constructor
     }
 
+    public static ChatFragment instance(MainActivity activity){
+        mainActivity = activity;
+        return new ChatFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

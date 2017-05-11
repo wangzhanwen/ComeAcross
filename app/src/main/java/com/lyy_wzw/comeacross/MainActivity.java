@@ -110,10 +110,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //构造适配器
         List<Fragment> fragments=new ArrayList<Fragment>();
-        fragments.add(new FootPrintFragment());
-        fragments.add(new ChatFragment());
-        fragments.add(new DiscoveryFragment());
-        fragments.add(new AddressBookFragment());
+        fragments.add(FootPrintFragment.instance(this));
+        fragments.add(ChatFragment.instance(this));
+        fragments.add(DiscoveryFragment.instance(this));
+        fragments.add(AddressBookFragment.instance(this));
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(),fragments);
         viewPager.setAdapter(adapter);
