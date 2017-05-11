@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="none"
+        android:id="@+id/group_other">
+        <item android:id="@+id/nav_change_theme"
+            android:title="@string/change_theme"
+            android:icon="@mipmap/drawer_menu_theme" />
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@mipmap/drawer_menu_setting"
+            android:title="@string/settings" />
+
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@mipmap/drawer_menu_about"
+            android:title="@string/about" />
+    </group>
+
+</menu>

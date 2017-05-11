@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_footprint"
+        android:title="足迹"
+        android:icon="@mipmap/main_tab_footprint"/>
+
+    <item
+        android:id="@+id/action_chat"
+        android:title="聊天"
+        android:icon="@mipmap/main_tab_chat"/>
+
+    <item
+        android:id="@+id/action_discovery"
+        android:title="发现"
+        android:icon="@mipmap/main_tab_discovery"/>
+    <item
+        android:id="@+id/action_address_book"
+        android:title="通讯录"
+        android:icon="@mipmap/main_tab_addressbook"/>
+
+</menu>
