@@ -19,6 +19,7 @@ import com.lyy_wzw.comeacross.addressbook.AddressBookFragment;
 import com.lyy_wzw.comeacross.chat.ChatFragment;
 import com.lyy_wzw.comeacross.discovery.DiscoveryFragment;
 import com.lyy_wzw.comeacross.footprint.FootPrintFragment;
+import com.lyy_wzw.comeacross.footprint.FootPrintPresenter;
 import com.lyy_wzw.comeacross.homecommon.FragmentAdapter;
 
 import java.util.ArrayList;
@@ -94,12 +95,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initViewPager();
 
         //禁止ViewPager滑动
-        viewPager.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
+//        viewPager.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                return true;
+//            }
+//        });
 
         viewPager.setOnPageChangeListener(this);
 
@@ -110,7 +111,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //构造适配器
         List<Fragment> fragments=new ArrayList<Fragment>();
-        fragments.add(FootPrintFragment.instance(this));
+        FootPrintFragment footPrintFragment = FootPrintFragment.instance(this);
+        new FootPrintPresenter(this, footPrintFragment);
+
+        fragments.add(footPrintFragment);
         fragments.add(ChatFragment.instance(this));
         fragments.add(DiscoveryFragment.instance(this));
         fragments.add(AddressBookFragment.instance(this));

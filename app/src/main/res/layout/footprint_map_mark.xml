@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@mipmap/footprint_map_mark_bg"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:src="@mipmap/meizhi0"
+        android:scaleType="fitXY"
+        android:layout_alignBottom="@+id/mark_user_photo"/>
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/mark_user_photo"
+        android:src="@mipmap/meizhi7"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:fitsSystemWindows="true"
+        android:scaleType="centerCrop"
+        android:scrollbarStyle="insideInset"
+        android:scrollbarAlwaysDrawVerticalTrack="true"/>
+
+    <TextView
+        android:text="东大桥"
+        android:layout_gravity="bottom|right"
+        android:singleLine="true"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/colorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</FrameLayout>
