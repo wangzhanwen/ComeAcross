@@ -1,12 +1,7 @@
 package com.lyy_wzw.comeacross.footprint;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.model.LatLng;
 
 import java.util.ArrayList;
@@ -16,7 +11,7 @@ import java.util.List;
  * Created by yidong9 on 17/5/12.
  */
 
-public class FootPrintPresenter implements FootPrintContract.Presenter{
+public class FootPrintPresenter implements FootPrintContract.Presenter {
     private FootPrintContract.View mView;
     private Context mContext;
 

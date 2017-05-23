@@ -13,7 +13,7 @@ import android.view.View;
  * Created by wzw on 2017/5/15.
  */
 
-public class BMapUtil {
+public class BitmapUtil {
 
     /**将View转换为Bitmap
      * @param view

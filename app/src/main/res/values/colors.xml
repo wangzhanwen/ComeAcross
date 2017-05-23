@@ -7,4 +7,6 @@
     <color name="gray">#999</color>
     <color name="bottom_tab_bgcolor">#eee</color>
     <color name="tab_item_color">#fff</color>
+    <color name="foot_print_win_bgcolor">#009688</color>
+    <color name="foot_print_mark_text_color">#555</color>
 </resources>

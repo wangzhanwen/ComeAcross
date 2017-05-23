@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,27 +20,24 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.InfoWindow;
-import com.baidu.mapapi.map.MapStatusUpdate;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
-import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.model.LatLng;
 import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
-import com.lyy_wzw.comeacross.utils.BMapUtil;
+import com.lyy_wzw.comeacross.utils.BitmapUtil;
 
-import java.util.List;
 import java.util.Random;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FootPrintFragment extends Fragment implements FootPrintContract.View, BDLocationListener {
+public class FootPrintFragment extends Fragment implements FootPrintContract.View, BDLocationListener, BaiduMap.OnMarkerClickListener{
+    private static final String TAG = "FootPrintFragment";
 
     private static MainActivity mainActivity;
     private MapView mMapView = null;
@@ -48,7 +46,7 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     private LatLng mSelfLocation ;
     private Marker mSelfMarker = null;
     private boolean isFirstIn = true; //是否第一次初始化自己位置
-    private MyOrientationListener myOrientationListener;
+    private FootPrintMapOrientationListener myOrientationListener;
     private float myCurrentX;
 
     private InfoWindow mInfoWindow = null;
@@ -56,6 +54,8 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     private LayoutInflater mLayoutInflater = null;
 
     private FootPrintContract.Presenter mPresenter;
+    private View mContainView;
+    private InfoWindow mFootPrintWin;
 
     public FootPrintFragment() {
 
@@ -70,9 +70,9 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_foot_print, container, false);
-        initViews(view);
-        return view;
+        mContainView = inflater.inflate(R.layout.fragment_foot_print, container, false);
+        initViews(mContainView);
+        return mContainView;
     }
 
 
@@ -94,8 +94,10 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         mMapView.removeViewAt(1); // 去掉百度logo
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
         mBaiduMap.setMyLocationEnabled(true);
+        //设置地图覆盖物点击事件
+        mBaiduMap.setOnMarkerClickListener(this);
 
-        mLayoutInflater = LayoutInflater.from(this.getContext());
+        mLayoutInflater = LayoutInflater.from(this.getActivity().getApplicationContext());
 
 
         initLocationClient();
@@ -109,17 +111,18 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         MarkerOptions options = new MarkerOptions();
         options.position(point);
         options.perspective(true);
-//        Random random = new Random();
-//        int rotate = random.nextInt(30);
-//        int oritation =  random.nextBoolean() ? 1 : -1;
-//        rotate = rotate * oritation;
-//        options.rotate(rotate);
+        Random random = new Random();
+        int rotate = random.nextInt(30);
+        int oritation =  random.nextBoolean() ? 1 : -1;
+        rotate = rotate * oritation;
+        options.rotate(rotate);
         options.flat(false);
         //加载覆盖物布局View
         View markView = mLayoutInflater.inflate(R.layout.footprint_map_mark, null);
-        Bitmap bitmap = BMapUtil.getBitmapFromView(markView);
+        Bitmap bitmap = BitmapUtil.getBitmapFromView(markView);
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
         options.icon(bitmapDescriptor);
+
         //在地图上标注覆盖物
         mBaiduMap.addOverlay(options);
 
@@ -156,8 +159,8 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     }
 
     private void setLocationOrientationListener() {
-        myOrientationListener=new MyOrientationListener(this.getActivity());
-        myOrientationListener.setMyOrientationListener(new MyOrientationListener.onOrientationListener() {
+        myOrientationListener=new FootPrintMapOrientationListener(this.getActivity());
+        myOrientationListener.setMyOrientationListener(new FootPrintMapOrientationListener.onOrientationListener() {
             @Override
             public void onOrientationChanged(float x) {
                 myCurrentX=x;
@@ -174,7 +177,7 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         LatLng point = new LatLng(latitude, longitude);
         mSelfLocation = point;
 
-        // TODO: 添加/移动 Marker对象
+        // TODO: 添加/移动 自己位置Marker
         if(mSelfMarker == null){
             MarkerOptions options = new MarkerOptions();
             options.position(point);
@@ -188,9 +191,12 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         }
         // 如果已经创建过 Marker,那么更新位置
         mSelfMarker.setPosition(point);
+        //setSelfLocation(bdLocation);
 
+    }
 
-//        //BDLocation 回调的百度坐标类，内部封装了如经纬度、半径等属性信息
+    private void setSelfLocation(BDLocation bdLocation){
+        //        //BDLocation 回调的百度坐标类，内部封装了如经纬度、半径等属性信息
 //        //MyLocationData 定位数据,定位数据建造器
 //            /*
 //            * 可以通过BDLocation配置如下参数
@@ -202,27 +208,27 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
 //            * 6.direction GPS定位时方向角度
 //            * */
 //
-//        Log.d("baidu:set", "myCurrentX:" + myCurrentX);
-//        MyLocationData data= new MyLocationData.Builder()
-//                .direction(myCurrentX)//设定图标方向
-//                .accuracy(bdLocation.getRadius())//getRadius 获取定位精度,默认值0.0f
-//                .latitude(bdLocation.getLatitude())//百度纬度坐标
-//                .longitude(bdLocation.getLongitude())//百度经度坐标
-//                .build();
-//        //设置定位数据, 只有先允许定位图层后设置数据才会生效，参见 setMyLocationEnabled(boolean)
-//        mBaiduMap.setMyLocationData(data);
-//        //配置定位图层显示方式,三个参数的构造器
-//            /*
-//            * 1.定位图层显示模式
-//            * 2.是否允许显示方向信息
-//            * 3.用户自定义定位图标
-//            *
-//            * */
-//        BitmapDescriptor myBitmapLocation = BitmapDescriptorFactory.fromResource(R.mipmap.calibration_arrow);
-//        MyLocationConfiguration configuration = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.COMPASS,true,myBitmapLocation);
-//        //设置定位图层配置信息，只有先允许定位图层后设置定位图层配置信息才会生效，参见 setMyLocationEnabled(boolean)
-//        mBaiduMap.setMyLocationConfigeration(configuration);
-//        //判断是否为第一次定位,是的话需要定位到用户当前位置
+
+        MyLocationData data= new MyLocationData.Builder()
+                .direction(myCurrentX)//设定图标方向
+                .accuracy(bdLocation.getRadius())//getRadius 获取定位精度,默认值0.0f
+                .latitude(bdLocation.getLatitude())//百度纬度坐标
+                .longitude(bdLocation.getLongitude())//百度经度坐标
+                .build();
+        //设置定位数据, 只有先允许定位图层后设置数据才会生效，参见 setMyLocationEnabled(boolean)
+        mBaiduMap.setMyLocationData(data);
+        //配置定位图层显示方式,三个参数的构造器
+            /*
+            * 1.定位图层显示模式
+            * 2.是否允许显示方向信息
+            * 3.用户自定义定位图标
+            *
+            * */
+        BitmapDescriptor myBitmapLocation = BitmapDescriptorFactory.fromResource(R.mipmap.calibration_arrow);
+        MyLocationConfiguration configuration = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.COMPASS,true,myBitmapLocation);
+        //设置定位图层配置信息，只有先允许定位图层后设置定位图层配置信息才会生效，参见 setMyLocationEnabled(boolean)
+        mBaiduMap.setMyLocationConfigeration(configuration);
+        //判断是否为第一次定位,是的话需要定位到用户当前位置
 //        if(isFirstIn)
 //        {
 //            //地理坐标基本数据结构
@@ -234,9 +240,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
 //            isFirstIn=false;
 //            Toast.makeText(this.getContext(), bdLocation.getAddrStr(), Toast.LENGTH_SHORT).show();
 //        }
-//
-//
-
 
 
     }
@@ -253,15 +256,50 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         if (!mLocationClient.isStarted()) {
             mLocationClient.start();// 针对定位, 自定进行定位的请求
         }
-        myOrientationListener.start();
+        //myOrientationListener.start();
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        //showFootPrintWin(marker);
+        FootPrintPopupWin footPrintPopupWindow = new FootPrintPopupWin(this.getActivity());
+//        basePopupWindow.setWidth(600);
+//        basePopupWindow.setHeight(400);
+//        basePopupWindow.setContentView(mLayoutInflater.inflate(R.layout.footprint_map_popup_win, null));
+
+
+        footPrintPopupWindow.showAtLocation(mContainView, Gravity.CENTER, 0, 0);
+        Toast.makeText(getContext(), "点击了mark", Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
+    private void  showFootPrintWin(final Marker marker){
+        if (null!=marker) {
+            BitmapDescriptor icon = marker.getIcon();
+            if (null!=icon) {
+                View footPrintWinView = mLayoutInflater.inflate(R.layout.footprint_map_popup_win, null);
+                double latitude, longitude;
+                latitude = marker.getPosition().latitude;
+                longitude = marker.getPosition().longitude;
+                LatLng latLng = new LatLng(latitude, longitude );
+                Log.d(TAG, "icon!=null");
+
+                mFootPrintWin = new InfoWindow(footPrintWinView, latLng, -80);
+                mBaiduMap.showInfoWindow(mFootPrintWin);
+            }else {
+                Log.d(TAG, "icon==null");
+            }
+
+        }else{
+            Log.d(TAG, "marker==null");
+        }
+
     }
 
     @Override
     public void onStop() {
 
         super.onStop();
-        mBaiduMap.setMyLocationEnabled(false);
-        myOrientationListener.stop();
     }
 
     @Override
@@ -284,4 +322,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         mSelfMarker = null;
         super.onDestroyView();
     }
+
+
 }

@@ -11,7 +11,7 @@ import android.util.Log;
  * Created by yidong9 on 17/5/15.
  */
 
-public class MyOrientationListener implements SensorEventListener{
+public class FootPrintMapOrientationListener implements SensorEventListener{
     private SensorManager mySensorManager;
     private Sensor mySensor;
     private Context myContext;
@@ -30,7 +30,7 @@ public class MyOrientationListener implements SensorEventListener{
     public void stop(){
         mySensorManager.unregisterListener(this);
     }
-    public MyOrientationListener(Context myContext) {
+    public FootPrintMapOrientationListener(Context myContext) {
         this.myContext = myContext;
     }
     @Override
@@ -42,7 +42,7 @@ public class MyOrientationListener implements SensorEventListener{
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType()==Sensor.TYPE_ORIENTATION) {
             float x=event.values[SensorManager.DATA_X];
-            Log.d("baidu:Sensor", "x:"+x);
+
 
             if (Math.abs(x-lastX)>1.0) {
                 if (myOrientationListener!=null) {
