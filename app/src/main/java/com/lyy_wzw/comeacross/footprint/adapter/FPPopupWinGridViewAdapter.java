@@ -1,76 +1,45 @@
 package com.lyy_wzw.comeacross.footprint.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.lyy_wzw.comeacross.R;
+import com.lyy_wzw.comeacross.utils.PixelUtil;
 
 import java.util.List;
 
 /**
- * Created by yidong9 on 17/5/18.
+ * Created by wzw on 17/5/18.
  */
 
-public class FPPopupWinGridViewAdapter extends BaseAdapter{
-    private List<String>  mImageUrls;
-    private Context mContext;
-    private LayoutInflater mInflater;
+public class FPPopupWinGridViewAdapter extends WzwBaseAdapter<String>{
 
-    //GridView最多显示几张图片
-    private int maxImages = 9;
 
-    public FPPopupWinGridViewAdapter(Context context, List<String>  imageUrls){
-        this.mContext = context;
-        this.mImageUrls = imageUrls;
-        this.mInflater = LayoutInflater.from(context);
-    }
-
-    public int getMaxImages() {
-        return maxImages;
-    }
-
-    public void setMaxImages(int maxImages) {
-        this.maxImages = maxImages;
+    public FPPopupWinGridViewAdapter(Context context, int resource, List<String> objects) {
+        super(context, resource, objects);
     }
 
     @Override
-    public int getCount() {
-        int count = mImageUrls == null ? 0 : mImageUrls.size();
-        if (count > maxImages) {
-            return maxImages;
-        }else{
-            return count;
+    public void onBindData(WzwViewHolder viewHolder, String url, int position) {
+        ImageView imageView = viewHolder.findViewById(R.id.footprint_popupwin_item_pic);
+        if (null==imageView) {
+            Log.d("PopupWinGridViewAdapter", "imageView为null");
         }
 
-    }
+        Glide.with(mContext)
+                .load(url)
+                .placeholder(R.mipmap.meizhi0)
+                .error(R.mipmap.meizhi7)
+                .override(PixelUtil.dip2px(mContext, 100), PixelUtil.dip2px(mContext, 100)) // 重新改变图片大小成这些尺寸(像素)比
+                .centerCrop()
+                .into(imageView);
 
-    @Override
-    public String getItem(int position) {
-        return mImageUrls.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        return null;
-    }
-
-    private class ViewHolder{
-        public final ImageView mImageView;
-        public final View mRoot ;
-
-        public ViewHolder(){
-            this.mRoot = mInflater.inflate(R.layout.foot_print_popupwin_gridview_item, null);
-            this.mImageView = (ImageView)mRoot.findViewById(R.id.footprint_popupwin_item_pic);
-        }
 
     }
 }

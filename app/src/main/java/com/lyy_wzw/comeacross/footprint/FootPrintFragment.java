@@ -29,6 +29,7 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
+import com.lyy_wzw.comeacross.footprint.presenter.FootPrintPopupWinPresenter;
 import com.lyy_wzw.comeacross.utils.BitmapUtil;
 
 import java.util.Random;
@@ -263,9 +264,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     public boolean onMarkerClick(Marker marker) {
         //showFootPrintWin(marker);
         FootPrintPopupWin footPrintPopupWindow = new FootPrintPopupWin(this.getActivity());
-//        basePopupWindow.setWidth(600);
-//        basePopupWindow.setHeight(400);
-//        basePopupWindow.setContentView(mLayoutInflater.inflate(R.layout.footprint_map_popup_win, null));
 
 
         footPrintPopupWindow.showAtLocation(mContainView, Gravity.CENTER, 0, 0);
