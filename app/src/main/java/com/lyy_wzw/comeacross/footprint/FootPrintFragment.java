@@ -265,7 +265,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         //showFootPrintWin(marker);
         FootPrintPopupWin footPrintPopupWindow = new FootPrintPopupWin(this.getActivity());
 
-
         footPrintPopupWindow.showAtLocation(mContainView, Gravity.CENTER, 0, 0);
         Toast.makeText(getContext(), "点击了mark", Toast.LENGTH_SHORT).show();
         return true;

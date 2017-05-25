@@ -20,7 +20,7 @@ public abstract class WzwBaseAdapter<T> extends BaseAdapter implements Filterabl
     private final Object mLock = new Object();
     private ObjectFilter mFilter;
     private ArrayList<T>  mOriginalValues;//原始数据
-    private List<T> mObjects; //数据源
+    protected List<T> mObjects; //数据源
     protected int mCurrentCheckPosition = -1;// 当前选择的行号
     protected Context mContext;
     protected int mResource;// 视图ID

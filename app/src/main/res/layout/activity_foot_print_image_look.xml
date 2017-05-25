@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#000"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.lyy_wzw.comeacross.footprint.activity.FootPrintImageLookActivity">
+
+        <com.lyy_wzw.comeacross.footprint.ui.ImageLookViewPager
+            android:id="@+id/footprint_imagelook_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </com.lyy_wzw.comeacross.footprint.ui.ImageLookViewPager>
+
+        <LinearLayout
+            android:id="@+id/footprint_imagelook_bottombtns_container"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="60dp">
+            <!--<de.hdodenhof.circleimageview.CircleImageView-->
+                <!--android:src="@color/colorPrimary"-->
+                <!--android:layout_width="8dp"-->
+                <!--android:layout_height="8dp"-->
+                <!--android:layout_marginLeft="10dp" />-->
+
+            <!--<de.hdodenhof.circleimageview.CircleImageView-->
+                <!--android:src="@color/colorPrimary"-->
+                <!--android:layout_width="8dp"-->
+                <!--android:layout_height="8dp"-->
+                <!--android:layout_marginLeft="10dp" />-->
+            <!--<de.hdodenhof.circleimageview.CircleImageView-->
+                <!--android:src="@color/colorPrimary"-->
+                <!--android:layout_width="8dp"-->
+                <!--android:layout_height="8dp"-->
+                <!--android:layout_marginLeft="10dp" />-->
+
+            <!--<de.hdodenhof.circleimageview.CircleImageView-->
+                <!--android:src="@color/colorPrimary"-->
+                <!--android:layout_width="8dp"-->
+                <!--android:layout_height="8dp"-->
+                <!--android:layout_marginLeft="10dp" />-->
+
+
+        </LinearLayout>
+
+</FrameLayout>
