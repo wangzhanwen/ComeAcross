@@ -18,8 +18,16 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-             />
+            android:background="@color/colorPrimary">
+            <ImageView
+                android:id="@+id/main_share_footprint_btn"
+                android:layout_gravity="right|center_vertical"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginRight="20dp"
+                android:background="@mipmap/share_footprint_btn"/>
+        </android.support.v7.widget.Toolbar>
+
 
     </android.support.design.widget.AppBarLayout>
 

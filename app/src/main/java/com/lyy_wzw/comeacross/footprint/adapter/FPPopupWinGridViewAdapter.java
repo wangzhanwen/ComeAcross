@@ -21,6 +21,7 @@ import com.lyy_wzw.comeacross.footprint.finalvalue.FPPopupWinValue;
 import com.lyy_wzw.comeacross.utils.EasyTransition;
 import com.lyy_wzw.comeacross.utils.EasyTransitionOptions;
 import com.lyy_wzw.comeacross.utils.PixelUtil;
+import com.lyy_wzw.imageselector.utils.ImageSelectorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +31,14 @@ import java.util.List;
  */
 
 public class FPPopupWinGridViewAdapter extends WzwBaseAdapter<String>{
+    private static final int REQUEST_CODE = 0x00000011;
 
-
-    private ArrayList<String> mImageUrls;
+    private List<String> mImageUrls;
     private WzwViewHolder mViewHolder;
 
     public FPPopupWinGridViewAdapter(Context context, int resource, List<String> objects) {
         super(context, resource, objects);
-        mImageUrls = (ArrayList)objects;
+        mImageUrls = objects;
     }
 
     @Override
@@ -72,3 +73,4 @@ public class FPPopupWinGridViewAdapter extends WzwBaseAdapter<String>{
         });
     }
 }
+

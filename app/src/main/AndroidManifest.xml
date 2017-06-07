@@ -33,6 +33,16 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 
     <!-- 百度地图需要权限 end -->
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <application
         android:name=".homecommon.InitApplication"
         android:allowBackup="true"
@@ -64,7 +74,8 @@
         <!-- 百度地图需要配置 start -->
 
         <activity android:name=".footprint.activity.FootPrintImageLookActivity" />
-        <activity android:name=".footprint.activity.TestActivity"></activity>
+        <activity android:name=".footprint.activity.TestActivity" />
+        <activity android:name=".footprint.activity.ShareFootPrintActivity"></activity>
     </application>
 
 </manifest>

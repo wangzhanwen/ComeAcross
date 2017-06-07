@@ -1,6 +1,7 @@
 package com.lyy_wzw.comeacross.footprint;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,9 +30,13 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
+import com.lyy_wzw.comeacross.footprint.activity.ShareFootPrintActivity;
 import com.lyy_wzw.comeacross.footprint.presenter.FootPrintPopupWinPresenter;
 import com.lyy_wzw.comeacross.utils.BitmapUtil;
+import com.lyy_wzw.imageselector.utils.ImageSelectorUtils;
+import com.wzw.camerarecord.CameraActivity;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -39,6 +44,7 @@ import java.util.Random;
  */
 public class FootPrintFragment extends Fragment implements FootPrintContract.View, BDLocationListener, BaiduMap.OnMarkerClickListener{
     private static final String TAG = "FootPrintFragment";
+    private static final int REQUEST_CODE = 0x00000011;
 
     private static MainActivity mainActivity;
     private MapView mMapView = null;
@@ -266,7 +272,16 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         FootPrintPopupWin footPrintPopupWindow = new FootPrintPopupWin(this.getActivity());
 
         footPrintPopupWindow.showAtLocation(mContainView, Gravity.CENTER, 0, 0);
-        Toast.makeText(getContext(), "点击了mark", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), "点击了mark", Toast.LENGTH_SHORT).show();
+
+        //打开摄像机
+//        Intent intent = new Intent(getActivity(), CameraActivity.class);
+//        getActivity().startActivity(intent);
+
+        //发朋友圈
+        //Intent intent = new Intent(getActivity(), ShareFootPrintActivity.class);
+        //getActivity().startActivity(intent);
+
         return true;
     }
 
@@ -319,6 +334,5 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         mSelfMarker = null;
         super.onDestroyView();
     }
-
 
 }

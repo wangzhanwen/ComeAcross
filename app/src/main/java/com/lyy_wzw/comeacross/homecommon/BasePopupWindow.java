@@ -161,7 +161,7 @@ public class BasePopupWindow extends PopupWindow{
     /**
      * 控制窗口背景的不透明度
      * */
-    private void setWindowBackgroundAlpha(float alpha) {
+    public void setWindowBackgroundAlpha(float alpha) {
         Window window = ((Activity)getContext()).getWindow();
         WindowManager.LayoutParams layoutParams = window.getAttributes();
         layoutParams.alpha = alpha;

@@ -1,8 +1,10 @@
 package com.lyy_wzw.comeacross;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -11,28 +13,45 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.lyy_wzw.comeacross.addressbook.AddressBookFragment;
 import com.lyy_wzw.comeacross.chat.ChatFragment;
 import com.lyy_wzw.comeacross.discovery.DiscoveryFragment;
 import com.lyy_wzw.comeacross.footprint.FootPrintFragment;
 import com.lyy_wzw.comeacross.footprint.FootPrintPresenter;
+import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.homecommon.FragmentAdapter;
+import com.lyy_wzw.imageselector.entry.Image;
+import com.lyy_wzw.imageselector.utils.ImageSelectorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, View.OnClickListener {
+    private static final String TAG = "MainActivity";
+    private static final int REQUEST_CODE = 0x00000011;
 
     private NavigationView navigationView;
     private DrawerLayout drawer;
     public Toolbar toolbar;
 
 
+
     private ViewPager viewPager;
     private MenuItem menuItem;
     private BottomNavigationView bottomNavigationView;
+    private FootPrintFragment mFootPrintFragment;
+    private ChatFragment mChatFragment;
+    private DiscoveryFragment mDiscoveryFragment;
+    private AddressBookFragment mAddressBookFragment;
+    private ImageView mShareFootPrintBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //侧滑栏处理
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mShareFootPrintBtn = (ImageView)findViewById(R.id.main_share_footprint_btn);
+        mShareFootPrintBtn.setOnClickListener(this);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -109,13 +130,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //构造适配器
         List<Fragment> fragments=new ArrayList<Fragment>();
-        FootPrintFragment footPrintFragment = FootPrintFragment.instance(this);
-        new FootPrintPresenter(this, footPrintFragment);
+        mFootPrintFragment = FootPrintFragment.instance(this);
+        new FootPrintPresenter(this, mFootPrintFragment);
+        mChatFragment = ChatFragment.instance(this);
+        mDiscoveryFragment = DiscoveryFragment.instance(this);
+        mAddressBookFragment = AddressBookFragment.instance(this);
 
-        fragments.add(footPrintFragment);
-        fragments.add(ChatFragment.instance(this));
-        fragments.add(DiscoveryFragment.instance(this));
-        fragments.add(AddressBookFragment.instance(this));
+        fragments.add(mFootPrintFragment);
+        fragments.add(mChatFragment);
+        fragments.add(mDiscoveryFragment);
+        fragments.add(mAddressBookFragment);
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(),fragments);
         viewPager.setAdapter(adapter);
@@ -144,5 +168,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE && data != null) {
+            //ArrayList<String> images = data.getStringArrayListExtra(ImageSelectorUtils.SELECT_RESULT);
+            //Toast.makeText(this, images.toString(), Toast.LENGTH_SHORT).show();
+            mFootPrintFragment.onActivityResult(requestCode, resultCode, data);
+
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.main_share_footprint_btn:
+                Toast.makeText(this, "分享足迹", Toast.LENGTH_SHORT).show();
+
+                ShareFootPrintPopupWin shareFootPrintPW = new ShareFootPrintPopupWin(this);
+                shareFootPrintPW.showAtLocation(mShareFootPrintBtn, Gravity.CENTER, 0, 0);
+                break;
+        }
     }
 }

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#333"
+    tools:context="com.lyy_wzw.comeacross.footprint.activity.ShareFootPrintActivity">
+
+        <RelativeLayout
+            android:id="@+id/share_footprint_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:clickable="true"
+            android:background="#333"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentTop="true">
+
+            <FrameLayout
+                android:id="@+id/share_footprint_btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:foreground="@drawable/btn_back_selector">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:scaleType="centerInside"
+                    android:src="@mipmap/icon_back" />
+
+            </FrameLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_toRightOf="@+id/share_footprint_btn_back"
+                android:background="@android:color/black" />
+
+            <FrameLayout
+                android:id="@+id/share_self_btn_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:foreground="@drawable/btn_foreground_selector">
+
+                <TextView
+                    android:id="@+id/share_self_tv_send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_green_shape"
+                    android:gravity="center"
+                    android:minWidth="50dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="5dp"
+                    android:text="发送"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+            </FrameLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="#fff">
+            <EditText
+                android:id="@+id/share_footprint_edit_text"
+                android:hint="这一刻的想法..."
+                android:gravity="left|top"
+                android:background="@null"
+                android:textSize="16sp"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"/>
+            <GridView
+                android:id="@+id/share_footprint_grid_view"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:verticalSpacing="5dp"
+                android:horizontalSpacing="5dp"
+                android:layout_gravity="left"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="20dp"
+                android:numColumns="4"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ccc"/>
+        </LinearLayout>
+ </LinearLayout>
+
+
