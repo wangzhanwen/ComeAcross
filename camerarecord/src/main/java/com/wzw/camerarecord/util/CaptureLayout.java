@@ -24,6 +24,8 @@ public class CaptureLayout extends RelativeLayout {
     private CaptureLisenter captureLisenter;
     //拍照或录制后接结果按钮监听
     private TypeLisenter typeLisenter;
+
+
     //退出按钮监听
     private ReturnLisenter returnLisenter;
 

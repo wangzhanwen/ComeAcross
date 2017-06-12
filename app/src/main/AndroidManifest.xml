@@ -71,11 +71,14 @@
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote" />
-        <!-- 百度地图需要配置 start -->
+        <!-- 百度地图需要配置 end   -->
 
         <activity android:name=".footprint.activity.FootPrintImageLookActivity" />
+        <activity android:name=".footprint.activity.CameraActivity" />
         <activity android:name=".footprint.activity.TestActivity" />
-        <activity android:name=".footprint.activity.ShareFootPrintActivity"></activity>
+        <activity
+            android:name=".footprint.activity.ShareFootPrintActivity"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

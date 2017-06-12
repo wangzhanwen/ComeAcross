@@ -26,6 +26,7 @@ import com.lyy_wzw.comeacross.chat.ChatFragment;
 import com.lyy_wzw.comeacross.discovery.DiscoveryFragment;
 import com.lyy_wzw.comeacross.footprint.FootPrintFragment;
 import com.lyy_wzw.comeacross.footprint.FootPrintPresenter;
+import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.homecommon.FragmentAdapter;
 import com.lyy_wzw.imageselector.entry.Image;
@@ -189,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(this, "分享足迹", Toast.LENGTH_SHORT).show();
 
                 ShareFootPrintPopupWin shareFootPrintPW = new ShareFootPrintPopupWin(this);
+                shareFootPrintPW.setSelectImageCount(FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT);
                 shareFootPrintPW.showAtLocation(mShareFootPrintBtn, Gravity.CENTER, 0, 0);
                 break;
         }

@@ -24,6 +24,7 @@ import android.widget.ImageView;
 
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -155,6 +156,8 @@ public class CameraInterface {
             file.mkdirs();
         }
     }
+
+
 
     public static final int TYPE_RECORDER = 0x090;
     public static final int TYPE_CAPTURE = 0x091;
@@ -366,12 +369,17 @@ public class CameraInterface {
                     matrix.postScale(-1, 1);
                 }
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                if (callback != null) {
+
+                if (callback != null ) {
                     callback.captureResult(bitmap);
                 }
             }
         });
     }
+
+
+
+
 
     void startRecord(Surface surface) {
         if (isRecorder) {

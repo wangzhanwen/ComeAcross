@@ -12,7 +12,6 @@
             android:id="@+id/share_footprint_top_bar"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:clickable="true"
             android:background="#333"
             android:layout_marginTop="20dp"
             android:layout_alignParentTop="true">
@@ -63,7 +62,8 @@
                     android:paddingTop="5dp"
                     android:text="发送"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    />
 
             </FrameLayout>
 

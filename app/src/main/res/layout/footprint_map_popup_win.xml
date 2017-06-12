@@ -4,11 +4,13 @@
 
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/foot_print_win_bgcolor"
     app:cardCornerRadius="8dp"
-    android:elevation="2dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:translationZ="3dp"
+    android:background="@android:color/white"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
         android:orientation="horizontal"
