@@ -1,9 +1,10 @@
 package com.lyy_wzw.comeacross.homecommon;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.baidu.mapapi.SDKInitializer;
+
+import io.rong.imkit.RongIM;
 
 
 /**
@@ -16,6 +17,10 @@ public class InitApplication  extends Application{
         super.onCreate();
        //初始化百度地图
         SDKInitializer.initialize(getApplicationContext());
+        //融云初始化
+        RongIM.init(this);
+
+
 
     }
 }

@@ -76,6 +76,15 @@
         <activity android:name=".footprint.activity.FootPrintImageLookActivity" />
         <activity android:name=".footprint.activity.TestActivity" />
         <activity android:name=".footprint.activity.ShareFootPrintActivity"></activity>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.lyy_wzw.comeacross.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/rc_file_path" />
+        </provider>
     </application>
 
 </manifest>

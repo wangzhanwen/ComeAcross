@@ -188,12 +188,12 @@
         "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\src\\main\\res\\layout\\rc_item_public_service_input_menu_item.xml"
     },
     {
-        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\debug\\layout\\rc_ext_sub_menu_container.xml",
-        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\src\\main\\res\\layout\\rc_ext_sub_menu_container.xml"
-    },
-    {
         "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\debug\\layout\\rc_ext_input_edit_text.xml",
         "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\src\\main\\res\\layout\\rc_ext_input_edit_text.xml"
+    },
+    {
+        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\debug\\layout\\rc_ext_sub_menu_container.xml",
+        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\src\\main\\res\\layout\\rc_ext_sub_menu_container.xml"
     },
     {
         "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\debug\\layout\\rc_ext_emoticon_tab_item.xml",
