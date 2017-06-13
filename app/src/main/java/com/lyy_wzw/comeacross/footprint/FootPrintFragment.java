@@ -1,7 +1,6 @@
 package com.lyy_wzw.comeacross.footprint;
 
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,7 +9,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -30,13 +28,8 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
-import com.lyy_wzw.comeacross.footprint.activity.ShareFootPrintActivity;
-import com.lyy_wzw.comeacross.footprint.presenter.FootPrintPopupWinPresenter;
 import com.lyy_wzw.comeacross.utils.BitmapUtil;
-import com.lyy_wzw.imageselector.utils.ImageSelectorUtils;
-import com.wzw.camerarecord.CameraActivity;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 /**

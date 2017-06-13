@@ -8,8 +8,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.lyy_wzw.comeacross.R;
 
 import uk.co.senab.photoview.PhotoView;
@@ -47,7 +49,13 @@ public class ImageLookViewPagerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_image_look_view_pager, container, false);
         image = (PhotoView) view.findViewById(R.id.footprint_item_image);
-        Glide.with(getContext()).load(imageUrl).into(image);
+
+        //Glide.with(getContext()).load(imageUrl).into(image);
+        if (imageUrl.endsWith(".gif")) {
+            loadPicAsGif(imageUrl, image);
+        }else{
+            loadPic(imageUrl, image);
+        }
 
         return view;
     }
@@ -65,5 +73,22 @@ public class ImageLookViewPagerFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    private void loadPicAsGif(String path, ImageView imageView ){
+        Glide.with(getContext())
+                .load(path)
+                .asGif()
+                .placeholder(R.mipmap.meizhi0)
+                .error(R.mipmap.meizhi7)
+                .into(imageView);
+    }
+
+    private void loadPic(String path, ImageView imageView ){
+        Glide.with(getContext())
+                .load(path)
+                .placeholder(R.mipmap.meizhi0)
+                .error(R.mipmap.meizhi7)
+                .into(imageView);
     }
 }

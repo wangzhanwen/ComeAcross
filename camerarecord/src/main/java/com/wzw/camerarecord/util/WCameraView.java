@@ -542,6 +542,7 @@ public class WCameraView extends RelativeLayout implements CameraInterface.CamOp
         CameraInterface.getInstance().setSaveVideoPath(path);
     }
 
+
     /**
      * TextureView resize
      */
