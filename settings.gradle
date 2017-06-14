@@ -1,1 +1,1 @@
-include ':app', ':imageselector', ':camerarecord'
+include ':app', ':imageselector', ':camerarecord', ':CallKit', ':IMKit', ':IMLib'
