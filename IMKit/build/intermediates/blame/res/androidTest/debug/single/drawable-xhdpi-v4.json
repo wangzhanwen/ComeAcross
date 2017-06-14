@@ -336,12 +336,12 @@
         "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_default_discussion_portrait.png"
     },
     {
-        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f382.png",
-        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f382.png"
-    },
-    {
         "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_file_icon_picture.png",
         "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_file_icon_picture.png"
+    },
+    {
+        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f382.png",
+        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f382.png"
     },
     {
         "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_cs_star_hover.png",
@@ -364,12 +364,12 @@
         "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_send_toggle.png"
     },
     {
-        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_add_people.png",
-        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_add_people.png"
-    },
-    {
         "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f649.png",
         "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f649.png"
+    },
+    {
+        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_add_people.png",
+        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_add_people.png"
     },
     {
         "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f381.png",
@@ -1324,12 +1324,12 @@
         "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_cs_unresolved_hover.png"
     },
     {
-        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f64f.png",
-        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f64f.png"
-    },
-    {
         "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_fr_file_list_ad_icon_folder.png",
         "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_fr_file_list_ad_icon_folder.png"
+    },
+    {
+        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f64f.png",
+        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f64f.png"
     },
     {
         "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_btn_send_normal.9.png",

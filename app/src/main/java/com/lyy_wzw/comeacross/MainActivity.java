@@ -1,23 +1,22 @@
 package com.lyy_wzw.comeacross;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -29,15 +28,20 @@ import com.lyy_wzw.comeacross.footprint.FootPrintPresenter;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.homecommon.FragmentAdapter;
-import com.lyy_wzw.imageselector.entry.Image;
-import com.lyy_wzw.imageselector.utils.ImageSelectorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.rong.imkit.RongIM;
+import io.rong.imkit.fragment.ConversationListFragment;
+import io.rong.imkit.widget.adapter.ConversationListAdapter;
+import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.Conversation;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, View.OnClickListener {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "connect";
     private static final int REQUEST_CODE = 0x00000011;
+    private String rongToken = "TngWAHxIqJJlaoJvTfzivQvcUh0C0/rQgnE+7tbMgRXj9+prH8rB9xk/iFRvSzj8yf0GYps9IISSH3Rl/eEGkzMP1Dk3o7xV";
 
     private NavigationView navigationView;
     private DrawerLayout drawer;
@@ -53,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DiscoveryFragment mDiscoveryFragment;
     private AddressBookFragment mAddressBookFragment;
     private ImageView mShareFootPrintBtn;
+    private ConversationListFragment mConversationListFragment = null;
+    private Conversation.ConversationType[] mConversationTypes = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +67,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initViews();
 
-
+        connectRongServer(rongToken);
     }
+
+    private void connectRongServer(String token) {
+        RongIM.connect(token, new RongIMClient.ConnectCallback() {
+            @Override
+            public void onTokenIncorrect() {
+                Log.e(TAG, "onTokenIncorrect: token错误");
+                Toast.makeText(MainActivity.this,"连接融云服务器失败.token错误",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess(String uid) {
+                Toast.makeText(MainActivity.this,uid+"连接服务器成功",Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onSuccess:uid"+uid );
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode code) {
+                Log.e(TAG, "onError: 连接服务器失败" );
+                Toast.makeText(MainActivity.this,"连接融云服务器失败."+code,Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void initViews() {
         //侧滑栏处理
@@ -133,18 +162,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         List<Fragment> fragments=new ArrayList<Fragment>();
         mFootPrintFragment = FootPrintFragment.instance(this);
         new FootPrintPresenter(this, mFootPrintFragment);
-        mChatFragment = ChatFragment.instance(this);
+        //mChatFragment = ChatFragment.instance(this);
         mDiscoveryFragment = DiscoveryFragment.instance(this);
         mAddressBookFragment = AddressBookFragment.instance(this);
 
         fragments.add(mFootPrintFragment);
-        fragments.add(mChatFragment);
+       // fragments.add(mChatFragment);
+        Fragment conversationList = initConversationList();
+
+        fragments.add(conversationList);
         fragments.add(mDiscoveryFragment);
         fragments.add(mAddressBookFragment);
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(),fragments);
         viewPager.setAdapter(adapter);
 
+    }
+
+    private Fragment initConversationList() {
+        if (mConversationListFragment == null) {
+            ConversationListFragment listFragment = new ConversationListFragment();
+            listFragment.setAdapter(new ConversationListAdapter(MainActivity.this));
+            Uri uri = Uri.parse("rong://"+getApplicationInfo().packageName).buildUpon()
+                    .appendPath("conversationlist")
+                    .appendQueryParameter(Conversation.ConversationType.PRIVATE.getName(),"false")//设置私聊会话是否聚合显示
+                    .appendQueryParameter(Conversation.ConversationType.GROUP.getName(),"true")//群组
+                    .appendQueryParameter(Conversation.ConversationType.PUBLIC_SERVICE.getName(),"false")//公共服务号
+                    .appendQueryParameter(Conversation.ConversationType.APP_PUBLIC_SERVICE.getName(),"true")//订阅号
+                    .appendQueryParameter(Conversation.ConversationType.SYSTEM.getName(),"true")//系统
+                    .appendQueryParameter(Conversation.ConversationType.DISCUSSION.getName(),"true")//
+                    .build();
+            mConversationTypes = new Conversation.ConversationType[]{
+                    Conversation.ConversationType.GROUP,
+                    Conversation.ConversationType.PUBLIC_SERVICE,
+                    Conversation.ConversationType.APP_PUBLIC_SERVICE,
+                    Conversation.ConversationType.SYSTEM,
+                    Conversation.ConversationType.DISCUSSION
+            };
+            listFragment.setUri(uri);
+            mConversationListFragment = listFragment;
+            return listFragment;
+        }
+        return mConversationListFragment;
     }
 
     @Override

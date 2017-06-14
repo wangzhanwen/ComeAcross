@@ -48,5 +48,4 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':IMKit')
     compile project(':IMLib')
-    compile project(':RedPacket')
 }
