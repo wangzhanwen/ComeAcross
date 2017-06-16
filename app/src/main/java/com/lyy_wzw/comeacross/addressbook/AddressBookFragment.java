@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
@@ -13,9 +14,10 @@ import com.lyy_wzw.comeacross.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddressBookFragment extends Fragment {
+public class AddressBookFragment extends Fragment implements View.OnClickListener{
 
     private static MainActivity mainActivity;
+    private Button button;
 
     public AddressBookFragment() {
 
@@ -30,7 +32,15 @@ public class AddressBookFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_address_book, container, false);
+        View view = inflater.inflate(R.layout.fragment_address_book, container, false);
+        button = ((Button) view.findViewById(R.id.friend));
+        button.setOnClickListener(this);
+        return view;
     }
 
+    @Override
+    public void onClick(View view) {
+
+
+    }
 }

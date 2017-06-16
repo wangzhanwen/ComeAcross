@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onSuccess(String uid) {
                 Toast.makeText(MainActivity.this,uid+"连接服务器成功",Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "onSuccess:uid"+uid );
+
             }
 
             @Override

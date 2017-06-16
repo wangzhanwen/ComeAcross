@@ -176,12 +176,12 @@
         "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f637.png"
     },
     {
-        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u270f.png",
-        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u270f.png"
-    },
-    {
         "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_ic_message_block.png",
         "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_ic_message_block.png"
+    },
+    {
+        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u270f.png",
+        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u270f.png"
     },
     {
         "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_cs_group_ok_pressed.png",
@@ -1324,12 +1324,12 @@
         "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_cs_unresolved_hover.png"
     },
     {
-        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_fr_file_list_ad_icon_folder.png",
-        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_fr_file_list_ad_icon_folder.png"
-    },
-    {
         "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f64f.png",
         "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f64f.png"
+    },
+    {
+        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_fr_file_list_ad_icon_folder.png",
+        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_fr_file_list_ad_icon_folder.png"
     },
     {
         "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_btn_send_normal.9.png",
