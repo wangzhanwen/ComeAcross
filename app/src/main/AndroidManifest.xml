@@ -51,15 +51,21 @@
         android:roundIcon="@drawable/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".MainActivity"
+        <activity android:name=".user.activitys.LoginActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait">
+
         </activity>
 
         <!-- 百度地图需要配置 start -->
@@ -70,6 +76,7 @@
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
+<<<<<<< HEAD
             android:process=":remote"/>
         <!-- 百度地图需要配置 end -->
 
@@ -78,6 +85,18 @@
         <activity android:name=".footprint.activity.TestActivity"/>
         <activity android:name=".footprint.activity.ShareFootPrintActivity"/>
 
+=======
+            android:process=":remote" />
+        <!-- 百度地图需要配置 end -->
+
+        <activity android:name=".footprint.activity.FootPrintImageLookActivity" />
+        <activity android:name=".footprint.activity.CameraActivity" />
+        <activity android:name=".footprint.activity.TestActivity" />
+        <activity
+            android:name=".footprint.activity.ShareFootPrintActivity"
+            android:launchMode="singleTask" />
+
+>>>>>>> 9ead8bfa1eff9f05204f6adca7d26f767a057637
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.lyy_wzw.comeacross.FileProvider"
@@ -88,6 +107,7 @@
                 android:resource="@xml/rc_file_path"/>
         </provider>
 
+<<<<<<< HEAD
         <activity android:name=".chat.ConversationActivity">
             <!--会话界面-->
             <activity
@@ -107,6 +127,9 @@
                 </intent-filter>
             </activity>
         </activity>
+=======
+
+>>>>>>> 9ead8bfa1eff9f05204f6adca7d26f767a057637
     </application>
 
 </manifest>

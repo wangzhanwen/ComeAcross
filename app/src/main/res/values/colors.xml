@@ -9,4 +9,9 @@
     <color name="tab_item_color">#fff</color>
     <color name="foot_print_win_bgcolor">#009688</color>
     <color name="foot_print_mark_text_color">#555</color>
+
+    <color name="color_login_btn_bg">#00b6f8</color>
+    <color name="color_login_text">#1d75f2</color>
+    <color name="color_blue">#00b6f8</color>
+    <color name="color_blue_dark">#1d75f2</color>
 </resources>

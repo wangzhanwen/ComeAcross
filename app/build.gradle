@@ -36,6 +36,9 @@ dependencies {
     })
     compile project(path: ':imageselector')
     compile project(path: ':camerarecord')
+
+    compile project(':IMKit')
+    compile project(':IMLib')
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.1.1'
     compile 'com.android.support:support-v4:21.0.3'
@@ -46,10 +49,13 @@ dependencies {
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.commit451:PhotoView:1.2.4'
     testCompile 'junit:junit:4.12'
+<<<<<<< HEAD
     compile project(':IMKit')
     compile project(':IMLib')
     compile 'com.alibaba:fastjson:1.2.33'
     compile 'org.apache.httpcomponents:httpclient:4.5.3'
     compile files('libs/org.apache.http.legacy.jar')
+=======
+>>>>>>> 9ead8bfa1eff9f05204f6adca7d26f767a057637
 }
 

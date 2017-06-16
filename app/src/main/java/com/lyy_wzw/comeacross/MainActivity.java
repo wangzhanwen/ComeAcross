@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,6 +29,7 @@ import com.lyy_wzw.comeacross.footprint.FootPrintPresenter;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.homecommon.FragmentAdapter;
+import com.lyy_wzw.comeacross.user.activitys.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView mShareFootPrintBtn;
     private ConversationListFragment mConversationListFragment = null;
     private Conversation.ConversationType[] mConversationTypes = null;
+    private long mSystemTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -254,5 +257,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 shareFootPrintPW.showAtLocation(mShareFootPrintBtn, Gravity.CENTER, 0, 0);
                 break;
         }
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            if(System.currentTimeMillis()- mSystemTime < 1000 && mSystemTime != 0){
+                Intent intentLogin = new Intent(this, LoginActivity.class);
+                intentLogin.setAction("ExitApp");
+                intentLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                this.startActivity(intentLogin);
+            }else{
+                mSystemTime = System.currentTimeMillis();
+                Toast.makeText(MainActivity.this, "双击返回按钮退出应用", Toast.LENGTH_SHORT).show();
+            }
+        }
+        return false;
     }
 }
