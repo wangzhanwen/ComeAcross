@@ -19,6 +19,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:textSize="24sp"
+            android:textColor="#ffffff"
             android:text="足迹"
             />
         <LinearLayout

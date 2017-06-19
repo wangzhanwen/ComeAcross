@@ -29,6 +29,7 @@ import com.lyy_wzw.comeacross.footprint.FootPrintPresenter;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.homecommon.FragmentAdapter;
+import com.lyy_wzw.comeacross.ui.AddfriendActivity;
 import com.lyy_wzw.comeacross.user.activitys.LoginActivity;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imkit.widget.adapter.ConversationListAdapter;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
+
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, View.OnClickListener {
     private static final String TAG = "connect";
@@ -62,16 +64,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ConversationListFragment mConversationListFragment = null;
     private Conversation.ConversationType[] mConversationTypes = null;
     private long mSystemTime = 0;
+    private boolean isMenuShow = false;
+    private ImageView img_search_top;
+    private ImageView img_add_top;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initViews();
-
         connectRongServer(rongToken);
     }
+
 
     private void connectRongServer(String token) {
         RongIM.connect(token, new RongIMClient.ConnectCallback() {
@@ -103,6 +107,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         mShareFootPrintBtn = (ImageView)findViewById(R.id.main_share_footprint_btn);
         mShareFootPrintBtn.setOnClickListener(this);
+        img_search_top = (ImageView) findViewById(R.id.img_search_top);
+        img_add_top = (ImageView) findViewById(R.id.img_add_top);
+        img_search_top.setOnClickListener(this);
+        img_add_top.setOnClickListener(this);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -130,17 +138,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 switch (item.getItemId()) {
                     case R.id.action_footprint:
                         viewPager.setCurrentItem(0);
+                        img_add_top.setVisibility(View.GONE);
+                        img_search_top.setVisibility(View.GONE);
+                        mShareFootPrintBtn.setVisibility(View.VISIBLE);
                         break;
                     case R.id.action_chat:
+                        img_add_top.setVisibility(View.VISIBLE);
+                        img_search_top.setVisibility(View.VISIBLE);
+                        mShareFootPrintBtn.setVisibility(View.GONE);
                         viewPager.setCurrentItem(1);
                         break;
                     case R.id.action_discovery:
+                        img_add_top.setVisibility(View.VISIBLE);
+                        img_search_top.setVisibility(View.VISIBLE);
+                        mShareFootPrintBtn.setVisibility(View.GONE);
                         viewPager.setCurrentItem(2);
                         break;
                     case R.id.action_address_book:
+                        img_add_top.setVisibility(View.VISIBLE);
+                        img_search_top.setVisibility(View.VISIBLE);
+                        mShareFootPrintBtn.setVisibility(View.GONE);
                         viewPager.setCurrentItem(3);
                         break;
                 }
+                invalidateOptionsMenu();
                 return false;
             }
         } );
@@ -256,6 +277,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 shareFootPrintPW.setSelectImageCount(FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT);
                 shareFootPrintPW.showAtLocation(mShareFootPrintBtn, Gravity.CENTER, 0, 0);
                 break;
+            case R.id.img_add_top:
+                Intent intent = new Intent(this, AddfriendActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.img_search_top:
+                Toast.makeText(MainActivity.this,"查询",Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
@@ -276,4 +304,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return false;
     }
+
+
 }
