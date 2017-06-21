@@ -79,7 +79,7 @@ public class CameraActivity extends AppCompatActivity {
 
                     CameraActivity.this.startActivity(intentShare);
                 }
-
+                CameraActivity.this.finish();
 
             }
 
@@ -87,6 +87,7 @@ public class CameraActivity extends AppCompatActivity {
             public void recordSuccess(String url) {
                 //获取视频路径
                 Log.d(TAG, "url = " + url);
+                CameraActivity.this.finish();
             }
 
             @Override

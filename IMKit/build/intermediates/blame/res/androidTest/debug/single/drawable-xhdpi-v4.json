@@ -176,18 +176,6 @@
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u26a1.png"
     },
     {
-<<<<<<< HEAD
-        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_ic_message_block.png",
-        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_ic_message_block.png"
-    },
-    {
-        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u270f.png",
-        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u270f.png"
-    },
-    {
-        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_cs_group_ok_pressed.png",
-        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_cs_group_ok_pressed.png"
-=======
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_ac_text_file_icon.png",
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_ac_text_file_icon.png"
     },
@@ -198,7 +186,6 @@
     {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_complete.png",
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_complete.png"
->>>>>>> 9ead8bfa1eff9f05204f6adca7d26f767a057637
     },
     {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_send_voice_two.png",
@@ -321,12 +308,12 @@
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_pb_file_download_progress_progress.9.png"
     },
     {
-        "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/u1f494.png",
-        "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u1f494.png"
-    },
-    {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/u1f44d.png",
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u1f44d.png"
+    },
+    {
+        "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/u1f494.png",
+        "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u1f494.png"
     },
     {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_ic_phone_normal.png",
@@ -373,12 +360,12 @@
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u1f6b2.png"
     },
     {
-        "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/u1f60d.png",
-        "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u1f60d.png"
-    },
-    {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/u1f636.png",
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u1f636.png"
+    },
+    {
+        "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/u1f60d.png",
+        "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u1f60d.png"
     },
     {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_plugin_default.png",
@@ -593,12 +580,12 @@
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_bg_voice_popup.9.png"
     },
     {
-        "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_ac_other_file_icon.png",
-        "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_ac_other_file_icon.png"
-    },
-    {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_grid_image_default.png",
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_grid_image_default.png"
+    },
+    {
+        "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_ac_other_file_icon.png",
+        "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_ac_other_file_icon.png"
     },
     {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/u1f4da.png",
@@ -1065,12 +1052,12 @@
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_file_icon_audio.png"
     },
     {
-        "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_conversation_list_empty.png",
-        "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_conversation_list_empty.png"
-    },
-    {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/u1f605.png",
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u1f605.png"
+    },
+    {
+        "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_conversation_list_empty.png",
+        "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_conversation_list_empty.png"
     },
     {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_ic_voice_sent_play1.png",
@@ -1337,18 +1324,6 @@
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_btn_pub_service_enter_hover.png"
     },
     {
-<<<<<<< HEAD
-        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f64f.png",
-        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f64f.png"
-    },
-    {
-        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_fr_file_list_ad_icon_folder.png",
-        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_fr_file_list_ad_icon_folder.png"
-    },
-    {
-        "merged": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_btn_send_normal.9.png",
-        "source": "D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_btn_send_normal.9.png"
-=======
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/u270c.png",
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u270c.png"
     },
@@ -1359,7 +1334,6 @@
     {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_origin_check_sel.png",
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_origin_check_sel.png"
->>>>>>> 9ead8bfa1eff9f05204f6adca7d26f767a057637
     },
     {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/u1f382.png",

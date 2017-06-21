@@ -12,4 +12,16 @@
             <solid android:color="@color/color_blue"></solid>
         </shape>
     </item>
+    <item android:state_enabled="false">
+        <shape>
+            <corners android:radius="3dp"></corners>
+            <solid android:color="@color/color_blue_enable"></solid>
+        </shape>
+    </item>
+    <item android:state_enabled="true">
+        <shape>
+            <corners android:radius="3dp"></corners>
+            <solid android:color="@color/color_blue"></solid>
+        </shape>
+    </item>
 </selector>
