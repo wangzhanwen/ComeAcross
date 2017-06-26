@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.baidu.platform.comapi.map.B;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
+import com.lyy_wzw.comeacross.utils.FileUtil;
 import com.wzw.camerarecord.listener.CameraResultListener;
 import com.wzw.camerarecord.listener.WCameraLisenter;
 import com.wzw.camerarecord.util.WCameraView;
@@ -26,6 +27,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.rong.common.FileUtils;
 
 public class CameraActivity extends AppCompatActivity {
     private  static final String TAG =  "CameraActivity";
@@ -45,10 +48,8 @@ public class CameraActivity extends AppCompatActivity {
         mCameraView = (WCameraView) findViewById(com.wzw.camerarecord.R.id.cameraview);
 
         //设置视频保存路径
-        mCameraView.setSaveVideoPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "ComeAcross"+File.separator+"CameraRecord");
-        setSavePhotoPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "ComeAcross"+File.separator+"CameraCapture");
-
-
+        mCameraView.setSaveVideoPath(FootPrintConstantValue.FILE_SAVE_PATH + File.separator+"CameraRecord");
+        setSavePhotoPath(FootPrintConstantValue.FILE_SAVE_PATH + File.separator + "CameraCapture");
 
 
         //WCameraView监听
@@ -57,27 +58,31 @@ public class CameraActivity extends AppCompatActivity {
             public void captureSuccess(Bitmap bitmap) {
                 //获取图片bitmap
 
-                photoFileName = "pic_" + System.currentTimeMillis() + ".jpg";
+                photoFileName = "ComeAcross_pic_" + System.currentTimeMillis() + ".jpg";
                 if (savePhotoPath.equals("")) {
                     savePhotoPath = Environment.getExternalStorageDirectory().getPath();
                 }
                 photoFileAbsPath = savePhotoPath + File.separator + photoFileName;
                 Log.d(TAG, "photoFileAbsPath:"+photoFileAbsPath);
 
-                boolean isSuccess =  saveBitmap(bitmap, photoFileAbsPath);
+                //boolean isSuccess =  saveBitmap(bitmap, photoFileAbsPath);
+                boolean isSuccess = FileUtil.bitmap2File(bitmap, photoFileAbsPath);
                 if (isSuccess) {
                     bitmap.recycle();
                     bitmap = null;
-                    List<String>  picPathList = new ArrayList<String>();
+                    ArrayList<String>  picPathList = new ArrayList<String>();
                     picPathList.add(photoFileAbsPath);
 
-
+                    //打开发朋友圈窗口，将拍摄的照片路径传过去
                     Intent intentShare = new Intent(CameraActivity.this, ShareFootPrintActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putStringArrayList(FootPrintConstantValue.SHARE_FOOTPRINT_IMAGE_URLS_KEY, (ArrayList) picPathList);
+                    bundle.putInt(FootPrintConstantValue.SHARE_FOOTPRINT_FILE_TYPE_KEY, 1);
+                    bundle.putStringArrayList(FootPrintConstantValue.SHARE_FOOTPRINT_IMAGE_URLS_KEY, picPathList);
                     intentShare.putExtra(FootPrintConstantValue.SHARE_FOOTPRINT_IMAGE_URLS_BUNDLE_KEY, bundle);
 
                     CameraActivity.this.startActivity(intentShare);
+                }else{
+                    Toast.makeText(CameraActivity.this, "图片保存失败", Toast.LENGTH_SHORT).show();
                 }
                 CameraActivity.this.finish();
 
@@ -87,6 +92,15 @@ public class CameraActivity extends AppCompatActivity {
             public void recordSuccess(String url) {
                 //获取视频路径
                 Log.d(TAG, "url = " + url);
+
+                //打开发朋友圈窗口，将拍摄的短视屏路径传过去
+                Intent intentShare = new Intent(CameraActivity.this, ShareFootPrintActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt(FootPrintConstantValue.SHARE_FOOTPRINT_FILE_TYPE_KEY, 2);
+                bundle.putString(FootPrintConstantValue.SHARE_FOOTPRINT_VIDEO_URLS_KEY, url);
+                intentShare.putExtra(FootPrintConstantValue.SHARE_FOOTPRINT_IMAGE_URLS_BUNDLE_KEY, bundle);
+                CameraActivity.this.startActivity(intentShare);
+
                 CameraActivity.this.finish();
             }
 
@@ -108,7 +122,7 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-    private  boolean saveBitmap(Bitmap mBitmap, String savePath) {
+    private  boolean saveBitmap(Bitmap bitmap, String savePath) {
         File filePic;
 
         try {
@@ -118,7 +132,7 @@ public class CameraActivity extends AppCompatActivity {
                 filePic.createNewFile();
             }
             FileOutputStream fos = new FileOutputStream(filePic);
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
         } catch (IOException e) {

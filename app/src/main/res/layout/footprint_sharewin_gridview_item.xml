@@ -7,4 +7,12 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:scaleType="fitXY"/>
+    <ImageView
+        android:id="@+id/footprint_item_video_play_btn"
+        android:src="@mipmap/icon_video_play_bg"
+        android:layout_gravity="center"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:tint="#ffffff"
+        android:scaleType="fitXY"/>
 </FrameLayout>

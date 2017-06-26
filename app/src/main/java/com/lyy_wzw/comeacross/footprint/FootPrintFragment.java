@@ -328,4 +328,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         super.onDestroyView();
     }
 
+
+
 }

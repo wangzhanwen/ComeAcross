@@ -45,6 +45,7 @@
                    android:background="#ffffff"/>
             </LinearLayout>
            <ImageView
+               android:id="@+id/img_register_user_photo"
                android:layout_width="60dp"
                android:layout_height="60dp"
                android:tint="@color/color_blue"

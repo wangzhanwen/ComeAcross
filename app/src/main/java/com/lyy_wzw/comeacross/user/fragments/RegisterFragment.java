@@ -15,21 +15,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
 import com.lyy_wzw.comeacross.bean.CAUser;
+import com.lyy_wzw.comeacross.user.FileDataBmobHelper;
 import com.lyy_wzw.comeacross.user.UserHelper;
+import com.lyy_wzw.comeacross.utils.PixelUtil;
+import com.lyy_wzw.imageselector.SelectResultListener;
+import com.lyy_wzw.imageselector.utils.ImageSelectorUtils;
 
 import java.util.List;
 import java.util.UUID;
 
 
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
-import rx.subscriptions.CompositeSubscription;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,6 +52,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     private TextView mRegisterBtn;
     private TextView mBackLoginBtn;
     private TextView mGetSMSCodeBtn;
+    private ImageView mUserPhotoView;
 
     private View mRootView;
     private ViewPager mViewPager;
@@ -53,6 +62,9 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
 
     private MyCountTimer timer;
+    private String mUserPhotoPath = null;
+
+
     public RegisterFragment() {
 
     }
@@ -72,6 +84,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     private void initView (){
         mRegisterName    = (EditText) mRootView.findViewById(R.id.ed_register_name);
+        mUserPhotoView = (ImageView) mRootView.findViewById(R.id.img_register_user_photo);
         mRegisterPhone   = (EditText) mRootView.findViewById(R.id.ed_register_phone);
         mRegisterPsw     = (EditText) mRootView.findViewById(R.id.ed_register_psw);
         mRegisterSMSCode = (EditText) mRootView.findViewById(R.id.ed_register_SMSCode);
@@ -83,6 +96,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         mRegisterBtn.setOnClickListener(this);
         mBackLoginBtn.setOnClickListener(this);
         mGetSMSCodeBtn.setOnClickListener(this);
+        mUserPhotoView.setOnClickListener(this);
         mSexRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
@@ -99,8 +113,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            //注册
             case R.id.btn_user_register:
                 final String phoneNumberRg = mRegisterPhone.getText().toString().trim();
+                //注册前判断该手机号是否被注册
                 UserHelper.getInstance().queryUser("mobilePhoneNumber", phoneNumberRg, new UserHelper.UserQueryCallback() {
                     @Override
                     public void onResult(List<CAUser> object, BmobException e) {
@@ -114,15 +130,17 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 });
 
                 break;
-
+            //返回登录界面
             case R.id.tv_register_back_login:
                 if (mViewPager != null) {
                     mViewPager.setCurrentItem(1);
                 }
 
              break;
+            //获得验证码
             case R.id.tv_register_getSMSCode:
                 final String phoneNumber = mRegisterPhone.getText().toString().trim();
+                //请求发送验证码前，判断该手机号是否被注册
                 UserHelper.getInstance().queryUser("mobilePhoneNumber", phoneNumber, new UserHelper.UserQueryCallback() {
                     @Override
                     public void onResult(List<CAUser> object, BmobException e) {
@@ -136,10 +154,39 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 });
 
                 break;
+            //选择头像
+            case R.id.img_register_user_photo:
+                Toast.makeText(RegisterFragment.this.getContext(), "选择头像!", Toast.LENGTH_SHORT).show();
+
+                proUserPhotoSelect();
+                break;
         }
 
     }
 
+    private void proUserPhotoSelect() {
+        ImageSelectorUtils.openPhoto(RegisterFragment.this.getContext(), new SelectResultListener() {
+            @Override
+            public void onSelectResult(List<String> result) {
+                Log.d(TAG, "onSelectResult()-->>"+ result.toString());
+                if (result!=null && result.size()>0){
+                    mUserPhotoPath = result.get(0);
+                    if (!mUserPhotoPath.endsWith("gif")) {
+                        Glide.with(RegisterFragment.this.getContext())
+                                .load(mUserPhotoPath)
+                                .override(PixelUtil.dip2px(RegisterFragment.this.getContext(), 100), PixelUtil.dip2px(RegisterFragment.this.getContext(), 100)) // 重新改变图片大小成这些尺寸(像素)比
+                                .centerCrop()
+                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .into(mUserPhotoView);
+                    }else{
+                        Toast.makeText(RegisterFragment.this.getContext(), "头像不能使用gif图片.", Toast.LENGTH_SHORT).show();
+                        mUserPhotoPath = null;
+                    }
+                }
+
+            }
+        }, true, 1);
+    }
 
 
     /**
@@ -164,7 +211,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
                 @Override
                 public void onError(BmobException ex) {
-                    Toast.makeText(RegisterFragment.this.getContext(), "验证码发送失败.code:"+ ex.getErrorCode() + "  msg:" + ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterFragment.this.getContext(), "验证码发送失败." + ex.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -181,10 +228,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
      * @exception
      */
     private void register() {
-        String name        = mRegisterName.getText().toString().trim();
+        final String name        = mRegisterName.getText().toString().trim();
         final String psw         = mRegisterPsw.getText().toString().trim();
-        final  String phoneNumber = mRegisterPhone.getText().toString().trim();
-        String smsCode     = mRegisterSMSCode.getText().toString().trim();
+        final String phoneNumber = mRegisterPhone.getText().toString().trim();
+        final String smsCode     = mRegisterSMSCode.getText().toString().trim();
+        final CAUser user =  new CAUser();
 
         if (TextUtils.isEmpty(name)) {
             Toast.makeText(RegisterFragment.this.getContext(), "用户名不能为空.", Toast.LENGTH_SHORT).show();
@@ -208,51 +256,75 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        final CAUser user =  new CAUser();
-        user.setRyUid(UUID.randomUUID().toString());
-        user.setUsername(name);
-        user.setMobilePhoneNumber(phoneNumber);
-        user.setPassword(psw);
-        user.setSex(mSex);
-        user.setUserPhoto("http://7xi8d6.com1.z0.glb.clouddn.com/2017-04-24-18013547_1532023163498554_215541963087151104_n.jpg");
+        if (TextUtils.isEmpty(mUserPhotoPath)){
+            Toast.makeText(RegisterFragment.this.getContext(), "头像还未选择", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         final ProgressDialog progress = new ProgressDialog(RegisterFragment.this.getContext());
         progress.setMessage("正在注册中...");
         progress.show();
 
-        UserHelper.getInstance().register(user, smsCode, new UserHelper.UserCallback() {
+        Log.d(TAG,"register()-->> mUserPhotoPath:"+ mUserPhotoPath);
+
+        FileDataBmobHelper.getInstance().upLoadFile(mUserPhotoPath, new FileDataBmobHelper.UserUpLoadFileCallback() {
             @Override
-            public void onSuccess() {
-                progress.cancel();
-                timer.cancel();
-                mGetSMSCodeBtn.setText("获得验证码");
-                mGetSMSCodeBtn.setTextColor(Color.WHITE);
-                mGetSMSCodeBtn.setEnabled(true);
-                Toast.makeText(RegisterFragment.this.getContext(), "注册成功.", Toast.LENGTH_SHORT).show();
-                //注册成功，进行登录，进入应用
-                UserHelper.getInstance().login(phoneNumber, psw, new UserHelper.UserCallback() {
+            public void onSuccess(BmobFile bmobFile) {
+                user.setUserPhoto(bmobFile.getFileUrl());
+                user.setRyUid(UUID.randomUUID().toString());
+                user.setUsername(name);
+                user.setMobilePhoneNumber(phoneNumber);
+                user.setPassword(psw);
+                user.setSex(mSex);
+                //头像上传成功后，进行注册
+                UserHelper.getInstance().register(user, smsCode, new UserHelper.UserCallback() {
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(RegisterFragment.this.getContext(), "登录成功", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getContext(), MainActivity.class);
-                        startActivity(intent);
+                        progress.cancel();
+                        timer.cancel();
+                        mGetSMSCodeBtn.setText("获得验证码");
+                        mGetSMSCodeBtn.setTextColor(Color.WHITE);
+                        mGetSMSCodeBtn.setEnabled(true);
+                        Toast.makeText(RegisterFragment.this.getContext(), "注册成功.", Toast.LENGTH_SHORT).show();
+                        //注册成功，进行登录，进入应用
+                        UserHelper.getInstance().login(phoneNumber, psw, new UserHelper.UserCallback() {
+                            @Override
+                            public void onSuccess() {
+                                Toast.makeText(RegisterFragment.this.getContext(), "登录成功", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getContext(), MainActivity.class);
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void onError(BmobException e) {
+                                Toast.makeText(RegisterFragment.this.getContext(), "登录失败", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
                     }
 
                     @Override
                     public void onError(BmobException e) {
-                        Toast.makeText(RegisterFragment.this.getContext(), "登录失败", Toast.LENGTH_SHORT).show();
+                        progress.cancel();
+                        Toast.makeText(RegisterFragment.this.getContext(), "注册失败：", Toast.LENGTH_SHORT).show();
+
                     }
                 });
+
+                Log.d(TAG,"register()-->> getFileUrl:"+ bmobFile.getFileUrl());
 
             }
 
             @Override
             public void onError(BmobException e) {
                 progress.cancel();
-                timer.cancel();
-                mGetSMSCodeBtn.setText("获得验证码");
-                mGetSMSCodeBtn.setTextColor(Color.WHITE);
-                mGetSMSCodeBtn.setEnabled(true);
-                Toast.makeText(RegisterFragment.this.getContext(), "注册失败：", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterFragment.this.getContext(),
+                        "头像上传失败:" + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onProgress(Integer value) {
 
             }
         });

@@ -9,17 +9,20 @@ import com.lyy_wzw.comeacross.bean.CAUser;
 import com.lyy_wzw.comeacross.user.fragments.LoginFragment;
 import com.lyy_wzw.comeacross.user.fragments.RegisterFragment;
 
+import java.io.File;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobSMS;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
+import cn.bmob.v3.listener.UploadFileListener;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -51,6 +54,9 @@ public class UserHelper {
 
     }
 
+
+
+
     /**
      * 获得本地缓存的当前用户
      * @return void
@@ -59,6 +65,8 @@ public class UserHelper {
     public CAUser getCurrentUser(){
        return BmobUser.getCurrentUser(CAUser.class);
     }
+
+
 
     /**
      *

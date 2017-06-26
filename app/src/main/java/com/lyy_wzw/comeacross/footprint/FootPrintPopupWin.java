@@ -1,14 +1,12 @@
 package com.lyy_wzw.comeacross.footprint;
 
-import android.app.Activity;
+
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
-import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
 import com.lyy_wzw.comeacross.footprint.adapter.FPPopupWinGridViewAdapter;
 import com.lyy_wzw.comeacross.footprint.contract.FootPrintPopupWinContract;
@@ -55,7 +53,9 @@ public class FootPrintPopupWin extends BasePopupWindow implements FootPrintPopup
     @Override
     public void initViews(View rootView) {
         mFootPrintImageViews = (GridView)rootView.findViewById(R.id.footprint_popupwin_gridview);
-        mFootPrintImageViews.setAdapter(new FPPopupWinGridViewAdapter(getContext(), R.layout.footprint_popupwin_gridview_item, mPresenter.getImageUrls()));
+        mFootPrintImageViews.setAdapter(new FPPopupWinGridViewAdapter(getContext(),
+                R.layout.footprint_popupwin_gridview_item,
+                mPresenter.getImageUrls()));
     }
 
     @Override

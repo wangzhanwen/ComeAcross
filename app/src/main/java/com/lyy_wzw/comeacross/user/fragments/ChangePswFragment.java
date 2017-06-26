@@ -106,7 +106,9 @@ public class ChangePswFragment extends Fragment implements View.OnClickListener 
 
         if (TextUtils.isEmpty(smsCode)) {
 
-            Toast.makeText(ChangePswFragment.this.getContext(), "验证码不能为空.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ChangePswFragment.this.getContext(),
+                    "验证码不能为空.",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -114,11 +116,10 @@ public class ChangePswFragment extends Fragment implements View.OnClickListener 
             @Override
             public void onSuccess() {
                 timer.cancel();
-                mGetSMSCodeBtn.setText("获得验证码");
-                mGetSMSCodeBtn.setTextColor(Color.WHITE);
-                mGetSMSCodeBtn.setEnabled(true);
 
-                Toast.makeText(ChangePswFragment.this.getContext(), "修改成功.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChangePswFragment.this.getContext(),
+                        "修改成功.",
+                        Toast.LENGTH_SHORT).show();
                 if (mViewPager != null) {
                     mViewPager.setCurrentItem(1);
                 }
@@ -127,10 +128,10 @@ public class ChangePswFragment extends Fragment implements View.OnClickListener 
             @Override
             public void onError(BmobException e) {
                 timer.cancel();
-                mGetSMSCodeBtn.setText("获得验证码");
-                mGetSMSCodeBtn.setTextColor(Color.WHITE);
-                mGetSMSCodeBtn.setEnabled(true);
-                Toast.makeText(ChangePswFragment.this.getContext(), "修改失败：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(ChangePswFragment.this.getContext(),
+                        "修改失败：" + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -155,18 +156,24 @@ public class ChangePswFragment extends Fragment implements View.OnClickListener 
                     timer.start();
 
                     //验证码发送成功
-                    Toast.makeText(ChangePswFragment.this.getContext(), "验证码发送成功!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChangePswFragment.this.getContext(),
+                            "验证码发送成功!",
+                            Toast.LENGTH_SHORT).show();
 
                 }
 
                 @Override
                 public void onError(BmobException ex) {
-                    Toast.makeText(ChangePswFragment.this.getContext(), "验证码发送失败.code:"+ ex.getErrorCode() + "  msg:" + ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChangePswFragment.this.getContext(),
+                            "验证码发送失败.code:"+ ex.getMessage(),
+                            Toast.LENGTH_SHORT).show();
                 }
             });
 
         }else{
-            Toast.makeText(ChangePswFragment.this.getContext(), "请输入手机号码.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ChangePswFragment.this.getContext(),
+                    "请输入手机号码.",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

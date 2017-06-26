@@ -50,15 +50,6 @@ public class FPPopupWinGridViewAdapter extends WzwBaseAdapter<String>{
             Log.d("PopupWinGridViewAdapter", "imageView为null");
         }
 
-//        Glide.with(mContext)
-//                .load(url)
-//                .placeholder(R.mipmap.meizhi0)
-//                .error(R.mipmap.meizhi7)
-//                .override(PixelUtil.dip2px(mContext, 100), PixelUtil.dip2px(mContext, 100)) // 重新改变图片大小成这些尺寸(像素)比
-//                .centerCrop()
-//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                .into(imageView);
-
         if (url.endsWith(".gif")) {
             loadPicAsGif(url, imageView);
         }else{

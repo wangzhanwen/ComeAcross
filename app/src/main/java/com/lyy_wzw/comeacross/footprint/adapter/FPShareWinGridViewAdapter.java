@@ -1,11 +1,9 @@
 package com.lyy_wzw.comeacross.footprint.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
+
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,15 +12,13 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.lyy_wzw.comeacross.R;
+import com.lyy_wzw.comeacross.bean.FootPrintFile;
 import com.lyy_wzw.comeacross.footprint.activity.FootPrintImageLookActivity;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FPPopupWinValue;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.utils.PixelUtil;
-import com.lyy_wzw.imageselector.SelectResultListener;
-import com.lyy_wzw.imageselector.utils.ImageSelectorUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,30 +26,43 @@ import java.util.List;
  * Created by yidong9 on 17/6/1.
  */
 
-public class FPShareWinGridViewAdapter extends WzwBaseAdapter<String>{
+public class FPShareWinGridViewAdapter extends WzwBaseAdapter<FootPrintFile>{
     private static final String TAG = "ShareWinGridViewAdapter";
 
-    private List<String> mImageUrls;
+    private List<FootPrintFile> mFootPrintFiles;
     private WzwViewHolder mViewHolder;
     private Activity mShareActivity;
 
-    public FPShareWinGridViewAdapter(Activity activity, int resource, List<String> datas) {
+    public FPShareWinGridViewAdapter(Activity activity, int resource, List<FootPrintFile> datas) {
         super(activity, resource, datas);
-        mImageUrls = datas;
-        mImageUrls.add(String.valueOf(R.mipmap.footprint_image_add));
+        mFootPrintFiles = datas;
+
+        //将发朋友圈添加图片按钮背景文件添加进去
+        FootPrintFile addImage = new FootPrintFile();
+        addImage.setFilePath(String.valueOf(R.mipmap.footprint_image_add));
+        addImage.setType(1);
+
+        mFootPrintFiles.add(addImage);
         mShareActivity = activity;
     }
 
     @Override
-    public void onBindData(WzwViewHolder viewHolder, String path, final int position) {
+    public void onBindData(WzwViewHolder viewHolder, final FootPrintFile itemFile, final int position) {
         mViewHolder = viewHolder;
         final ImageView imageView = viewHolder.findViewById(R.id.footprint_item_image);
+        final ImageView videoPlayBtn = viewHolder.findViewById(R.id.footprint_item_video_play_btn);
+        String  imagePath = null;
 
-        File imagePath = new File(path);
-
+        if (itemFile.getType()==2) {
+            imagePath = itemFile.getThumbnailPath();
+            videoPlayBtn.setVisibility(View.VISIBLE);
+        }else{
+            imagePath = itemFile.getFilePath();
+            videoPlayBtn.setVisibility(View.GONE);
+        }
 
         //如果是添加图片按钮
-        if (position == mImageUrls.size()-1){
+        if (position == mFootPrintFiles.size()-1){
 
             Glide.with(mContext)
                     .load(R.mipmap.footprint_image_add)
@@ -68,50 +77,53 @@ public class FPShareWinGridViewAdapter extends WzwBaseAdapter<String>{
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                        if (mFootPrintFiles.size() < FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT+1) {
+                            ShareFootPrintPopupWin shareFootPrintPW = new ShareFootPrintPopupWin(mContext);
+                            shareFootPrintPW.setSelectImageCount(FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT+1-mFootPrintFiles.size());
+                            shareFootPrintPW.showAtLocation(imageView, Gravity.CENTER, 0, 0);
 
-                    if (mImageUrls.size() < FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT+1) {
-                        ShareFootPrintPopupWin shareFootPrintPW = new ShareFootPrintPopupWin(mContext);
-                        shareFootPrintPW.setSelectImageCount(FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT+1-mImageUrls.size());
-                        shareFootPrintPW.showAtLocation(imageView, Gravity.CENTER, 0, 0);
-
-                    }else{
-                        Toast.makeText(mContext,
-                                "最多只能选择"+FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT + "张图片.",
-                                Toast.LENGTH_SHORT).show();
-                    }
-
-
+                        }else{
+                            Toast.makeText(mContext,
+                                    "最多只能发布"+FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT + "个文件.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
                 }
             });
         }else{
-
-            if (path.endsWith(".gif")) {
-                loadPicAsGif(path, imageView);
+            if (imagePath.endsWith(".gif")) {
+                loadPicAsGif(imagePath, imageView);
             }else{
-                loadPic(path, imageView);
+                loadPic(imagePath, imageView);
             }
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                 final Intent intent = new Intent(mContext, FootPrintImageLookActivity.class);
-                 ArrayList<String> imagesFilePath = new ArrayList<String>();
-                 for (int i = 0; i < mImageUrls.size()-1; i++) {
-                        imagesFilePath.add(mImageUrls.get(i));
-                 }
+                    if (itemFile.getType() == 1){
+                        final Intent intent = new Intent(mContext, FootPrintImageLookActivity.class);
+                        ArrayList<String> imagesFilePath = new ArrayList<String>();
+                        for (int i = 0; i < mFootPrintFiles.size()-1; i++) {
+                                FootPrintFile footPrintFile = mFootPrintFiles.get(i);
+                                if (footPrintFile.getType() == 1) {
+                                    imagesFilePath.add(footPrintFile.getFilePath());
+                                }
+                        }
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(FPPopupWinValue.IMAGE_LOOK_SELECT_INDEX, position);
+                        bundle.putStringArrayList(FPPopupWinValue.IMAGE_LOOK_IMAGE_URLS, imagesFilePath);
+                        intent.putExtra(FPPopupWinValue.IMAGE_LOOK_TRANSMIT_BUNDLE, bundle);
+                        mContext.startActivity(intent);
 
-                 Bundle bundle = new Bundle();
-                 bundle.putInt(FPPopupWinValue.IMAGE_LOOK_SELECT_INDEX, position);
-                 bundle.putStringArrayList(FPPopupWinValue.IMAGE_LOOK_IMAGE_URLS, imagesFilePath);
-                 intent.putExtra(FPPopupWinValue.IMAGE_LOOK_TRANSMIT_BUNDLE, bundle);
-                 mContext.startActivity(intent);
+                    }else if(itemFile.getType() == 2){
+                        Toast.makeText(mShareActivity, "播放视频。。。", Toast.LENGTH_SHORT).show();
+                    }
 
                 }
             });
         }
 
-
     }
+
     private void loadPicAsGif(String path, ImageView imageView ){
         Glide.with(mContext)
                 .load(path)
@@ -124,7 +136,6 @@ public class FPShareWinGridViewAdapter extends WzwBaseAdapter<String>{
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageView);
     }
-
     private void loadPic(String path, ImageView imageView ){
         Glide.with(mContext)
                 .load(path)
@@ -136,5 +147,4 @@ public class FPShareWinGridViewAdapter extends WzwBaseAdapter<String>{
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageView);
     }
-
 }
