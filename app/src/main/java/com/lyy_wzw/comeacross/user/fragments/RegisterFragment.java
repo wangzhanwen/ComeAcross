@@ -26,7 +26,11 @@ import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
 import com.lyy_wzw.comeacross.bean.CAUser;
 import com.lyy_wzw.comeacross.user.FileDataBmobHelper;
+import com.lyy_wzw.comeacross.user.UserConstantValue;
 import com.lyy_wzw.comeacross.user.UserHelper;
+import com.lyy_wzw.comeacross.user.rongyun.methods.User;
+import com.lyy_wzw.comeacross.user.rongyun.models.TokenResult;
+import com.lyy_wzw.comeacross.user.task.RequestTokenAsyncTask;
 import com.lyy_wzw.comeacross.utils.PixelUtil;
 import com.lyy_wzw.imageselector.SelectResultListener;
 import com.lyy_wzw.imageselector.utils.ImageSelectorUtils;
@@ -37,6 +41,7 @@ import java.util.UUID;
 
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.UpdateListener;
 
 
 /**
@@ -200,7 +205,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         if(!TextUtils.isEmpty(phoneNumber)){
             UserHelper.getInstance().requestSmsCode(phoneNumber, new UserHelper.UserCallback() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(CAUser user) {
                     timer = new MyCountTimer(120000, 1000);
                     timer.start();
 
@@ -263,6 +268,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
         final ProgressDialog progress = new ProgressDialog(RegisterFragment.this.getContext());
         progress.setMessage("正在注册中...");
+        progress.setCanceledOnTouchOutside(false);
         progress.show();
 
         Log.d(TAG,"register()-->> mUserPhotoPath:"+ mUserPhotoPath);
@@ -271,7 +277,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onSuccess(BmobFile bmobFile) {
                 user.setUserPhoto(bmobFile.getFileUrl());
-                user.setRyUid(UUID.randomUUID().toString());
                 user.setUsername(name);
                 user.setMobilePhoneNumber(phoneNumber);
                 user.setPassword(psw);
@@ -279,39 +284,79 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 //头像上传成功后，进行注册
                 UserHelper.getInstance().register(user, smsCode, new UserHelper.UserCallback() {
                     @Override
-                    public void onSuccess() {
-                        progress.cancel();
+                    public void onSuccess(final CAUser caUser) {
+
                         timer.cancel();
                         mGetSMSCodeBtn.setText("获得验证码");
                         mGetSMSCodeBtn.setTextColor(Color.WHITE);
                         mGetSMSCodeBtn.setEnabled(true);
-                        Toast.makeText(RegisterFragment.this.getContext(), "注册成功.", Toast.LENGTH_SHORT).show();
-                        //注册成功，进行登录，进入应用
-                        UserHelper.getInstance().login(phoneNumber, psw, new UserHelper.UserCallback() {
+
+                        Log.d(TAG,"register()-->> uid:"+ caUser.getObjectId());
+                        Log.d(TAG,"register()-->> name:"+ caUser.getUsername());
+                        Log.d(TAG,"register()-->> photo:"+ caUser.getUserPhoto());
+
+                        new RequestTokenAsyncTask(new RequestTokenAsyncTask.GetTokenCallback() {
                             @Override
-                            public void onSuccess() {
-                                Toast.makeText(RegisterFragment.this.getContext(), "登录成功", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getContext(), MainActivity.class);
-                                startActivity(intent);
+                            public void onSuccess(TokenResult result) {
+                                if (result.getCode() == 200){
+                                    Log.d(TAG, "token:" + result.getToken());
+                                    caUser.setRyUserToken(result.getToken());
+                                    //设置用户融云token
+                                    caUser.update(caUser.getObjectId(), new UpdateListener() {
+                                        @Override
+                                        public void done(BmobException e) {
+                                            if(e == null){
+                                                //融云用户token获得成功，进行登录，进入应用
+                                                UserHelper.getInstance().login(phoneNumber, psw, new UserHelper.UserCallback() {
+                                                    @Override
+                                                    public void onSuccess(CAUser user) {
+                                                        progress.cancel();
+                                                        Toast.makeText(RegisterFragment.this.getContext(), "登录成功", Toast.LENGTH_SHORT).show();
+                                                        Intent intent = new Intent(getContext(), MainActivity.class);
+                                                        startActivity(intent);
+                                                    }
+
+                                                    @Override
+                                                    public void onError(BmobException e) {
+                                                        Toast.makeText(RegisterFragment.this.getContext(), "登录失败", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+
+                                            }else{
+                                                progress.cancel();
+                                                Toast.makeText(RegisterFragment.this.getContext(), "注册失败：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                            }
+                                        }
+                                    });
+
+                                }else{
+                                    progress.cancel();
+                                    Log.d(TAG, "code:" + result.getCode() + "msg:" + result.getErrorMessage());
+                                    Toast.makeText(RegisterFragment.this.getContext(), "注册失败：" + "code:"+ result.getCode(), Toast.LENGTH_SHORT).show();
+                                }
                             }
 
                             @Override
-                            public void onError(BmobException e) {
-                                Toast.makeText(RegisterFragment.this.getContext(), "登录失败", Toast.LENGTH_SHORT).show();
+                            public void onError(String errorMsg) {
+                                progress.cancel();
+                                Log.d(TAG, "errorMsg:" + errorMsg);
+                                Toast.makeText(RegisterFragment.this.getContext(), "注册失败：" + errorMsg, Toast.LENGTH_SHORT).show();
+
                             }
-                        });
+                        }).execute(caUser.getObjectId(),
+                                   caUser.getUsername(),
+                                   caUser.getUserPhoto());
 
                     }
 
                     @Override
                     public void onError(BmobException e) {
                         progress.cancel();
-                        Toast.makeText(RegisterFragment.this.getContext(), "注册失败：", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterFragment.this.getContext(), "注册失败.", Toast.LENGTH_SHORT).show();
 
                     }
                 });
-
-                Log.d(TAG,"register()-->> getFileUrl:"+ bmobFile.getFileUrl());
 
             }
 

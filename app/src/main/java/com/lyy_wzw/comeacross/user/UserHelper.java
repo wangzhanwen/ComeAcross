@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.bean.CAUser;
+import com.lyy_wzw.comeacross.rong.server.WeixinAction;
 import com.lyy_wzw.comeacross.user.fragments.LoginFragment;
 import com.lyy_wzw.comeacross.user.fragments.RegisterFragment;
 
@@ -45,7 +46,7 @@ public class UserHelper {
 
 
     public interface UserCallback{
-        void onSuccess();
+        void onSuccess(CAUser user);
         void onError(BmobException e);
     }
 
@@ -81,7 +82,7 @@ public class UserHelper {
             @Override
             public void done(BmobException ex) {
                 if(ex==null){
-                    userCallback.onSuccess();
+                    userCallback.onSuccess(null);
                 }else{
                     userCallback.onError(ex);
                 }
@@ -102,7 +103,7 @@ public class UserHelper {
             @Override
             public void done(Integer smsId, BmobException ex) {
                 if(ex==null){
-                    userCallback.onSuccess();
+                    userCallback.onSuccess(null);
                 }else{
                     userCallback.onError(ex);
                 }
@@ -123,7 +124,7 @@ public class UserHelper {
             @Override
             public void done(CAUser user, BmobException e) {
                 if(user!=null){
-                    userCallback.onSuccess();
+                    userCallback.onSuccess(user);
                 }else{
                     userCallback.onError(e);
                 }
@@ -142,7 +143,7 @@ public class UserHelper {
             @Override
             public void done(CAUser myUser, BmobException e) {
                 if(e==null){
-                    userCallback.onSuccess();
+                    userCallback.onSuccess(myUser);
                 }else{
                     userCallback.onError(e);
                 }

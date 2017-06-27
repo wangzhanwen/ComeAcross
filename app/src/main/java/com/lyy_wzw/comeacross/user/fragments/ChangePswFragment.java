@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lyy_wzw.comeacross.R;
+import com.lyy_wzw.comeacross.bean.CAUser;
 import com.lyy_wzw.comeacross.user.UserHelper;
 
 import cn.bmob.v3.exception.BmobException;
@@ -114,7 +115,7 @@ public class ChangePswFragment extends Fragment implements View.OnClickListener 
 
         UserHelper.getInstance().changePsw(smsCode, newPsw, new UserHelper.UserCallback() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(CAUser user) {
                 timer.cancel();
 
                 Toast.makeText(ChangePswFragment.this.getContext(),
@@ -150,7 +151,7 @@ public class ChangePswFragment extends Fragment implements View.OnClickListener 
 
             UserHelper.getInstance().requestSmsCode(phoneNumber, new UserHelper.UserCallback() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(CAUser user) {
                     mGetSMSCodeBtn.setEnabled(false);
                     timer = new ChangePswFragment.MyCountTimer(120000, 1000);
                     timer.start();

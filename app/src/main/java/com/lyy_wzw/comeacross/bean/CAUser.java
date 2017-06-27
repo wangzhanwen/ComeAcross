@@ -7,27 +7,11 @@ import cn.bmob.v3.BmobUser;
  */
 
 public class CAUser extends BmobUser{
-    private String  ryUid;
     private boolean  sex;
     private String userPhoto;
+    private String ryUserToken;
 
     public CAUser() {
-    }
-
-    public void setRyUid(String ryUid) {
-        this.ryUid = ryUid;
-    }
-
-    public void setSex(boolean sex) {
-        this.sex = sex;
-    }
-
-    public void setUserPhoto(String userPhoto) {
-        this.userPhoto = userPhoto;
-    }
-
-    public String getRyUid() {
-        return ryUid;
     }
 
     public boolean isSex() {
@@ -38,12 +22,28 @@ public class CAUser extends BmobUser{
         return userPhoto;
     }
 
+    public String getRyUserToken() {
+        return ryUserToken;
+    }
+
+    public void setSex(boolean sex) {
+        this.sex = sex;
+    }
+
+    public void setUserPhoto(String userPhoto) {
+        this.userPhoto = userPhoto;
+    }
+
+    public void setRyUserToken(String ryUserToken) {
+        this.ryUserToken = ryUserToken;
+    }
+
     @Override
     public String toString() {
         return "CAUser{" +
-                "ryUid='" + ryUid + '\'' +
-                ", sex=" + sex +
+                "sex=" + sex +
                 ", userPhoto='" + userPhoto + '\'' +
+                ", ryUserToken='" + ryUserToken + '\'' +
                 '}';
     }
 }

@@ -93,9 +93,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    private void forgetPsw() {
-        Toast.makeText(getContext(), "忘记密码了啊？ 活该. ^&^", Toast.LENGTH_SHORT).show();
-    }
 
 
     /**
@@ -118,7 +115,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         UserHelper.getInstance().login(phoneNumber, psw, new UserHelper.UserCallback() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(CAUser user) {
                 Toast.makeText(LoginFragment.this.getContext(), "登录成功.", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 startActivity(intent);

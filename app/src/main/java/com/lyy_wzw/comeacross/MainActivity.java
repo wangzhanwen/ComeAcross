@@ -30,7 +30,12 @@ import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.homecommon.FragmentAdapter;
 import com.lyy_wzw.comeacross.ui.AddfriendActivity;
+import com.lyy_wzw.comeacross.user.UserConstantValue;
+import com.lyy_wzw.comeacross.user.UserHelper;
 import com.lyy_wzw.comeacross.user.activitys.LoginActivity;
+import com.lyy_wzw.comeacross.user.rongyun.methods.User;
+import com.lyy_wzw.comeacross.user.rongyun.models.TokenResult;
+import com.lyy_wzw.comeacross.user.task.RequestTokenAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +48,7 @@ import io.rong.imlib.model.Conversation;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, View.OnClickListener {
-    private static final String TAG = "connect";
+    private static final String TAG = "MainActivity";
     private static final int REQUEST_CODE = 0x00000011;
     private String rongToken = "TngWAHxIqJJlaoJvTfzivQvcUh0C0/rQgnE+7tbMgRXj9+prH8rB9xk/iFRvSzj8yf0GYps9IISSH3Rl/eEGkzMP1Dk3o7xV";
 
@@ -71,7 +76,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
-        connectRongServer(rongToken);
+        String userToken = UserHelper.getInstance().getCurrentUser().getRyUserToken();
+        if (userToken != null) {
+            connectRongServer(userToken);
+        }else{
+            Toast.makeText(MainActivity.this,"连接融云服务器失败.token为null",Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
 
@@ -97,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
-
 
     private void initViews() {
         //侧滑栏处理
@@ -302,6 +313,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return false;
     }
-
 
 }
