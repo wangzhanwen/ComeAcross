@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.lyy_wzw.comeacross.addressbook.AddressBookFragment;
+import com.lyy_wzw.comeacross.bean.CAUser;
 import com.lyy_wzw.comeacross.chat.ChatFragment;
 import com.lyy_wzw.comeacross.discovery.DiscoveryFragment;
 import com.lyy_wzw.comeacross.footprint.FootPrintFragment;
@@ -30,21 +31,20 @@ import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.homecommon.FragmentAdapter;
 import com.lyy_wzw.comeacross.ui.AddfriendActivity;
-import com.lyy_wzw.comeacross.user.UserConstantValue;
 import com.lyy_wzw.comeacross.user.UserHelper;
 import com.lyy_wzw.comeacross.user.activitys.LoginActivity;
-import com.lyy_wzw.comeacross.user.rongyun.methods.User;
-import com.lyy_wzw.comeacross.user.rongyun.models.TokenResult;
-import com.lyy_wzw.comeacross.user.task.RequestTokenAsyncTask;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.exception.BmobException;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imkit.widget.adapter.ConversationListAdapter;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
+import io.rong.imlib.model.UserInfo;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, View.OnClickListener {
@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView img_search_top;
     private ImageView img_add_top;
 
+    private UserInfo userInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +85,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(MainActivity.this,"连接融云服务器失败.token为null",Toast.LENGTH_SHORT).show();
         }
 
+        /**
+         * 设置用户信息的提供者，供 RongIM 调用获取用户名称和头像信息。
+         *
+         * @param userInfoProvider 用户信息提供者。
+         * @param isCacheUserInfo  设置是否由 IMKit 来缓存用户信息。<br>
+         *                         如果 App 提供的 UserInfoProvider
+         *                         每次都需要通过网络请求用户数据，而不是将用户数据缓存到本地内存，会影响用户信息的加载速度；<br>
+         *                         此时最好将本参数设置为 true，由 IMKit 将用户信息缓存到本地内存中。
+         * @see UserInfoProvider
+         */
+        RongIM.setUserInfoProvider(new RongIM.UserInfoProvider() {
+            @Override
+            public UserInfo getUserInfo(String userId) {
+                UserHelper.getInstance().queryUser("objectId", userId, new UserHelper.UserQueryCallback() {
+                    @Override
+                    public void onResult(List<CAUser> users, BmobException e) {
+                        if (users != null && users.size() >0 ) {
+                            CAUser user = users.get(0);
+                            userInfo = new UserInfo(user.getObjectId(),
+                                    user.getUsername(),
+                                    Uri.parse(user.getUserPhoto()));
+                        }
+                    }
+                });
+
+                return userInfo;//根据 userId 去你的用户系统里查询对应的用户信息返回给融云 SDK。
+            }
+
+        }, true);
 
     }
 
