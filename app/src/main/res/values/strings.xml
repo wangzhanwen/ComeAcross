@@ -353,5 +353,7 @@
     <string name="seal_set_push_detail">显示 Push 内容</string>
     <string name="seal_set_push_receive">接收 Push 消息</string>
 
+    <string name="appbar_spring_behavior">android.support.design.widget.AppBarLayoutSpringBehavior</string>
+    <string name="appbar_fling_fix_behavior">android.support.design.widget.AppBarFlingFixBehavior</string>
 
 </resources>

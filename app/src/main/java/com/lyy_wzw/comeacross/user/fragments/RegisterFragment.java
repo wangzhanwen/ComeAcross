@@ -179,7 +179,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     if (!mUserPhotoPath.endsWith("gif")) {
                         Glide.with(RegisterFragment.this.getContext())
                                 .load(mUserPhotoPath)
-                                .override(PixelUtil.dip2px(RegisterFragment.this.getContext(), 100), PixelUtil.dip2px(RegisterFragment.this.getContext(), 100)) // 重新改变图片大小成这些尺寸(像素)比
+                                .override(PixelUtil.dip2px(RegisterFragment.this.getContext(), 200), PixelUtil.dip2px(RegisterFragment.this.getContext(), 200)) // 重新改变图片大小成这些尺寸(像素)比
                                 .centerCrop()
                                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                 .into(mUserPhotoView);

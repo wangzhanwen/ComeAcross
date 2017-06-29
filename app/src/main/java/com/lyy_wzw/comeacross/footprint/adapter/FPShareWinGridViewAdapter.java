@@ -17,6 +17,7 @@ import com.lyy_wzw.comeacross.footprint.activity.FootPrintImageLookActivity;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FPPopupWinValue;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
+import com.lyy_wzw.comeacross.utils.GlideUtil;
 import com.lyy_wzw.comeacross.utils.PixelUtil;
 
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class FPShareWinGridViewAdapter extends WzwBaseAdapter<FootPrintFile>{
 
         //如果是添加图片按钮
         if (position == mFootPrintFiles.size()-1){
-
+            
             Glide.with(mContext)
                     .load(R.mipmap.footprint_image_add)
                     .placeholder(R.mipmap.footprint_image_add)
@@ -91,9 +92,10 @@ public class FPShareWinGridViewAdapter extends WzwBaseAdapter<FootPrintFile>{
             });
         }else{
             if (imagePath.endsWith(".gif")) {
-                loadPicAsGif(imagePath, imageView);
+                GlideUtil.loadPicAsGif(mContext,imagePath, 100, 100, imageView);
+
             }else{
-                loadPic(imagePath, imageView);
+                GlideUtil.loadPic(mContext,imagePath, 100, 100, imageView);
             }
 
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -124,27 +126,5 @@ public class FPShareWinGridViewAdapter extends WzwBaseAdapter<FootPrintFile>{
 
     }
 
-    private void loadPicAsGif(String path, ImageView imageView ){
-        Glide.with(mContext)
-                .load(path)
-                .asGif()
-                .placeholder(R.mipmap.meizhi0)
-                .error(R.mipmap.meizhi7)
-                // 重新改变图片大小成这些尺寸(像素)比
-                .override(PixelUtil.dip2px(mContext, 100), PixelUtil.dip2px(mContext, 100))
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imageView);
-    }
-    private void loadPic(String path, ImageView imageView ){
-        Glide.with(mContext)
-                .load(path)
-                .placeholder(R.mipmap.meizhi0)
-                .error(R.mipmap.meizhi7)
-                // 重新改变图片大小成这些尺寸(像素)比
-                .override(PixelUtil.dip2px(mContext, 100), PixelUtil.dip2px(mContext, 100))
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imageView);
-    }
+
 }

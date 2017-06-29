@@ -8,54 +8,53 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="0dp"
-        android:id="@+id/appBarLayout">
+    <!--<android.support.design.widget.AppBarLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:elevation="0dp"-->
+        <!--android:id="@+id/appBarLayout">-->
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary">
-            <ImageView
-                android:id="@+id/main_share_footprint_btn"
-                android:layout_gravity="right|center_vertical"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginRight="20dp"
-                android:background="@mipmap/share_footprint_btn"/>
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?attr/actionBarSize"-->
+            <!--android:background="@color/colorPrimary">-->
+            <!--<ImageView-->
+                <!--android:id="@+id/main_share_footprint_btn"-->
+                <!--android:layout_gravity="right|center_vertical"-->
+                <!--android:layout_width="25dp"-->
+                <!--android:layout_height="25dp"-->
+                <!--android:layout_marginRight="20dp"-->
+                <!--android:background="@mipmap/share_footprint_btn"/>-->
 
-            <ImageView
-                android:id="@+id/img_search_top"
-                android:layout_gravity="right|center_vertical"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:scaleType="fitXY"
-                android:layout_toLeftOf="@+id/img_add_top"
-                android:layout_marginRight="65dp"
-                android:visibility="gone"
-                android:src="@drawable/ac_title_search_icon"/>
-            <ImageView
-                android:id="@+id/img_add_top"
-                android:layout_gravity="right|center_vertical"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:scaleType="fitXY"
-                android:layout_marginRight="20dp"
-                android:visibility="gone"
-                android:src="@drawable/main_activity_add"/>
-
-
-        </android.support.v7.widget.Toolbar>
+            <!--<ImageView-->
+                <!--android:id="@+id/img_search_top"-->
+                <!--android:layout_gravity="right|center_vertical"-->
+                <!--android:layout_width="25dp"-->
+                <!--android:layout_height="25dp"-->
+                <!--android:scaleType="fitXY"-->
+                <!--android:layout_toLeftOf="@+id/img_add_top"-->
+                <!--android:layout_marginRight="65dp"-->
+                <!--android:visibility="gone"-->
+                <!--android:src="@drawable/ac_title_search_icon"/>-->
+            <!--<ImageView-->
+                <!--android:id="@+id/img_add_top"-->
+                <!--android:layout_gravity="right|center_vertical"-->
+                <!--android:layout_width="25dp"-->
+                <!--android:layout_height="25dp"-->
+                <!--android:scaleType="fitXY"-->
+                <!--android:layout_marginRight="20dp"-->
+                <!--android:visibility="gone"-->
+                <!--android:src="@drawable/main_activity_add"/>-->
 
 
-    </android.support.design.widget.AppBarLayout>
+        <!--</android.support.v7.widget.Toolbar>-->
+
+
+    <!--</android.support.design.widget.AppBarLayout>-->
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
-        android:layout_marginTop="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bnv_menu" />

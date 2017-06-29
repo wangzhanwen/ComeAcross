@@ -9,6 +9,13 @@ import android.graphics.RectF;
 import android.util.Base64;
 import android.view.View;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 /**
  * Created by wzw on 2017/5/15.
  */

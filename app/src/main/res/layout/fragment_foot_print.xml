@@ -2,12 +2,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     tools:context="com.lyy_wzw.comeacross.footprint.FootPrintFragment">
 
     <com.baidu.mapapi.map.MapView
         android:id="@+id/footprint_mapView"
+        android:background="#fff"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true" />
+
+    <ImageView
+        android:id="@+id/fragment_share_footprint_btn"
+        android:layout_gravity="right|top"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@mipmap/share_footprint_btn"/>
 
 </FrameLayout>

@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private NavigationView navigationView;
     private DrawerLayout drawer;
-    public Toolbar toolbar;
 
     private ViewPager viewPager;
     private MenuItem menuItem;
@@ -63,13 +62,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ChatFragment mChatFragment;
     private DiscoveryFragment mDiscoveryFragment;
     private AddressBookFragment mAddressBookFragment;
-    private ImageView mShareFootPrintBtn;
     private ConversationListFragment mConversationListFragment = null;
     private Conversation.ConversationType[] mConversationTypes = null;
     private long mSystemTime = 0;
-    private boolean isMenuShow = false;
-    private ImageView img_search_top;
-    private ImageView img_add_top;
+
 
     private UserInfo userInfo;
 
@@ -143,20 +139,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void initViews() {
         //侧滑栏处理
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        mShareFootPrintBtn = (ImageView)findViewById(R.id.main_share_footprint_btn);
-        mShareFootPrintBtn.setOnClickListener(this);
-        img_search_top = (ImageView) findViewById(R.id.img_search_top);
-        img_add_top = (ImageView) findViewById(R.id.img_add_top);
-        img_search_top.setOnClickListener(this);
-        img_add_top.setOnClickListener(this);
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this,
                 drawer,
-                toolbar,
+                null,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -178,26 +165,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 switch (item.getItemId()) {
                     case R.id.action_footprint:
                         viewPager.setCurrentItem(0);
-                        img_add_top.setVisibility(View.GONE);
-                        img_search_top.setVisibility(View.GONE);
-                        mShareFootPrintBtn.setVisibility(View.VISIBLE);
                         break;
                     case R.id.action_chat:
-                        img_add_top.setVisibility(View.VISIBLE);
-                        img_search_top.setVisibility(View.VISIBLE);
-                        mShareFootPrintBtn.setVisibility(View.GONE);
                         viewPager.setCurrentItem(1);
                         break;
                     case R.id.action_discovery:
-                        img_add_top.setVisibility(View.VISIBLE);
-                        img_search_top.setVisibility(View.VISIBLE);
-                        mShareFootPrintBtn.setVisibility(View.GONE);
                         viewPager.setCurrentItem(2);
                         break;
                     case R.id.action_address_book:
-                        img_add_top.setVisibility(View.VISIBLE);
-                        img_search_top.setVisibility(View.VISIBLE);
-                        mShareFootPrintBtn.setVisibility(View.GONE);
                         viewPager.setCurrentItem(3);
                         break;
                 }
@@ -309,22 +284,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.main_share_footprint_btn:
-                Toast.makeText(this, "分享足迹", Toast.LENGTH_SHORT).show();
-
-                ShareFootPrintPopupWin shareFootPrintPW = new ShareFootPrintPopupWin(this);
-                shareFootPrintPW.setSelectImageCount(FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT);
-                shareFootPrintPW.showAtLocation(mShareFootPrintBtn, Gravity.CENTER, 0, 0);
-                break;
-            case R.id.img_add_top:
-                Intent intent = new Intent(this, AddfriendActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.img_search_top:
-                Toast.makeText(MainActivity.this,"查询",Toast.LENGTH_SHORT).show();
-                break;
-        }
+//        switch (v.getId()) {
+//            case R.id.main_share_footprint_btn:
+//                Toast.makeText(this, "分享足迹", Toast.LENGTH_SHORT).show();
+//
+//                ShareFootPrintPopupWin shareFootPrintPW = new ShareFootPrintPopupWin(this);
+//                shareFootPrintPW.setSelectImageCount(FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT);
+//                shareFootPrintPW.showAtLocation(mShareFootPrintBtn, Gravity.CENTER, 0, 0);
+//                break;
+//            case R.id.img_add_top:
+//                Intent intent = new Intent(this, AddfriendActivity.class);
+//                startActivity(intent);
+//                break;
+//            case R.id.img_search_top:
+//                Toast.makeText(MainActivity.this,"查询",Toast.LENGTH_SHORT).show();
+//                break;
+//        }
     }
 
 

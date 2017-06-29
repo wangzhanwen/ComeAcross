@@ -9,6 +9,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -28,6 +30,8 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
+import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
+import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.utils.BitmapUtil;
 
 import java.util.Random;
@@ -35,13 +39,14 @@ import java.util.Random;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FootPrintFragment extends Fragment implements FootPrintContract.View, BDLocationListener, BaiduMap.OnMarkerClickListener{
+public class FootPrintFragment extends Fragment implements FootPrintContract.View, BDLocationListener, BaiduMap.OnMarkerClickListener, View.OnClickListener {
     private static final String TAG = "FootPrintFragment";
     private static final int REQUEST_CODE = 0x00000011;
 
     private static MainActivity mainActivity;
     private MapView mMapView = null;
     private BaiduMap mBaiduMap = null;
+    private ImageView mShareFootPrintBtn;
     private LocationClient mLocationClient = null;
     private LatLng mSelfLocation ;
     private Marker mSelfMarker = null;
@@ -71,6 +76,8 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mContainView = inflater.inflate(R.layout.fragment_foot_print, container, false);
+        mShareFootPrintBtn = (ImageView)mContainView.findViewById(R.id.fragment_share_footprint_btn);
+        mShareFootPrintBtn.setOnClickListener(this);
         initViews(mContainView);
         return mContainView;
     }
@@ -85,8 +92,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
 
     @Override
     public void initViews(View view) {
-        mainActivity.toolbar.setTitle("足迹");
-
 
         mMapView =  (MapView) view.findViewById(R.id.footprint_mapView);
         //获取核心
@@ -329,5 +334,17 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.fragment_share_footprint_btn:
+                Toast.makeText(this.getContext(), "分享足迹", Toast.LENGTH_SHORT).show();
 
+                ShareFootPrintPopupWin shareFootPrintPW = new ShareFootPrintPopupWin(this.getContext());
+                shareFootPrintPW.setSelectImageCount(FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT);
+                shareFootPrintPW.showAtLocation(mShareFootPrintBtn, Gravity.CENTER, 0, 0);
+                break;
+
+        }
+    }
 }

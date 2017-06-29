@@ -179,7 +179,7 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
         }else if(fileType == 2){
             FootPrintFile videoFile = new FootPrintFile();
             String videoPath = bundle.getString(FootPrintConstantValue.SHARE_FOOTPRINT_VIDEO_URLS_KEY);
-            Bitmap videoThumbnail = FileUtil.getVideoThumbnail(videoPath, 100, 200, MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
+            Bitmap videoThumbnail = FileUtil.getVideoThumbnail(videoPath, 200, 360, MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
             if (videoThumbnail == null) {
                 Snackbar.make(mImagesGridView,
                         "视频缩略图获取失败.",
