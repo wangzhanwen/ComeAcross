@@ -2,6 +2,7 @@ package com.lyy_wzw.comeacross.discovery.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,17 +18,21 @@ import com.lyy_wzw.comeacross.bean.FootPrintFile;
 
 import com.lyy_wzw.comeacross.user.UserHelper;
 import com.lyy_wzw.comeacross.utils.GlideUtil;
+import com.lyy_wzw.comeacross.utils.PixelUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.exception.BmobException;
-import de.hdodenhof.circleimageview.CircleImageView;
+
 
 /**
  * Created by yidong9 on 17/6/29.
  */
 
 public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecyclerViewAdapter.CircleViewHolder>{
+    private static final String TAG = "CircleAdapter";
+
     private Context mContext;
     private List<FootPrint> mDatas;
 
@@ -79,11 +84,16 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
                 if (users != null && users.size()>0){
                     CAUser caUser = users.get(0);
                     Log.d("adapter:", ""+caUser.getUserPhoto());
-                    GlideUtil.loadPic(mContext,caUser.getUserPhoto(), 100, 100, holder.mUserPhotoImg);
+                    GlideUtil.loadPic(mContext,caUser.getUserPhoto(), holder.mUserPhotoImg);
                     holder.mUserNameTv.setText(caUser.getUsername());
                 }
+                if (TextUtils.isEmpty(footPrint.getContent())){
+                    holder.mContentTv.setVisibility(View.GONE);
+                }else{
+                    holder.mContentTv.setVisibility(View.VISIBLE);
+                    holder.mContentTv.setText(footPrint.getContent());
+                }
 
-                holder.mContentTv.setText(footPrint.getContent());
 
                 if (footPrint.isShowLocation()) {
                     holder.mLocationTv.setText(footPrint.getLatitude() + "," +footPrint.getLatitude());
@@ -97,10 +107,69 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
                 if (getType(footPrint) == 1) {
                     CircleImageViewHolder imageViewHolder = (CircleImageViewHolder)holder;
 
+                    List<String> imageUrls = new ArrayList<String>();
+                    for (int i = 0; i < footPrint.getFootPrintFiles().size(); i++) {
+                        imageUrls.add(footPrint.getFootPrintFiles().get(i).getFilePath());
+                    }
+
+                    Log.d(TAG, "imageUrls.size:"+imageUrls.size());
+
+                    CircleGridViewAdapter circleGridViewAdapter;
+                    ViewGroup.LayoutParams layoutParams = imageViewHolder.mGradView.getLayoutParams();
+
+                    switch (imageUrls.size()){
+                        case 1:
+                            layoutParams.height = PixelUtil.dip2px(mContext,200);
+                            layoutParams.width = PixelUtil.dip2px(mContext,120);
+                            imageViewHolder.mGradView.setNumColumns(1);
+                            circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item1, imageUrls);
+                            imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
+                            break;
+                        case 2:
+                            layoutParams.width = PixelUtil.dip2px(mContext,155);
+                            layoutParams.height = PixelUtil.dip2px(mContext,75);
+                            imageViewHolder.mGradView.setNumColumns(2);
+                            circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
+                            imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
+                            break;
+                        case 3:
+                            layoutParams.width = PixelUtil.dip2px(mContext, 235);
+                            layoutParams.height = PixelUtil.dip2px(mContext,75);
+                            imageViewHolder.mGradView.setNumColumns(3);
+                            circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
+                            imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
+                            break;
+
+                        case 4:
+                            layoutParams.width = PixelUtil.dip2px(mContext, 155);
+                            layoutParams.height = PixelUtil.dip2px(mContext,155);
+                            imageViewHolder.mGradView.setNumColumns(2);
+                            circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
+                            imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
+                            break;
+                        case 5:
+                        case 6:
+                            layoutParams.width = PixelUtil.dip2px(mContext, 235);
+                            layoutParams.height = PixelUtil.dip2px(mContext,155);
+                            imageViewHolder.mGradView.setNumColumns(3);
+                            circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
+                            imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
+                            break;
+
+                        default:
+                            layoutParams.width = PixelUtil.dip2px(mContext, 235);
+                            layoutParams.height = PixelUtil.dip2px(mContext,235);
+                            imageViewHolder.mGradView.setNumColumns(3);
+                            circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
+                            imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
+                            break;
+                    }
+
+
                 }else if(getType(footPrint) == 2){
                     CircleVideoViewHolder videoViewHolder = (CircleVideoViewHolder)holder;
                     FootPrintFile printFile = footPrint.getFootPrintFiles().get(0);
-                    GlideUtil.loadPic(mContext, printFile.getThumbnailPath(), 140,240,videoViewHolder.mVideoBgImg);
+                    GlideUtil.loadPic(mContext, printFile.getThumbnailPath(),videoViewHolder.mVideoBgImg);
                 }
 
             }

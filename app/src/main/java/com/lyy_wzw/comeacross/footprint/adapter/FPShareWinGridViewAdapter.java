@@ -64,7 +64,7 @@ public class FPShareWinGridViewAdapter extends WzwBaseAdapter<FootPrintFile>{
 
         //如果是添加图片按钮
         if (position == mFootPrintFiles.size()-1){
-            
+
             Glide.with(mContext)
                     .load(R.mipmap.footprint_image_add)
                     .placeholder(R.mipmap.footprint_image_add)
@@ -78,6 +78,13 @@ public class FPShareWinGridViewAdapter extends WzwBaseAdapter<FootPrintFile>{
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                        if (isExitVideo()) {
+                            Toast.makeText(mContext,
+                                    "视频只能单独发送.",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         if (mFootPrintFiles.size() < FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT+1) {
                             ShareFootPrintPopupWin shareFootPrintPW = new ShareFootPrintPopupWin(mContext);
                             shareFootPrintPW.setSelectImageCount(FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT+1-mFootPrintFiles.size());
@@ -92,10 +99,10 @@ public class FPShareWinGridViewAdapter extends WzwBaseAdapter<FootPrintFile>{
             });
         }else{
             if (imagePath.endsWith(".gif")) {
-                GlideUtil.loadPicAsGif(mContext,imagePath, 100, 100, imageView);
+                GlideUtil.loadPicAsGif(mContext,imagePath, imageView);
 
             }else{
-                GlideUtil.loadPic(mContext,imagePath, 100, 100, imageView);
+                GlideUtil.loadPic(mContext,imagePath, imageView);
             }
 
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -126,5 +133,15 @@ public class FPShareWinGridViewAdapter extends WzwBaseAdapter<FootPrintFile>{
 
     }
 
+    private boolean isExitVideo(){
+        boolean ret = false;
+        for (int i = 0; i < mFootPrintFiles.size(); i++) {
+            FootPrintFile footPrintFile = mFootPrintFiles.get(i);
+            if (footPrintFile.getType() == 2) {
+                ret = true;
+            }
+        }
+        return ret;
+    }
 
 }

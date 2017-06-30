@@ -177,6 +177,12 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
             }
 
         }else if(fileType == 2){
+            if (mFootPrintFiles.size()>1) {
+                Toast.makeText(this,
+                       "视频不能与图片混合发送.",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
             FootPrintFile videoFile = new FootPrintFile();
             String videoPath = bundle.getString(FootPrintConstantValue.SHARE_FOOTPRINT_VIDEO_URLS_KEY);
             Bitmap videoThumbnail = FileUtil.getVideoThumbnail(videoPath, 200, 360, MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);

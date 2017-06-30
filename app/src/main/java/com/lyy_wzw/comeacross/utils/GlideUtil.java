@@ -17,15 +17,14 @@ import com.lyy_wzw.comeacross.R;
 
 public class GlideUtil {
     //加载圆形图片
-    public static void loadCirclePic(final Context context, String url, float overrideWidth,float overrideHeight,final ImageView imageView) {
+    public static void loadCirclePic(final Context context, String url,final ImageView imageView) {
         Glide.with(context)
                 .load(url)
                 .asBitmap()
                 .load(url)
                 .placeholder(R.mipmap.meizhi0)
                 .error(R.mipmap.meizhi7)
-                // 重新改变图片大小成这些尺寸(像素)比
-                .override(PixelUtil.dip2px(context, overrideWidth), PixelUtil.dip2px(context, overrideHeight))
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL) //设置缓存
                 .into(new BitmapImageViewTarget(imageView) {
                     @Override
@@ -40,28 +39,24 @@ public class GlideUtil {
     }
 
 
-    public static void loadPicAsGif(final Context context, String path, float overrideWidth,float overrideHeight,final ImageView imageView){
+    public static void loadPicAsGif(final Context context, String path, final ImageView imageView){
         Glide.with(context)
                 .load(path)
                 .asGif()
                 .placeholder(R.mipmap.meizhi0)
                 .error(R.mipmap.meizhi7)
-                // 重新改变图片大小成这些尺寸(像素)比
-                .override(PixelUtil.dip2px(context, 100), PixelUtil.dip2px(context, 100))
                 .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView);
     }
 
-    public static void loadPic(final Context context, String path, float overrideWidth,float overrideHeight,final ImageView imageView){
+    public static void loadPic(final Context context, String path,final ImageView imageView){
         Glide.with(context)
                 .load(path)
                 .placeholder(R.mipmap.meizhi0)
                 .error(R.mipmap.meizhi7)
-                // 重新改变图片大小成这些尺寸(像素)比
-                .override(PixelUtil.dip2px(context, overrideWidth), PixelUtil.dip2px(context, overrideHeight))
                 .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView);
     }
 }

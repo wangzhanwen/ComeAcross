@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,9 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+
 import com.lyy_wzw.comeacross.R;
 import com.lyy_wzw.comeacross.bean.CAUser;
 import com.lyy_wzw.comeacross.bean.FootPrint;
@@ -29,7 +25,7 @@ import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.server.FootPrintServer;
 import com.lyy_wzw.comeacross.user.UserHelper;
 import com.lyy_wzw.comeacross.utils.GlideUtil;
-import com.lyy_wzw.comeacross.utils.PixelUtil;
+
 
 import java.util.List;
 
@@ -90,8 +86,6 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
         CAUser currentUser = UserHelper.getInstance().getCurrentUser();
         GlideUtil.loadCirclePic(this,
                  currentUser.getUserPhoto(),
-                 800,
-                 800,
                  mFab);
 
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -119,27 +113,4 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
         }
     }
 
-
-    //加载圆形图片
-    public  void loadCirclePic(final Context context, String url, final ImageView imageView) {
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .load(url)
-                .placeholder(R.mipmap.meizhi0)
-                .error(R.mipmap.meizhi7)
-                // 重新改变图片大小成这些尺寸(像素)比
-                .override(PixelUtil.dip2px(this, 100), PixelUtil.dip2px(this, 100))
-                .diskCacheStrategy(DiskCacheStrategy.ALL) //设置缓存
-                .into(new BitmapImageViewTarget(imageView) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-
-                        imageView.setImageDrawable(circularBitmapDrawable);
-                 }});
-
-    }
 }

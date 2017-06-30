@@ -1,54 +1,44 @@
-package com.lyy_wzw.comeacross.footprint.adapter;
+package com.lyy_wzw.comeacross.discovery.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
 import com.lyy_wzw.comeacross.footprint.activity.FootPrintImageLookActivity;
-import com.lyy_wzw.comeacross.footprint.activity.TestActivity;
+import com.lyy_wzw.comeacross.footprint.adapter.WzwBaseAdapter;
+import com.lyy_wzw.comeacross.footprint.adapter.WzwViewHolder;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FPPopupWinValue;
-import com.lyy_wzw.comeacross.utils.EasyTransition;
-import com.lyy_wzw.comeacross.utils.EasyTransitionOptions;
 import com.lyy_wzw.comeacross.utils.GlideUtil;
-import com.lyy_wzw.comeacross.utils.PixelUtil;
-import com.lyy_wzw.imageselector.utils.ImageSelectorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by wzw on 17/5/18.
+ * Created by yidong9 on 17/6/30.
  */
 
-public class FPPopupWinGridViewAdapter extends WzwBaseAdapter<String>{
-    private static final int REQUEST_CODE = 0x00000011;
-
+public class CircleGridViewAdapter extends WzwBaseAdapter<String>{
     private List<String> mImageUrls;
     private WzwViewHolder mViewHolder;
 
-    public FPPopupWinGridViewAdapter(Context context, int resource, List<String> objects) {
+    public CircleGridViewAdapter(Context context, int resource, List<String> objects) {
         super(context, resource, objects);
         mImageUrls = objects;
+        Log.d("CircleGridViewAdapter:", ""+mImageUrls.size());
     }
 
     @Override
-    public void onBindData(WzwViewHolder viewHolder, String url, int position) {
+    public void onBindData(WzwViewHolder viewHolder, String url, int position){
         mViewHolder = viewHolder;
-        final ImageView imageView = viewHolder.findViewById(R.id.footprint_item_image);
+        final ImageView imageView = viewHolder.findViewById(R.id.discover_circle_item_image);
+
+        Log.d("CircleGridViewAdapter:", ""+position);
         if (null==imageView) {
-            Log.d("PopupWinGridViewAdapter", "imageView为null");
+            Log.d("CircleGridViewAdapter", "imageView为null");
         }
 
         if (url.endsWith(".gif")) {
@@ -72,6 +62,4 @@ public class FPPopupWinGridViewAdapter extends WzwBaseAdapter<String>{
             }
         });
     }
-
 }
-
