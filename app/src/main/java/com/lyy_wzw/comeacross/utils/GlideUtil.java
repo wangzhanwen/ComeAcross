@@ -25,7 +25,8 @@ public class GlideUtil {
                 .placeholder(R.mipmap.meizhi0)
                 .error(R.mipmap.meizhi7)
                 .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL) //设置缓存
+                .skipMemoryCache(false)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE) //设置缓存
                 .into(new BitmapImageViewTarget(imageView) {
                     @Override
                     protected void setResource(Bitmap resource) {
@@ -46,7 +47,8 @@ public class GlideUtil {
                 .placeholder(R.mipmap.meizhi0)
                 .error(R.mipmap.meizhi7)
                 .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .skipMemoryCache(false)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageView);
     }
 
@@ -56,7 +58,8 @@ public class GlideUtil {
                 .placeholder(R.mipmap.meizhi0)
                 .error(R.mipmap.meizhi7)
                 .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .skipMemoryCache(false)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageView);
     }
 }

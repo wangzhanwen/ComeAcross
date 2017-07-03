@@ -1,12 +1,11 @@
 package com.lyy_wzw.comeacross.footprint;
 
-import android.graphics.Bitmap;
+
 
 import com.baidu.mapapi.model.LatLng;
 import com.lyy_wzw.comeacross.homecommon.BasePresenter;
 import com.lyy_wzw.comeacross.homecommon.BaseView;
 
-import java.util.List;
 
 /**
  * Created by yidong9 on 17/5/12.

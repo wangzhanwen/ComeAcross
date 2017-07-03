@@ -360,12 +360,12 @@
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u1f6b2.png"
     },
     {
-        "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/u1f60d.png",
-        "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u1f60d.png"
-    },
-    {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/u1f636.png",
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u1f636.png"
+    },
+    {
+        "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/u1f60d.png",
+        "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/u1f60d.png"
     },
     {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_plugin_default.png",
@@ -636,12 +636,12 @@
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_rt_location_bar.png"
     },
     {
-        "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_icon_admin_hover.png",
-        "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_icon_admin_hover.png"
-    },
-    {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_cs_button_bg_hover.png",
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_cs_button_bg_hover.png"
+    },
+    {
+        "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_icon_admin_hover.png",
+        "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/rc_icon_admin_hover.png"
     },
     {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/rc_cs_button_bg.png",

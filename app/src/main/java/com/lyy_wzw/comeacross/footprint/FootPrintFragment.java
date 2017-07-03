@@ -1,9 +1,16 @@
 package com.lyy_wzw.comeacross.footprint;
 
 
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,11 +37,21 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
+import com.lyy_wzw.comeacross.bean.FootPrint;
+import com.lyy_wzw.comeacross.discovery.activitys.FootPrintCircleActivity;
+import com.lyy_wzw.comeacross.discovery.adapter.CircleRecyclerViewAdapter;
+import com.lyy_wzw.comeacross.footprint.cards.SliderAdapter;
+import com.lyy_wzw.comeacross.footprint.cardslider.CardSliderLayoutManager;
+import com.lyy_wzw.comeacross.footprint.cardslider.CardSnapHelper;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
+import com.lyy_wzw.comeacross.server.FootPrintServer;
 import com.lyy_wzw.comeacross.utils.BitmapUtil;
 
+import java.util.List;
 import java.util.Random;
+
+import cn.bmob.v3.exception.BmobException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,6 +79,13 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     private View mContainView;
     private InfoWindow mFootPrintWin;
 
+
+    private RecyclerView recyclerView;
+    private CardSliderLayoutManager layoutManger;
+    private  SliderAdapter sliderAdapter ;
+    private List<FootPrint> mDatas;
+
+
     public FootPrintFragment() {
 
     }
@@ -79,8 +103,98 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         mShareFootPrintBtn = (ImageView)mContainView.findViewById(R.id.fragment_share_footprint_btn);
         mShareFootPrintBtn.setOnClickListener(this);
         initViews(mContainView);
+        initRecyclerView(mContainView);
         return mContainView;
     }
+
+
+    private void initRecyclerView(View rootView) {
+
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    // onActiveCardChange();
+                    Toast.makeText(FootPrintFragment.this.getContext(), "onActiveCardChange()", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        layoutManger = (CardSliderLayoutManager) recyclerView.getLayoutManager();
+
+        new CardSnapHelper().attachToRecyclerView(recyclerView);
+
+        FootPrintServer.getInstance().getAll(new FootPrintServer.FootPrintQueryCallback() {
+            @Override
+            public void onSuccess(List<FootPrint> footPrints) {
+                Log.d(TAG, "footPrints:"+footPrints.toString());
+                if (footPrints != null){
+                    mDatas = footPrints;
+                    sliderAdapter = new SliderAdapter(FootPrintFragment.this.getContext(), mDatas, new OnCardClickListener());
+                    recyclerView.setAdapter(sliderAdapter);
+                }
+            }
+
+            @Override
+            public void onError(BmobException e) {
+                Log.d(TAG, "e:"+e.getMessage());
+            }
+        });
+
+
+    }
+
+//    private void onActiveCardChange() {
+//        final int pos = layoutManger.getActiveCardPosition();
+//        if (pos == RecyclerView.NO_POSITION || pos == currentPosition) {
+//            return;
+//        }
+//
+//        onActiveCardChange(pos);
+//    }
+//
+//    private void onActiveCardChange(int pos) {
+//        int animH[] = new int[] {R.anim.slide_in_right, R.anim.slide_out_left};
+//        int animV[] = new int[] {R.anim.slide_in_top, R.anim.slide_out_bottom};
+//
+//        final boolean left2right = pos < currentPosition;
+//        if (left2right) {
+//            animH[0] = R.anim.slide_in_left;
+//            animH[1] = R.anim.slide_out_right;
+//
+//            animV[0] = R.anim.slide_in_bottom;
+//            animV[1] = R.anim.slide_out_top;
+//        }
+//
+//        setCountryText(countries[pos % countries.length], left2right);
+//
+//        temperatureSwitcher.setInAnimation(MainActivity.this, animH[0]);
+//        temperatureSwitcher.setOutAnimation(MainActivity.this, animH[1]);
+//        temperatureSwitcher.setText(temperatures[pos % temperatures.length]);
+//
+//        placeSwitcher.setInAnimation(MainActivity.this, animV[0]);
+//        placeSwitcher.setOutAnimation(MainActivity.this, animV[1]);
+//        placeSwitcher.setText(places[pos % places.length]);
+//
+//        clockSwitcher.setInAnimation(MainActivity.this, animV[0]);
+//        clockSwitcher.setOutAnimation(MainActivity.this, animV[1]);
+//        clockSwitcher.setText(times[pos % times.length]);
+//
+//        descriptionsSwitcher.setText(getString(descriptions[pos % descriptions.length]));
+//
+//        showMap(maps[pos % maps.length]);
+//
+//        ViewCompat.animate(greenDot)
+//                .translationX(dotCoords[pos % dotCoords.length][0])
+//                .translationY(dotCoords[pos % dotCoords.length][1])
+//                .start();
+//
+//        currentPosition = pos;
+//    }
+
+
 
 
     @Override
@@ -345,6 +459,48 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
                 shareFootPrintPW.showAtLocation(mShareFootPrintBtn, Gravity.CENTER, 0, 0);
                 break;
 
+        }
+    }
+
+
+
+    private class OnCardClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            final CardSliderLayoutManager lm =  (CardSliderLayoutManager) recyclerView.getLayoutManager();
+
+            if (lm.isSmoothScrolling()) {
+                return;
+            }
+
+            final int activeCardPosition = lm.getActiveCardPosition();
+            if (activeCardPosition == RecyclerView.NO_POSITION) {
+                return;
+            }
+
+            final int clickedPosition = recyclerView.getChildAdapterPosition(view);
+            if (clickedPosition == activeCardPosition) {
+
+                Toast.makeText(FootPrintFragment.this.getContext(), "点击card", Toast.LENGTH_SHORT).show();
+
+//                final Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+//                intent.putExtra(DetailsActivity.BUNDLE_IMAGE_ID, pics[activeCardPosition % pics.length]);
+//
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+//                    startActivity(intent);
+//                } else {
+//                    final CardView cardView = (CardView) view;
+//                    final View sharedView = cardView.getChildAt(cardView.getChildCount() - 1);
+//                    final ActivityOptions options = ActivityOptions
+//                            .makeSceneTransitionAnimation(MainActivity.this, sharedView, "shared");
+//                    startActivity(intent, options.toBundle());
+//                }
+            } else if (clickedPosition > activeCardPosition) {
+                recyclerView.smoothScrollToPosition(clickedPosition);
+                //onActiveCardChange(clickedPosition);
+
+                Toast.makeText(FootPrintFragment.this.getContext(), "onActiveCardChange(clickedPosition)", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
