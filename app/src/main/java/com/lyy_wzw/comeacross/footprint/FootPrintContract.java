@@ -3,8 +3,11 @@ package com.lyy_wzw.comeacross.footprint;
 
 
 import com.baidu.mapapi.model.LatLng;
+import com.lyy_wzw.comeacross.bean.FootPrint;
 import com.lyy_wzw.comeacross.homecommon.BasePresenter;
 import com.lyy_wzw.comeacross.homecommon.BaseView;
+
+import java.util.List;
 
 
 /**
@@ -13,14 +16,14 @@ import com.lyy_wzw.comeacross.homecommon.BaseView;
 
 public interface FootPrintContract {
     interface  View extends BaseView<Presenter>{
-        void showFootPrintMark(LatLng point);
+        void showFootPrintMark(FootPrint footPrint, int position);
 
 
     }
 
     interface Presenter extends BasePresenter{
         void setFootPrintMark();
-        void setFootPrintMarks();
+        void setFootPrintMarks(List<FootPrint> footPrints);
         void setSelfMark();
 
     }

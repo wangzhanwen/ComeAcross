@@ -26,8 +26,9 @@
                 android:id="@+id/circle_recyclerView_item_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/color_blue"
-                android:textSize="17sp"/>
+                android:textStyle="bold"
+                android:textColor="@color/circle_txt_color"
+                android:textSize="16sp"/>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -40,7 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="#333"
-                    android:textSize="17sp"/>
+                    android:textSize="16sp"/>
                 <GridView
                     android:id="@+id/circle_recyclerView_item_gridview"
                     android:layout_width="wrap_content"
@@ -58,15 +59,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/color_blue"/>
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@color/circle_txt_color"/>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp">
                     <TextView
                         android:id="@+id/circle_recyclerView_item_time"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"

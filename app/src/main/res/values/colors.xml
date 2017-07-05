@@ -58,5 +58,7 @@
 
 
     <color name="color_blue_enable">#8800b6f8</color>
+    <color name="circle_txt_color">#787d88</color>
+
 
 </resources>

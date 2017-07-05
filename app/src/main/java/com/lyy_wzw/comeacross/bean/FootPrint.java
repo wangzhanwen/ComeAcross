@@ -17,6 +17,15 @@ public class FootPrint extends BmobObject{
     private List<FootPrintFile> footPrintFiles;
     private Integer visitRight;
     private Integer label;
+    private FootPrintAddress footPrintAddress;
+
+    public void setFootPrintAddress(FootPrintAddress footPrintAddress) {
+        this.footPrintAddress = footPrintAddress;
+    }
+
+    public FootPrintAddress getFootPrintAddress() {
+        return footPrintAddress;
+    }
 
     public String getUid() {
         return uid;
@@ -82,7 +91,6 @@ public class FootPrint extends BmobObject{
         this.label = label;
     }
 
-
     @Override
     public String toString() {
         return "FootPrint{" +
@@ -94,6 +102,7 @@ public class FootPrint extends BmobObject{
                 ", footPrintFiles=" + footPrintFiles +
                 ", visitRight=" + visitRight +
                 ", label=" + label +
+                ", footPrintAddress=" + footPrintAddress +
                 '}';
     }
 }

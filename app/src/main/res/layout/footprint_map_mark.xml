@@ -27,6 +27,7 @@
         android:gravity="center"
         android:layout_marginTop="3dp"
         android:textColor="#fff"
+        android:textStyle="bold"
         android:layout_width="40dp"
         android:layout_height="15dp" />
 

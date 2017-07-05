@@ -28,14 +28,18 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.model.LatLng;
 import com.lyy_wzw.comeacross.R;
 import com.lyy_wzw.comeacross.bean.FootPrint;
+import com.lyy_wzw.comeacross.bean.FootPrintAddress;
 import com.lyy_wzw.comeacross.bean.FootPrintFile;
 import com.lyy_wzw.comeacross.footprint.adapter.FPShareWinGridViewAdapter;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
+import com.lyy_wzw.comeacross.footprint.utils.AddressAsyncTask;
 import com.lyy_wzw.comeacross.user.FileDataBmobHelper;
 import com.lyy_wzw.comeacross.user.UserHelper;
 import com.lyy_wzw.comeacross.utils.FileUtil;
+import com.lyy_wzw.comeacross.utils.ScreenUtils;
 
 
 import java.io.File;
@@ -185,7 +189,7 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
             }
             FootPrintFile videoFile = new FootPrintFile();
             String videoPath = bundle.getString(FootPrintConstantValue.SHARE_FOOTPRINT_VIDEO_URLS_KEY);
-            Bitmap videoThumbnail = FileUtil.getVideoThumbnail(videoPath, 720, 1280, MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
+            Bitmap videoThumbnail = FileUtil.getVideoThumbnail(videoPath, ScreenUtils.getScreenWidth(this), ScreenUtils.getScreenHeight(this), MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
             if (videoThumbnail == null) {
                 Snackbar.make(mImagesGridView,
                         "视频缩略图获取失败.",
@@ -247,7 +251,6 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
 
 
     private void shareFootPrint() {
-        Log.d(TAG,"shareFootPrint()-->> 进入shareFootPrint()" );
         progressView = new ProgressDialog(ShareFootPrintActivity.this);
         progressView.setCanceledOnTouchOutside(false);
         progressView.setMessage("发送中...");
@@ -263,60 +266,81 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
         footPrint.setShowLocation(isShowLocation);
         footPrint.setLatitude(mLatitude);
         footPrint.setLongitude(mLongitude);
+        //根据经纬获得地址
+        LatLng latLng = new LatLng(mLatitude, mLongitude);
+        new AddressAsyncTask(new AddressAsyncTask.AsyncTaskCallback() {
+            @Override
+            public void onSuccess(FootPrintAddress footPrintAddress) {
+                Log.d(TAG,"onSuccess()-->>footPrintAddress:"+ footPrintAddress.toString());
+                footPrint.setFootPrintAddress(footPrintAddress);
 
-        if (mFootPrintFiles != null && mFootPrintFiles.size() > 1){
-            progressView.show();
-            btnSend.setEnabled(false);
+                if (mFootPrintFiles != null && mFootPrintFiles.size() > 1){
+                    progressView.show();
+                    btnSend.setEnabled(false);
+
+                    //mFootPrintFiles最后一张图片是添加按钮背景图
+                    for (int i = 0; i < mFootPrintFiles.size()-1 ; i++) {
+                        Log.d(TAG,"file" + i +":" + mFootPrintFiles.get(i) );
+                        final FootPrintFile footPrintFile = mFootPrintFiles.get(i);
+
+                        if (footPrintFile.getType() == 1) {
+                            upLoadFile(footPrintFile.getFilePath(), footPrint, new UpLoadFileCallback() {
+                                @Override
+                                public void onSuccess(String url) {
+                                    if (url != null) {
+                                        footPrintFile.setFilePath(url);
+                                        footPrintFile.setType(1);
+                                        Log.d(TAG, "imageurl: "+ url);
+                                    }
+                                }
+                            });
 
 
-            //mFootPrintFiles最后一张图片是添加按钮背景图
-            for (int i = 0; i < mFootPrintFiles.size()-1 ; i++) {
-                Log.d(TAG,"file" + i +":" + mFootPrintFiles.get(i) );
-                final FootPrintFile footPrintFile = mFootPrintFiles.get(i);
+                        }else if(footPrintFile.getType() == 2){
+                            footPrintFile.setType(2);
+                            upLoadFile(footPrintFile.getFilePath(), footPrint, new UpLoadFileCallback() {
+                                @Override
+                                public void onSuccess(String url) {
+                                    if (url != null) {
+                                        footPrintFile.setFilePath(url);
+                                    }
+                                }
+                            });
+                            upLoadFile(footPrintFile.getThumbnailPath(), footPrint, new UpLoadFileCallback() {
+                                @Override
+                                public void onSuccess(String url) {
+                                    if (url != null) {
+                                        footPrintFile.setThumbnailPath(url);
+                                    }
+                                }
+                            });
 
-                if (footPrintFile.getType() == 1) {
-                     upLoadFile(footPrintFile.getFilePath(), footPrint, new UpLoadFileCallback() {
-                        @Override
-                        public void onSuccess(String url) {
-                            if (url != null) {
-                                footPrintFile.setFilePath(url);
-                                footPrintFile.setType(1);
-                                Log.d(TAG, "imageurl: "+ url);
-                            }
                         }
-                    });
+                        Log.d(TAG, "footPrintFile: "+ footPrintFile);
+
+                        upLoadFootPrintFiles.add(footPrintFile);
+                        Log.d(TAG, "upLoadFootPrintFiles: "+ upLoadFootPrintFiles);
+                    }
 
 
-                }else if(footPrintFile.getType() == 2){
-                    footPrintFile.setType(2);
-                    upLoadFile(footPrintFile.getFilePath(), footPrint, new UpLoadFileCallback() {
-                        @Override
-                        public void onSuccess(String url) {
-                            if (url != null) {
-                                footPrintFile.setFilePath(url);
-                            }
-                        }
-                    });
-                    upLoadFile(footPrintFile.getThumbnailPath(), footPrint, new UpLoadFileCallback() {
-                        @Override
-                        public void onSuccess(String url) {
-                            if (url != null) {
-                                footPrintFile.setThumbnailPath(url);
-                            }
-                        }
-                    });
-
+                }else{
+                    progressView.cancel();
+                    btnSend.setEnabled(true);
+                    Toast.makeText(ShareFootPrintActivity.this, "你还未选择图片.", Toast.LENGTH_SHORT).show();
                 }
-                Log.d(TAG, "footPrintFile: "+ footPrintFile);
 
-                upLoadFootPrintFiles.add(footPrintFile);
-                Log.d(TAG, "upLoadFootPrintFiles: "+ upLoadFootPrintFiles);
             }
 
+            @Override
+            public void onError(String msg) {
+                progressView.cancel();
+                btnSend.setEnabled(true);
+                Toast.makeText(ShareFootPrintActivity.this, "地址请求出错："+msg, Toast.LENGTH_SHORT).show();
+            }
+        }).execute(latLng);
 
-        }else{
-            Toast.makeText(this, "你还未选择图片.", Toast.LENGTH_SHORT).show();
-        }
+
+
 
     }
 
@@ -456,11 +480,10 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
 
 
     private void showLabelChoiceDialog(){
-        final String[]  items = {"居家", "美食", "旅行"};
         mChoicedLabel = 0;
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("标签");
-        dialogBuilder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+        dialogBuilder.setSingleChoiceItems(FootPrintConstantValue.FOOTPRINT_MARK_LABEL, 0, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mChoicedLabel = which;
@@ -473,13 +496,13 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
                 Toast.makeText(ShareFootPrintActivity.this, "点击标签：" + which, Toast.LENGTH_SHORT).show();
                 switch (mChoicedLabel){
                     case 0:
-                        mLabelTxt.setText(items[0]);
+                        mLabelTxt.setText(FootPrintConstantValue.FOOTPRINT_MARK_LABEL[0]);
                         break;
                     case 1:
-                        mLabelTxt.setText(items[1]);
+                        mLabelTxt.setText(FootPrintConstantValue.FOOTPRINT_MARK_LABEL[1]);
                         break;
                     case 2:
-                        mLabelTxt.setText(items[2]);
+                        mLabelTxt.setText(FootPrintConstantValue.FOOTPRINT_MARK_LABEL[2]);
                         break;
                 }
             }

@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String rongToken = "TngWAHxIqJJlaoJvTfzivQvcUh0C0/rQgnE+7tbMgRXj9+prH8rB9xk/iFRvSzj8yf0GYps9IISSH3Rl/eEGkzMP1Dk3o7xV";
 
     private NavigationView navigationView;
-    private DrawerLayout drawer;
+    public DrawerLayout drawer;
 
     private ViewPager viewPager;
     private MenuItem menuItem;
