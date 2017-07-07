@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -98,9 +100,6 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
         }
 
         mAdapter  = new FPShareWinGridViewAdapter(this, R.layout.footprint_sharewin_gridview_item, mFootPrintFiles);
-
-        Log.d(TAG, "onCreate->mFootPrintFiles:" + mFootPrintFiles.toString());
-
         mImagesGridView.setAdapter(mAdapter);
     }
 
@@ -154,7 +153,6 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
         int fileType = bundle.getInt(FootPrintConstantValue.SHARE_FOOTPRINT_FILE_TYPE_KEY, 1);
         if (fileType == 1) {
             List<String> imageUrls    = bundle.getStringArrayList(FootPrintConstantValue.SHARE_FOOTPRINT_IMAGE_URLS_KEY);
-            Log.d(TAG, "imageUrls:" + imageUrls.toString());
             if (imageUrls != null && imageUrls.size() > 0) {
                 for (int i = 0; i < imageUrls.size(); i++) {
                     if (mFootPrintFiles.size() < FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT + 1) {
@@ -168,7 +166,6 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
                             mFootPrintFiles.add(position-1,imageFile);
                         }
 
-                        Log.d(TAG, "mFootPrintFiles:" + mFootPrintFiles.toString());
 
                     } else {
                        Snackbar.make(mImagesGridView,
@@ -257,23 +254,25 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
 
         String content = mContentView.getText().toString().trim();
         String uid = UserHelper.getInstance().getCurrentUser().getObjectId();
-
         final FootPrint footPrint = new FootPrint();
         footPrint.setContent(content);
-        footPrint.setUid(uid);
+        footPrint.setUserId(uid);
         footPrint.setLabel(mChoicedLabel);
         footPrint.setVisitRight(mChoicedRight);
         footPrint.setShowLocation(isShowLocation);
         footPrint.setLatitude(mLatitude);
         footPrint.setLongitude(mLongitude);
+
+        Log.d(TAG,"shareFootPrint()-->> " +  UserHelper.getInstance().getCurrentUser().toString());
+
         //根据经纬获得地址
         LatLng latLng = new LatLng(mLatitude, mLongitude);
         new AddressAsyncTask(new AddressAsyncTask.AsyncTaskCallback() {
             @Override
             public void onSuccess(FootPrintAddress footPrintAddress) {
-                Log.d(TAG,"onSuccess()-->>footPrintAddress:"+ footPrintAddress.toString());
-                footPrint.setFootPrintAddress(footPrintAddress);
 
+                footPrint.setFootPrintAddress(footPrintAddress);
+                //上传说说图片，视频文件
                 if (mFootPrintFiles != null && mFootPrintFiles.size() > 1){
                     progressView.show();
                     btnSend.setEnabled(false);
@@ -290,7 +289,6 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
                                     if (url != null) {
                                         footPrintFile.setFilePath(url);
                                         footPrintFile.setType(1);
-                                        Log.d(TAG, "imageurl: "+ url);
                                     }
                                 }
                             });
@@ -316,10 +314,8 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
                             });
 
                         }
-                        Log.d(TAG, "footPrintFile: "+ footPrintFile);
 
                         upLoadFootPrintFiles.add(footPrintFile);
-                        Log.d(TAG, "upLoadFootPrintFiles: "+ upLoadFootPrintFiles);
                     }
 
 
@@ -338,8 +334,6 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
                 Toast.makeText(ShareFootPrintActivity.this, "地址请求出错："+msg, Toast.LENGTH_SHORT).show();
             }
         }).execute(latLng);
-
-
 
 
     }
@@ -370,8 +364,9 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
 
                 if (upLoadedCount == getUpLoadFileCount()) {
                     Log.d(TAG, "图片上传完成");
-                    Log.d(TAG, "upLoadFootPrintFiles: "+ upLoadFootPrintFiles);
                     footPrint.setFootPrintFiles(upLoadFootPrintFiles);
+                    //图片上传完成，设置用户，提交说说数据
+
                     upLoadFootPrint(footPrint);
                 }
 
@@ -379,9 +374,7 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
 
             @Override
             public void onError(BmobException e) {
-
                 Toast.makeText(ShareFootPrintActivity.this, "文件上传失败:"+ e.getMessage(),  Toast.LENGTH_SHORT).show();
-
             }
 
             @Override
@@ -440,7 +433,16 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
             }
         });
 
-        builder.show();
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                button.setTextColor(Color.parseColor("#25b249"));
+            }
+        });
+
+        alertDialog.show();
     }
 
     private void showRightChoiceDialog(){
@@ -474,7 +476,16 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
                 }
             }
         });
-        dialogBuilder.show();
+
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                button.setTextColor(Color.parseColor("#25b249"));
+            }
+        });
+        alertDialog.show();
 
     }
 
@@ -507,7 +518,17 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
                 }
             }
         });
-        dialogBuilder.show();
+
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                button.setTextColor(Color.parseColor("#25b249"));
+            }
+        });
+
+        alertDialog.show();
 
     }
 

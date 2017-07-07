@@ -9,7 +9,7 @@ import cn.bmob.v3.BmobObject;
  */
 
 public class FootPrint extends BmobObject{
-    private String uid;
+    private String userId;
     private String content;
     private boolean isShowLocation;
     private Double longitude;
@@ -18,18 +18,35 @@ public class FootPrint extends BmobObject{
     private Integer visitRight;
     private Integer label;
     private FootPrintAddress footPrintAddress;
+    private List<CommentItem> comments;
+    private List<PraiseItem> praises;
+
+    public List<CommentItem> getComments() {
+        return comments;
+    }
+
+    public List<PraiseItem> getPraises() {
+        return praises;
+    }
+
+    public void setComments(List<CommentItem> comments) {
+        this.comments = comments;
+    }
+
+    public void setPraises(List<PraiseItem> praises) {
+        this.praises = praises;
+    }
 
     public void setFootPrintAddress(FootPrintAddress footPrintAddress) {
         this.footPrintAddress = footPrintAddress;
     }
 
+
     public FootPrintAddress getFootPrintAddress() {
         return footPrintAddress;
     }
 
-    public String getUid() {
-        return uid;
-    }
+
 
     public String getContent() {
         return content;
@@ -59,9 +76,6 @@ public class FootPrint extends BmobObject{
         return label;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
 
     public void setContent(String content) {
         this.content = content;
@@ -91,10 +105,18 @@ public class FootPrint extends BmobObject{
         this.label = label;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         return "FootPrint{" +
-                "uid='" + uid + '\'' +
+                "userId='" + userId + '\'' +
                 ", content='" + content + '\'' +
                 ", isShowLocation=" + isShowLocation +
                 ", longitude=" + longitude +
@@ -103,6 +125,8 @@ public class FootPrint extends BmobObject{
                 ", visitRight=" + visitRight +
                 ", label=" + label +
                 ", footPrintAddress=" + footPrintAddress +
+                ", comments=" + comments +
+                ", praises=" + praises +
                 '}';
     }
 }

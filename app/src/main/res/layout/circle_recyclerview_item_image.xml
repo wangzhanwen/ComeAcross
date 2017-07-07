@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -48,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:verticalSpacing="5dp"
                     android:horizontalSpacing="5dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp"
                     android:numColumns="3" >
 
@@ -65,7 +66,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp">
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center_vertical">
                     <TextView
                         android:id="@+id/circle_recyclerView_item_time"
                         android:textSize="14sp"
@@ -81,21 +83,69 @@
                         android:layout_centerVertical="true">
                         <TextView
                             android:id="@+id/circle_recyclerView_item_praise"
-                            android:background="@mipmap/footprint_popupwin_praise"
+                            android:background="@mipmap/circle_praise_icon"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_marginRight="20dp"/>
                         <TextView
                             android:id="@+id/circle_recyclerView_item_comment"
                             android:background="@mipmap/footprint_popupwin_comment"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp" />
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:backgroundTint="#1c4f63"/>
 
                     </LinearLayout>
 
                 </RelativeLayout>
+
+                <!--点赞，评论-->
+                <LinearLayout
+                    android:id="@+id/circle_comment_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:minHeight="10dip"
+                    android:paddingLeft="12dip"
+                    android:paddingTop="12dip"
+                    android:paddingRight="12dip"
+                    android:paddingBottom="8dip"
+                    android:background="@drawable/im_distribute_comm_bg"
+                    android:orientation="vertical" >
+
+                    <com.lyy_wzw.comeacross.discovery.widgets.PraiseListView
+                        android:id="@+id/circle_praise_listView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:lineSpacingMultiplier="1.1"
+                        android:textSize="14sp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textColor="@color/praise_item"
+                        app:item_color="@color/praise_item" />
+
+                    <View
+                        android:id="@+id/circle_comment_line"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dip"
+                        android:background="@color/im_line_color" />
+
+                    <com.lyy_wzw.comeacross.discovery.widgets.CommentListView
+                        android:id="@+id/circle_comment_listview"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:orientation="vertical"
+                        app:item_color="@color/praise_item"
+                        android:layout_marginTop="10dp"/>
+
+                </LinearLayout>
+
             </LinearLayout>
+
+
         </LinearLayout>
+
+
+
     </LinearLayout>
     <View
         android:layout_width="match_parent"

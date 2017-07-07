@@ -68,6 +68,7 @@
         app:layout_anchor="@id/circle_app_bar"
         app:layout_anchorGravity="bottom|end"/>
 
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/circle_recyclerView"
         android:layout_marginTop="20dp"
@@ -76,5 +77,46 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
     </android.support.v7.widget.RecyclerView>
 
+    <LinearLayout
+        android:id="@+id/circle_comment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#eee"
+        android:padding="6dp"
+        android:visibility="gone"
+        android:layout_gravity="bottom">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/circle_comment_editview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:padding="10dp"
+                android:background="@null"
+                android:hint="说点什么..."
+                android:maxLines="3"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/holo_green_light"/>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/circle_comment_send_tv"
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_green_shape"
+            android:layout_gravity="bottom|right"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:padding="6dp"
+            android:text="发送"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,6 +1,9 @@
 package com.lyy_wzw.comeacross.discovery.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -9,13 +12,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lyy_wzw.comeacross.R;
 import com.lyy_wzw.comeacross.bean.CAUser;
+import com.lyy_wzw.comeacross.bean.CommentItem;
 import com.lyy_wzw.comeacross.bean.FootPrint;
 import com.lyy_wzw.comeacross.bean.FootPrintFile;
 
+import com.lyy_wzw.comeacross.bean.PraiseItem;
+import com.lyy_wzw.comeacross.discovery.DicoveryConstantValue;
+import com.lyy_wzw.comeacross.discovery.widgets.CommentListView;
+import com.lyy_wzw.comeacross.discovery.widgets.PraiseListView;
 import com.lyy_wzw.comeacross.user.UserHelper;
 import com.lyy_wzw.comeacross.utils.GlideUtil;
 import com.lyy_wzw.comeacross.utils.PixelUtil;
@@ -28,6 +38,7 @@ import java.util.Date;
 import java.util.List;
 
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.UpdateListener;
 
 
 /**
@@ -39,10 +50,12 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
 
     private Context mContext;
     private List<FootPrint> mDatas;
+    private Handler mHandler;
 
-    public CircleRecyclerViewAdapter(Context context, List<FootPrint> datas){
+    public CircleRecyclerViewAdapter(Context context, List<FootPrint> datas, Handler handler){
         mContext = context;
         mDatas = datas;
+        mHandler = handler;
     }
 
 
@@ -80,8 +93,14 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
     }
 
     @Override
-    public void onBindViewHolder(final CircleViewHolder holder, int position) {
+    public void onBindViewHolder(final CircleViewHolder holder, final int position) {
         final FootPrint footPrint = mDatas.get(position);
+        proCommentViewShow(holder,position);
+        if (isPrised(position)!=-1) {
+            holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praised_icon);
+        }else{
+            holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praise_icon);
+        }
 
         if (TextUtils.isEmpty(footPrint.getContent())){
             holder.mContentTv.setVisibility(View.GONE);
@@ -107,7 +126,7 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
         SimpleDateFormat lsdStrFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date strD = lsdStrFormat.parse(footPrint.getCreatedAt());
-            DateFormat dFormat = new SimpleDateFormat("MM.dd  HH:mm"); //HH表示24小时制；
+            DateFormat dFormat = new SimpleDateFormat("MM月dd日  HH:mm"); //HH表示24小时制；
             String format = dFormat.format(strD);
             holder.mTimeTv.setText(format);
         } catch (ParseException e) {
@@ -182,25 +201,198 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
         }
 
          //设置用户信息
-        UserHelper.getInstance().queryUser("objectId", footPrint.getUid(), new UserHelper.UserQueryCallback() {
+        String  userId = footPrint.getUserId();
+        Log.d(TAG,"onBindViewHolder()-->> caUser" + userId);
+
+        UserHelper.getInstance().queryUser("objectId", userId, new UserHelper.UserQueryCallback() {
             @Override
             public void onResult(List<CAUser> users, BmobException e) {
-                if (users != null && users.size()>0){
-                    CAUser caUser = users.get(0);
-                    Log.d("adapter:", ""+caUser.getUserPhoto());
-                    GlideUtil.loadPic(mContext,caUser.getUserPhoto(), holder.mUserPhotoImg);
-                    holder.mUserNameTv.setText(caUser.getUsername());
-                }
 
+                if (users != null && users.size()>0 ){
+                    CAUser caUser = users.get(0);
+                    if (caUser != null) {
+                        GlideUtil.loadPic(mContext,caUser.getUserPhoto(), holder.mUserPhotoImg);
+                        holder.mUserNameTv.setText(caUser.getUsername());
+                    }
+
+                }
             }
         });
 
+
+        //处理点赞
+
+        holder.mPriseTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<PraiseItem>  praiseItems= mDatas.get(position).getPraises();
+                CAUser currentUser = UserHelper.getInstance().getCurrentUser();
+                if (praiseItems != null) {
+                    int index = isPrised(position);
+                    if (index != -1){
+                        //已赞
+                        mDatas.get(position).getPraises().remove(index);
+                        CircleRecyclerViewAdapter.this.notifyDataSetChanged();
+                        mDatas.get(position).update(mDatas.get(position).getObjectId(), new UpdateListener() {
+                                @Override
+                                public void done(BmobException e) {
+                                    if (e==null) {
+                                        Toast.makeText(mContext, "已取消点赞", Toast.LENGTH_SHORT).show();
+                                    }else {
+                                        Log.d(TAG,"点赞-->>e:" + e.getMessage());
+                                    }
+                                }
+                        });
+                        proCommentViewShow(holder,position);
+                        holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praise_icon);
+                    }else{
+                        //未赞
+                        PraiseItem praiseItem = new PraiseItem();
+                        praiseItem.setFootPrintId(footPrint.getObjectId());
+                        praiseItem.setUser(currentUser);
+                        mDatas.get(position).getPraises().add(praiseItem);
+                        CircleRecyclerViewAdapter.this.notifyDataSetChanged();
+                        mDatas.get(position).update(footPrint.getObjectId(), new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+
+                            }
+                        });
+                        proCommentViewShow(holder,position);
+                        holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praised_icon);
+                    }
+
+                }else{
+                    //未赞
+                    mDatas.get(position).setPraises(new ArrayList<PraiseItem>());
+                    PraiseItem praiseItem = new PraiseItem();
+                    praiseItem.setFootPrintId(mDatas.get(position).getObjectId());
+                    praiseItem.setUser(currentUser);
+                    mDatas.get(position).getPraises().add(praiseItem);
+                    CircleRecyclerViewAdapter.this.notifyDataSetChanged();
+                    mDatas.get(position).update(mDatas.get(position).getObjectId(), new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+
+                        }
+                    });
+                    proCommentViewShow(holder,position);
+                    holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praised_icon);
+                }
+            }
+        });
+
+
+        List<PraiseItem>  praiseItems= mDatas.get(position).getPraises();
+        if (praiseItems != null) {
+            holder.mPraiseListView.setDatas(praiseItems);
+        }
+        holder.mPraiseListView.setDatas(praiseItems);
+
+        //处理评论
+        final int footPrintPosition = position;
+        holder.mCommentTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mHandler != null) {
+                    Message message = new Message();
+                    message.what = DicoveryConstantValue.CIRCLE_COMMENT_HANDLER_MSG_KEY;
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(DicoveryConstantValue.CIRCLE_COMMENT_BUNDLE_FOOTPRINT_INDEX_KEY, footPrintPosition);
+                    message.setData(bundle);
+                    mHandler.sendMessage(message);
+                }
+            }
+        });
+
+        List<CommentItem>  commentItems = mDatas.get(position).getComments();
+        if (commentItems != null) {
+            holder.mCommentListView.setDatas(commentItems);
+        }
+
+    }
+
+    private int isPrised(int  position){
+        int ret = -1;
+        CAUser currentUser = UserHelper.getInstance().getCurrentUser();
+        List<PraiseItem>  praiseItems= mDatas.get(position).getPraises();
+        if (praiseItems != null) {
+            for (int i = 0; i < praiseItems.size(); i++) {
+                PraiseItem praiseItem =  praiseItems.get(i);
+                if (currentUser.getObjectId().equals(praiseItem.getUser().getObjectId())) {
+                    //已赞
+                    ret = i;
+                    break;
+                }
+            }
+
+        }
+        return ret;
+    }
+
+
+    private void proCommentViewShow(CircleViewHolder holder, int position){
+        FootPrint footPrint = mDatas.get(position);
+        List<CommentItem> comments = footPrint.getComments();
+        List<PraiseItem>  praises = footPrint.getPraises();
+
+        if (footPrint == null) {
+            return;
+        }
+
+        if (isEmityList(comments) && isEmityList(praises) ){
+            holder.mCommentBodyView.setVisibility(View.GONE);
+            return;
+        }
+
+        if (isEmityList(comments)){
+            holder.mCommentListView.setVisibility(View.GONE);
+
+        }else{
+            holder.mCommentListView.setVisibility(View.VISIBLE);
+            holder.mCommentBodyView.setVisibility(View.VISIBLE);
+        }
+
+        if (isEmityList(praises)){
+            holder.mPraiseListView.setVisibility(View.GONE);
+            holder.mCommentLineView.setVisibility(View.GONE);
+        }else{
+            holder.mPraiseListView.setVisibility(View.VISIBLE);
+            holder.mCommentLineView.setVisibility(View.VISIBLE);
+            holder.mCommentBodyView.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    private boolean isEmityList(List list){
+        if (list == null){
+            return true;
+        }
+        if (list.size() < 1) {
+            return true;
+        }
+        return false;
     }
 
     @Override
     public int getItemCount() {
         return mDatas.size();
     }
+
+   public Handler mCircleAdapterHandler = new Handler(){
+      @Override
+      public void handleMessage(Message msg) {
+          super.handleMessage(msg);
+          switch (msg.what) {
+
+          }
+
+      }
+  };
+
+
+
+
 
     public static class CircleViewHolder extends RecyclerView.ViewHolder{
         private ImageView mUserPhotoImg;
@@ -210,17 +402,26 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
         private TextView mTimeTv;
         private TextView mPriseTv;
         private TextView mCommentTv;
+        private LinearLayout mCommentBodyView;
+        private PraiseListView mPraiseListView;
+        private CommentListView mCommentListView;
+        private View mCommentLineView;
 
         public CircleViewHolder(View itemView) {
             super(itemView);
 
-            mUserPhotoImg = (ImageView)itemView.findViewById(R.id.circle_recyclerView_item_user_photo);
-            mUserNameTv   = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_user_name);
-            mContentTv    = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_content);
-            mLocationTv   = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_location);
-            mTimeTv       = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_time);
-            mPriseTv      = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_praise);
-            mCommentTv    = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_comment);
+            mUserPhotoImg    = (ImageView)itemView.findViewById(R.id.circle_recyclerView_item_user_photo);
+            mUserNameTv      = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_user_name);
+            mContentTv       = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_content);
+            mLocationTv      = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_location);
+            mTimeTv          = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_time);
+            mPriseTv         = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_praise);
+            mCommentTv       = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_comment);
+            mCommentBodyView = (LinearLayout)itemView.findViewById(R.id.circle_comment_body);
+            mPraiseListView  = (PraiseListView)itemView.findViewById(R.id.circle_praise_listView);
+            mCommentListView = (CommentListView)itemView.findViewById(R.id.circle_comment_listview);
+            mCommentLineView = itemView.findViewById(R.id.circle_comment_line);
+
         }
     }
 

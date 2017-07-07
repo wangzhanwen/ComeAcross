@@ -49,22 +49,17 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.platform.comapi.map.F;
 import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
 import com.lyy_wzw.comeacross.bean.CAUser;
 import com.lyy_wzw.comeacross.bean.FootPrint;
 import com.lyy_wzw.comeacross.bean.FootPrintAddress;
-import com.lyy_wzw.comeacross.discovery.activitys.FootPrintCircleActivity;
-import com.lyy_wzw.comeacross.discovery.adapter.CircleRecyclerViewAdapter;
 import com.lyy_wzw.comeacross.footprint.cards.SliderAdapter;
 import com.lyy_wzw.comeacross.footprint.cardslider.CardSliderLayoutManager;
 import com.lyy_wzw.comeacross.footprint.cardslider.CardSnapHelper;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.footprint.utils.AddressAsyncTask;
-import com.lyy_wzw.comeacross.footprint.utils.BaiduUtil;
-import com.lyy_wzw.comeacross.rong.server.widget.LoadDialog;
 import com.lyy_wzw.comeacross.server.FootPrintServer;
 import com.lyy_wzw.comeacross.user.UserHelper;
 import com.lyy_wzw.comeacross.utils.BitmapUtil;
@@ -76,7 +71,6 @@ import java.util.Random;
 
 import cn.bmob.v3.exception.BmobException;
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.rong.imageloader.utils.L;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -183,7 +177,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         FootPrintServer.getInstance().getAll(new FootPrintServer.FootPrintQueryCallback() {
             @Override
             public void onSuccess(List<FootPrint> footPrints) {
-                Log.d(TAG, "footPrints:"+footPrints.toString());
                 if (footPrints != null){
                     mDatas = footPrints;
                     sliderAdapter = new SliderAdapter(FootPrintFragment.this.getContext(), mDatas, new OnCardClickListener());
@@ -230,18 +223,21 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         //根据当前用户跟足迹的地址是否在一个城市，显示地址信息
         String address = footPrint.getFootPrintAddress().getCity()+"."+ footPrint.getFootPrintAddress().getDistrict();
         if (mCurrentUserAddress != null && mCurrentUserAddress.getCity().equals(footPrint.getFootPrintAddress().getCity())){
-
             address = footPrint.getFootPrintAddress().getDistrict() + "." + footPrint.getFootPrintAddress().getStreet();
         }
-
         location1TextView.setText(address);
-        UserHelper.getInstance().queryUser("objectId", footPrint.getUid(), new UserHelper.UserQueryCallback() {
+
+        String  userId = footPrint.getUserId();
+        UserHelper.getInstance().queryUser("objectId", userId, new UserHelper.UserQueryCallback() {
             @Override
             public void onResult(List<CAUser> users, BmobException e) {
-                if (users != null && users.size()>0){
+
+                if (users != null && users.size()>0 ){
                     CAUser caUser = users.get(0);
-                    userNameSwitcher.setCurrentText(caUser.getUsername());
-                    GlideUtil.loadPic(FootPrintFragment.this.getContext(),caUser.getUserPhoto(),mFootPrintUserImg);
+                    if (caUser != null){
+                        userNameSwitcher.setCurrentText(caUser.getUsername());
+                        GlideUtil.loadPic(FootPrintFragment.this.getContext(),caUser.getUserPhoto(),mFootPrintUserImg);
+                    }
                 }
             }
         });
@@ -357,16 +353,20 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         LatLng centerLatLng = new LatLng(footPrint.getLatitude(), footPrint.getLongitude());
         setMapCenter(centerLatLng, zoomSize);
 
-        UserHelper.getInstance().queryUser("objectId", footPrint.getUid(), new UserHelper.UserQueryCallback() {
+        String  userId = footPrint.getUserId();
+        UserHelper.getInstance().queryUser("objectId", userId, new UserHelper.UserQueryCallback() {
             @Override
             public void onResult(List<CAUser> users, BmobException e) {
-                if (users != null && users.size()>0){
+                if (users != null && users.size()>0 ){
                     CAUser caUser = users.get(0);
-                    userNameSwitcher.setText(caUser.getUsername());
-                    GlideUtil.loadPic(FootPrintFragment.this.getContext(),caUser.getUserPhoto(),mFootPrintUserImg);
+                    if (caUser != null){
+                        userNameSwitcher.setCurrentText(caUser.getUsername());
+                        GlideUtil.loadPic(FootPrintFragment.this.getContext(),caUser.getUserPhoto(),mFootPrintUserImg);
+                    }
                 }
             }
         });
+
         currentPosition = pos;
     }
 
@@ -396,7 +396,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         mLayoutInflater = LayoutInflater.from(this.getActivity().getApplicationContext());
 
         initLocationClient();
-
 
     }
 
