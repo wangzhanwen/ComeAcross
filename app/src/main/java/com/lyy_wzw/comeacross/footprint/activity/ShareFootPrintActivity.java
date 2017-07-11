@@ -437,8 +437,12 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                button.setTextColor(Color.parseColor("#25b249"));
+                Button buttonPos = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                buttonPos.setTextColor(Color.parseColor("#25b249"));
+                buttonPos.setTextSize(18);
+
+                Button buttonNeg = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                buttonNeg.setTextSize(18);
             }
         });
 
@@ -483,6 +487,7 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
             public void onShow(DialogInterface dialog) {
                 Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
                 button.setTextColor(Color.parseColor("#25b249"));
+                button.setTextSize(18);
             }
         });
         alertDialog.show();
@@ -525,6 +530,7 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
             public void onShow(DialogInterface dialog) {
                 Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
                 button.setTextColor(Color.parseColor("#25b249"));
+                button.setTextSize(18);
             }
         });
 

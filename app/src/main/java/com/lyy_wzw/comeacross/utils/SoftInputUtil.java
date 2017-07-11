@@ -15,6 +15,7 @@ public class SoftInputUtil {
         view.setFocusable(true);
         view.setFocusableInTouchMode(true);
         view.requestFocus();
+        view.setText("");
         InputMethodManager imm = (InputMethodManager)
                 context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);

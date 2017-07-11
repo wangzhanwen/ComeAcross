@@ -225,22 +225,19 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         if (mCurrentUserAddress != null && mCurrentUserAddress.getCity().equals(footPrint.getFootPrintAddress().getCity())){
             address = footPrint.getFootPrintAddress().getDistrict() + "." + footPrint.getFootPrintAddress().getStreet();
         }
-        location1TextView.setText(address);
 
-        String  userId = footPrint.getUserId();
-        UserHelper.getInstance().queryUser("objectId", userId, new UserHelper.UserQueryCallback() {
+        location1TextView.setText(address);
+        UserHelper.getInstance().queryUser("objectId", footPrint.getUserId(), new UserHelper.UserQueryCallback() {
             @Override
             public void onResult(List<CAUser> users, BmobException e) {
-
-                if (users != null && users.size()>0 ){
+                if (users != null && users.size()>0){
                     CAUser caUser = users.get(0);
-                    if (caUser != null){
-                        userNameSwitcher.setCurrentText(caUser.getUsername());
-                        GlideUtil.loadPic(FootPrintFragment.this.getContext(),caUser.getUserPhoto(),mFootPrintUserImg);
-                    }
+                    userNameSwitcher.setCurrentText(caUser.getUsername());
+                    GlideUtil.loadPic(FootPrintFragment.this.getContext(),caUser.getUserPhoto(),mFootPrintUserImg);
                 }
             }
         });
+
 
         mPresenter.setFootPrintMarks(mDatas);
     }
@@ -353,16 +350,13 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         LatLng centerLatLng = new LatLng(footPrint.getLatitude(), footPrint.getLongitude());
         setMapCenter(centerLatLng, zoomSize);
 
-        String  userId = footPrint.getUserId();
-        UserHelper.getInstance().queryUser("objectId", userId, new UserHelper.UserQueryCallback() {
+        UserHelper.getInstance().queryUser("objectId", footPrint.getUserId(), new UserHelper.UserQueryCallback() {
             @Override
             public void onResult(List<CAUser> users, BmobException e) {
-                if (users != null && users.size()>0 ){
+                if (users != null && users.size()>0){
                     CAUser caUser = users.get(0);
-                    if (caUser != null){
-                        userNameSwitcher.setCurrentText(caUser.getUsername());
-                        GlideUtil.loadPic(FootPrintFragment.this.getContext(),caUser.getUserPhoto(),mFootPrintUserImg);
-                    }
+                    userNameSwitcher.setText(caUser.getUsername());
+                    GlideUtil.loadPic(FootPrintFragment.this.getContext(),caUser.getUserPhoto(),mFootPrintUserImg);
                 }
             }
         });

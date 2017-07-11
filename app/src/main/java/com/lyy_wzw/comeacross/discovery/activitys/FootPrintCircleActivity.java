@@ -3,7 +3,8 @@ package com.lyy_wzw.comeacross.discovery.activitys;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.CoordinatorLayout;
+
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import com.lyy_wzw.comeacross.bean.FootPrint;
 import com.lyy_wzw.comeacross.discovery.DicoveryConstantValue;
 import com.lyy_wzw.comeacross.discovery.adapter.CircleRecyclerViewAdapter;
 
+import com.lyy_wzw.comeacross.discovery.widgets.CircleTopRefreshView;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.server.FootPrintServer;
@@ -43,7 +45,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UpdateListener;
 
 
-public class FootPrintCircleActivity extends AppCompatActivity implements View.OnClickListener {
+public class FootPrintCircleActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "FootPrintCircleActivity";
 
     private Toolbar mToolbar;
@@ -56,18 +58,24 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
     private TextView mCommentSendTv;
     private LinearLayout mCommentContainerView;
     private CircleRecyclerViewAdapter mRecyclerViewAdapter;
+    private AppBarLayout mAppBarLayout;
+    private CircleTopRefreshView mTopRefreshView;
+    private LinearLayoutManager mLayoutManager;
+    private int mLastVisibleItem;
+
+    private boolean  isLoading = false;
+    private boolean  isRefreshing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_foot_print_circle);
-        onRefresh();
         initView();
-
     }
 
     private void initView() {
         mToolbar = (Toolbar) findViewById(R.id.circle_toolbar);
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.circle_app_bar);
         mBackbtn = (ImageView) findViewById(R.id.circle_back_btn);
         mShareFootPrintbtn = (ImageView) findViewById(R.id.circle_share_footprint_btn);
         mRecyClerView   = (RecyclerView) findViewById(R.id.circle_recyclerView);
@@ -75,12 +83,26 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
         mCommentEt = (EditText) findViewById(R.id.circle_comment_editview);
         mCommentSendTv = (TextView) findViewById(R.id.circle_comment_send_tv);
         mCommentContainerView.setVisibility(View.GONE);
+        mTopRefreshView = (CircleTopRefreshView) findViewById(R.id.circle_top_refresh_view);
+        mTopRefreshView.setVisibility(View.GONE);
+        mTopRefreshView.setRefreshCallback(new CircleTopRefreshView.RefreshCallback() {
+            @Override
+            public void onRefresh() {
+                if (!isRefreshing){
+                    Message refreshMsg = new Message();
+                    refreshMsg.what = DicoveryConstantValue.CIRCLE_HANDLER_REFRESH_MSG_KEY;
+                    mHander.sendMessage(refreshMsg);
+                }
+
+            }
+        });
 
         mBackbtn.setOnClickListener(this);
         mShareFootPrintbtn.setOnClickListener(this);
 
         mRecyClerView.setOnClickListener(this);
-        mRecyClerView.setLayoutManager(new LinearLayoutManager(FootPrintCircleActivity.this, LinearLayoutManager.VERTICAL, false));
+        mLayoutManager = new LinearLayoutManager(FootPrintCircleActivity.this, LinearLayoutManager.VERTICAL, false);
+        mRecyClerView.setLayoutManager(mLayoutManager);
         mRecyclerViewAdapter = new CircleRecyclerViewAdapter(FootPrintCircleActivity.this, mDatas, mHander);
         mRecyClerView.setAdapter(mRecyclerViewAdapter);
 
@@ -92,6 +114,8 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
                     mCommentContainerView.setVisibility(View.GONE);
                     SoftInputUtil.hideSoftInput(FootPrintCircleActivity.this, mCommentEt);
                 }
+
+                mLastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
             }
 
             @Override
@@ -102,6 +126,10 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
                     SoftInputUtil.hideSoftInput(FootPrintCircleActivity.this, mCommentEt);
                 }
 
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && mLastVisibleItem + 1 == mRecyclerViewAdapter.getItemCount()) {
+                    mRecyclerViewAdapter.setIsLoadMore(true);
+                    onLoad();
+                }
 
             }
         });
@@ -119,94 +147,172 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //mTopRefreshView.stopRefreshAnim();
+                onRefresh();
+
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
 
+        onRefresh();
+
     }
 
     public void onRefresh(){
-        FootPrintServer.getInstance().getAll(new FootPrintServer.FootPrintQueryCallback() {
-            @Override
-            public void onSuccess(List<FootPrint> footPrints) {
-                Log.d(TAG, "footPrints:"+footPrints.toString());
-                if (footPrints != null){
+        if (!isRefreshing) {
+            Log.d(TAG, "执行刷新");
+            isRefreshing = true;
+            mTopRefreshView.startRefreshAnim();
+            FootPrintServer.getInstance().getAll(new FootPrintServer.FootPrintQueryCallback() {
+                @Override
+                public void onSuccess(List<FootPrint> footPrints) {
+                    isRefreshing = false;
+                    mTopRefreshView.stopRefreshAnim();
+                    if (footPrints != null){
+                        mDatas.clear();
+                        mDatas.addAll(footPrints);
+                        mRecyclerViewAdapter.notifyDataSetChanged();
+                    }
+                }
 
-                    mDatas.clear();
-                    mDatas.addAll(footPrints);
+                @Override
+                public void onError(BmobException e) {
+                    isRefreshing = false;
+                    mTopRefreshView.stopRefreshAnim();
+                    Toast.makeText(FootPrintCircleActivity.this, "刷新失败:"+ e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+
+    public void onLoad(){
+        if (!isLoading) {
+            isLoading = true;
+            FootPrintServer.getInstance().getAll(new FootPrintServer.FootPrintQueryCallback() {
+                @Override
+                public void onSuccess(List<FootPrint> footPrints) {
+                    isLoading = false;
+                    mRecyclerViewAdapter.setIsLoadMore(false);
+                    if (footPrints != null && footPrints.size() >0){
+                        mDatas.addAll(footPrints);
+                    }
                     mRecyclerViewAdapter.notifyDataSetChanged();
                 }
-            }
 
-            @Override
-            public void onError(BmobException e) {
-                Log.d(TAG, "e:"+e.getMessage());
-            }
-        });
+                @Override
+                public void onError(BmobException e) {
+                    isLoading = false;
+                    mRecyclerViewAdapter.setIsLoadMore(false);
+                    Toast.makeText(FootPrintCircleActivity.this, "加载数据失败:"+ e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            Toast.makeText(FootPrintCircleActivity.this, "正在加载请稍后", Toast.LENGTH_SHORT).show();
+        }
     }
 
     Handler mHander = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-           switch (msg.what){
-               case DicoveryConstantValue.CIRCLE_COMMENT_HANDLER_MSG_KEY:
-                   Log.d(TAG,"handleMessage()-->>收到评论handler消息");
-                   if (mCommentContainerView.getVisibility() == View.GONE) {
-                       mCommentContainerView.setVisibility(View.VISIBLE);
-                       SoftInputUtil.showSoftInput(FootPrintCircleActivity.this, mCommentEt);
 
-                   }
+            switch (msg.what){
+               //评论
+               case DicoveryConstantValue.CIRCLE_COMMENT_HANDLER_COMMENT_MSG_KEY:
+                    proCommentMsg(msg,0);
+                    break;
 
-                   Bundle bundle = msg.getData();
-                   final int position = bundle.getInt(DicoveryConstantValue.CIRCLE_COMMENT_BUNDLE_FOOTPRINT_INDEX_KEY);
-                   mCommentSendTv.setOnClickListener(new View.OnClickListener() {
-                       @Override
-                       public void onClick(View v) {
-                           Toast.makeText(FootPrintCircleActivity.this, "发送评论", Toast.LENGTH_SHORT).show();
-                           //发布评论
-                           String content =  mCommentEt.getText().toString().trim();
-                           if(TextUtils.isEmpty(content)){
-                               Toast.makeText(FootPrintCircleActivity.this, "评论内容不能为空...", Toast.LENGTH_SHORT).show();
-                               return;
-                           }
-
-                           FootPrint footPrint = mDatas.get(position);
-                           if (footPrint == null) {
-                               return;
-                           }
-
-                           if(footPrint.getComments() == null){
-                               footPrint.setComments(new ArrayList<CommentItem>());
-                           }
-
-                           CommentItem commentItem = new CommentItem();
-                           commentItem.setUser(UserHelper.getInstance().getCurrentUser());
-                           commentItem.setContent(content);
-                           commentItem.setObjectId(footPrint.getObjectId());
-                           footPrint.getComments().add(commentItem);
-
-                           footPrint.update(footPrint.getObjectId(), new UpdateListener() {
-                               @Override public void done(BmobException e) {
-                                   if (e==null) {
-                                       mRecyclerViewAdapter.notifyDataSetChanged();
-                                       mCommentContainerView.setVisibility(View.GONE);
-                                       if (SoftInputUtil.isShowSoftInput(FootPrintCircleActivity.this)) {
-                                           SoftInputUtil.hideSoftInput(FootPrintCircleActivity.this, mCommentEt);
-                                       }
-
-
-                                   }else{
-                                       Toast.makeText(FootPrintCircleActivity.this, "评论出错.", Toast.LENGTH_SHORT).show();
-                                   }
-
-                               }
-                           });
-
-                       }
-                   });
+               //回复
+               case DicoveryConstantValue.CIRCLE_COMMENT_HANDLER_REPLY_MSG_KEY:
+                    proCommentMsg(msg, 1);
                    break;
+               //隐藏键盘
+               case DicoveryConstantValue.CIRCLE_COMMENT_HANDLER_Hide_SOFTINPUT_KEY:
+                    if (SoftInputUtil.isShowSoftInput(FootPrintCircleActivity.this)) {
+                        mCommentContainerView.setVisibility(View.GONE);
+                        SoftInputUtil.hideSoftInput(FootPrintCircleActivity.this, mCommentEt);
+                    }
+                    break;
+                case DicoveryConstantValue.CIRCLE_HANDLER_REFRESH_MSG_KEY:
+                    Log.d(TAG, "接收到刷新消息");
+                    if (!isRefreshing) {
+                        onRefresh();
+                    }
+                    break;
            }
+        }
+
+        private void proCommentMsg(final Message msg, final int type) {
+            if (mCommentContainerView.getVisibility() == View.GONE) {
+                mCommentContainerView.setVisibility(View.VISIBLE);
+                SoftInputUtil.showSoftInput(FootPrintCircleActivity.this, mCommentEt);
+
+            }
+
+            Bundle bundle = msg.getData();
+            if (bundle == null) {
+                return;
+            }
+
+            final int position = bundle.getInt(DicoveryConstantValue.CIRCLE_COMMENT_BUNDLE_FOOTPRINT_INDEX_KEY);
+
+            final FootPrint footPrint = mDatas.get(position);
+            if (footPrint == null) {
+                return;
+            }
+            if(footPrint.getComments() == null){
+                footPrint.setComments(new ArrayList<CommentItem>());
+            }
+
+            final CommentItem commentItem = new CommentItem();
+            commentItem.setUser(UserHelper.getInstance().getCurrentUser());
+            commentItem.setObjectId(footPrint.getObjectId());
+            String hintTxt = "评论:";
+            if (type == 1){
+                final int commentIndex = bundle.getInt(DicoveryConstantValue.CIRCLE_COMMENT_BUNDLE_COMMENT_ITEM_INDEX_KEY);
+                CAUser toReplyUser = footPrint.getComments().get(commentIndex).getUser();
+                commentItem.setToReplyUser(toReplyUser);
+                hintTxt = "回复:" + toReplyUser.getUsername();
+            }
+
+            mCommentEt.setHint(hintTxt);
+            mCommentSendTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String tipMsg = "评论内容不能为空...";
+                    if (type == 1){
+                        tipMsg = "回复内容不能为空...";
+                    }
+
+                    String content =  mCommentEt.getText().toString().trim();
+                    if(TextUtils.isEmpty(content)){
+                        Toast.makeText(FootPrintCircleActivity.this, tipMsg, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    commentItem.setContent(content);
+                    footPrint.getComments().add(commentItem);
+
+                    footPrint.update(footPrint.getObjectId(), new UpdateListener() {
+                        @Override public void done(BmobException e) {
+                            if (e==null) {
+                                mRecyclerViewAdapter.notifyDataSetChanged();
+                                mCommentContainerView.setVisibility(View.GONE);
+                                if (SoftInputUtil.isShowSoftInput(FootPrintCircleActivity.this)) {
+                                    SoftInputUtil.hideSoftInput(FootPrintCircleActivity.this, mCommentEt);
+                                }
+
+                            }else{
+                                footPrint.getComments().remove(commentItem);
+                                mRecyclerViewAdapter.notifyDataSetChanged();
+                            }
+
+                        }
+                    });
+
+                }
+            });
         }
     };
 
@@ -245,5 +351,11 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mTopRefreshView.stopRefreshAnim();
     }
 }

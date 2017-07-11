@@ -215,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(),fragments);
+        viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(adapter);
 
     }

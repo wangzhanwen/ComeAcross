@@ -31,6 +31,7 @@ public class CommentListView extends LinearLayout {
     private int itemSelectorColor;
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
+    private OnItemUserClickListener onItemUserClickListener;
     private List<CommentItem> mDatas;
     private LayoutInflater layoutInflater ;
 
@@ -49,6 +50,15 @@ public class CommentListView extends LinearLayout {
     public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
         this.onItemLongClickListener = onItemLongClickListener;
     }
+
+    public OnItemUserClickListener getOnItemUserClickListener() {
+        return onItemUserClickListener;
+    }
+
+    public void setOnItemUserClickListener(OnItemUserClickListener onItemUserClickListener) {
+        this.onItemUserClickListener = onItemUserClickListener;
+    }
+
 
     public void setDatas(List<CommentItem> datas){
         if(datas == null ){
@@ -171,7 +181,10 @@ public class CommentListView extends LinearLayout {
         subjectSpanText.setSpan(new SpannableClickable(itemColor){
                                     @Override
                                     public void onClick(View widget) {
-                                        Toast.makeText(InitApplication.getContext(), textStr + " &id = " + id, Toast.LENGTH_SHORT).show();
+                                        if(onItemUserClickListener!=null){
+                                            onItemUserClickListener.onItemUserClick(id);
+                                        }
+                                        //Toast.makeText(InitApplication.getContext(), textStr + " &id = " + id, Toast.LENGTH_SHORT).show();
                                     }
                                 }, 0, subjectSpanText.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -186,6 +199,8 @@ public class CommentListView extends LinearLayout {
         public void onItemLongClick(int position);
     }
 
-
+    public static interface OnItemUserClickListener{
+        public void onItemUserClick(String userId);
+    }
 
 }

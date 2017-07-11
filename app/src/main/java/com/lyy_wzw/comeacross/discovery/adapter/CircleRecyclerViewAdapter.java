@@ -1,15 +1,20 @@
 package com.lyy_wzw.comeacross.discovery.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +29,7 @@ import com.lyy_wzw.comeacross.bean.FootPrintFile;
 
 import com.lyy_wzw.comeacross.bean.PraiseItem;
 import com.lyy_wzw.comeacross.discovery.DicoveryConstantValue;
+import com.lyy_wzw.comeacross.discovery.widgets.CircleBottomRefreshView;
 import com.lyy_wzw.comeacross.discovery.widgets.CommentListView;
 import com.lyy_wzw.comeacross.discovery.widgets.PraiseListView;
 import com.lyy_wzw.comeacross.user.UserHelper;
@@ -45,12 +51,18 @@ import cn.bmob.v3.listener.UpdateListener;
  * Created by yidong9 on 17/6/29.
  */
 
-public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecyclerViewAdapter.CircleViewHolder>{
+public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private static final String TAG = "CircleAdapter";
 
     private Context mContext;
     private List<FootPrint> mDatas;
     private Handler mHandler;
+
+    //上拉加载更多布局
+    public static final int view_Foot = 3;
+
+    //是否隐藏
+    public boolean isLoadMore = false;
 
     public CircleRecyclerViewAdapter(Context context, List<FootPrint> datas, Handler handler){
         mContext = context;
@@ -62,18 +74,22 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
     @Override
     public int getItemViewType(int position) {
         int type = 1;
-        FootPrint footPrint = mDatas.get(position);
-        type = getType(footPrint);
 
+        if (position == getItemCount()-1){
+            type = view_Foot;
+        }else {
+            FootPrint footPrint = mDatas.get(position);
+            type = getType(footPrint);
+        }
         return type;
     }
 
 
     @Override
-    public CircleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView = null;
-        CircleViewHolder viewHolder = null;
+        RecyclerView.ViewHolder viewHolder = null;
         switch (viewType){
             case 1:
                 itemView = LayoutInflater.from(mContext).inflate(R.layout.circle_recyclerview_item_image, parent, false);
@@ -82,6 +98,11 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
             case 2:
                 itemView = LayoutInflater.from(mContext).inflate(R.layout.circle_recyclerview_item_video, parent, false);
                 viewHolder = new CircleVideoViewHolder(itemView);
+                break;
+            case 3:
+                itemView = LayoutInflater.from(mContext).inflate(R.layout.circle_recyclerview_foot_refresh_layout, parent, false);
+                viewHolder = new FootViewHolder(itemView);
+
                 break;
             default:
                 viewHolder = new CircleViewHolder(itemView);
@@ -93,223 +114,304 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
     }
 
     @Override
-    public void onBindViewHolder(final CircleViewHolder holder, final int position) {
-        final FootPrint footPrint = mDatas.get(position);
-        proCommentViewShow(holder,position);
-        if (isPrised(position)!=-1) {
-            holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praised_icon);
-        }else{
-            holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praise_icon);
-        }
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
+        if (position == getItemCount()-1){
+            FootViewHolder footViewHolder = (FootViewHolder)viewHolder;
+            if (isLoadMore){
+                footViewHolder.mRefreshView.startRefreshAnim();
+                footViewHolder.itemView.setVisibility(View.VISIBLE);
 
-        if (TextUtils.isEmpty(footPrint.getContent())){
-            holder.mContentTv.setVisibility(View.GONE);
-        }else{
-            holder.mContentTv.setVisibility(View.VISIBLE);
-            holder.mContentTv.setText(footPrint.getContent());
-        }
-
-         //处理位置
-        if (footPrint.isShowLocation()) {
-            String address = "未知";
-            if (footPrint.getFootPrintAddress() != null) {
-                address = footPrint.getFootPrintAddress().getCity()+"."
-                        + footPrint.getFootPrintAddress().getDistrict() + "."
-                        + footPrint.getFootPrintAddress().getStreet();
+            }else {
+                footViewHolder.mRefreshView.stopRefreshAnim();
+                footViewHolder.itemView.setVisibility(View.GONE);
             }
-            holder.mLocationTv.setText(address);
-        }else{
-            holder.mLocationTv.setVisibility(View.GONE);
-        }
-
-        //处理日期
-        SimpleDateFormat lsdStrFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            Date strD = lsdStrFormat.parse(footPrint.getCreatedAt());
-            DateFormat dFormat = new SimpleDateFormat("MM月dd日  HH:mm"); //HH表示24小时制；
-            String format = dFormat.format(strD);
-            holder.mTimeTv.setText(format);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        //根据媒体文件类型，数量，GridView设置布局
-        if (getType(footPrint) == 1) {
-            CircleImageViewHolder imageViewHolder = (CircleImageViewHolder)holder;
-
-            List<String> imageUrls = new ArrayList<String>();
-            for (int i = 0; i < footPrint.getFootPrintFiles().size(); i++) {
-                imageUrls.add(footPrint.getFootPrintFiles().get(i).getFilePath());
+        }else {
+            final CircleViewHolder holder = (CircleViewHolder)viewHolder;
+            final FootPrint footPrint = mDatas.get(position);
+            proCommentViewShow(holder, position);
+            if (isPrised(position) != -1) {
+                holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praised_icon);
+            } else {
+                holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praise_icon);
+            }
+            if (position == 0) {
+                holder.mItemContainer.setPadding(0, PixelUtil.dip2px(mContext, 20), 0, 0);
             }
 
-            CircleGridViewAdapter circleGridViewAdapter;
-            ViewGroup.LayoutParams layoutParams = imageViewHolder.mGradView.getLayoutParams();
-
-            switch (imageUrls.size()){
-                case 1:
-                    layoutParams.height = PixelUtil.dip2px(mContext,200);
-                    layoutParams.width = PixelUtil.dip2px(mContext,120);
-                    imageViewHolder.mGradView.setNumColumns(1);
-                    circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item1, imageUrls);
-                    imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
-                    break;
-                case 2:
-                    layoutParams.width = PixelUtil.dip2px(mContext,155);
-                    layoutParams.height = PixelUtil.dip2px(mContext,75);
-                    imageViewHolder.mGradView.setNumColumns(2);
-                    circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
-                    imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
-                    break;
-                case 3:
-                    layoutParams.width = PixelUtil.dip2px(mContext, 235);
-                    layoutParams.height = PixelUtil.dip2px(mContext,75);
-                    imageViewHolder.mGradView.setNumColumns(3);
-                    circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
-                    imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
-                    break;
-
-                case 4:
-                    layoutParams.width = PixelUtil.dip2px(mContext, 155);
-                    layoutParams.height = PixelUtil.dip2px(mContext,155);
-                    imageViewHolder.mGradView.setNumColumns(2);
-                    circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
-                    imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
-                    break;
-                case 5:
-                case 6:
-                    layoutParams.width = PixelUtil.dip2px(mContext, 235);
-                    layoutParams.height = PixelUtil.dip2px(mContext,155);
-                    imageViewHolder.mGradView.setNumColumns(3);
-                    circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
-                    imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
-                    break;
-
-                default:
-                    layoutParams.width = PixelUtil.dip2px(mContext, 235);
-                    layoutParams.height = PixelUtil.dip2px(mContext,235);
-                    imageViewHolder.mGradView.setNumColumns(3);
-                    circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
-                    imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
-                    break;
-            }
-
-
-        }else if(getType(footPrint) == 2){
-            CircleVideoViewHolder videoViewHolder = (CircleVideoViewHolder)holder;
-            FootPrintFile printFile = footPrint.getFootPrintFiles().get(0);
-            GlideUtil.loadPic(mContext, printFile.getThumbnailPath(),videoViewHolder.mVideoBgImg);
-        }
-
-         //设置用户信息
-        String  userId = footPrint.getUserId();
-        Log.d(TAG,"onBindViewHolder()-->> caUser" + userId);
-
-        UserHelper.getInstance().queryUser("objectId", userId, new UserHelper.UserQueryCallback() {
-            @Override
-            public void onResult(List<CAUser> users, BmobException e) {
-
-                if (users != null && users.size()>0 ){
-                    CAUser caUser = users.get(0);
-                    if (caUser != null) {
-                        GlideUtil.loadPic(mContext,caUser.getUserPhoto(), holder.mUserPhotoImg);
-                        holder.mUserNameTv.setText(caUser.getUsername());
+            holder.mItemContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Toast.makeText(mContext, "点击了mItemContainer", Toast.LENGTH_SHORT).show();
+                    if (mHandler != null) {
+                        Message message = new Message();
+                        message.what = DicoveryConstantValue.CIRCLE_COMMENT_HANDLER_Hide_SOFTINPUT_KEY;
+                        mHandler.sendMessage(message);
                     }
-
                 }
+            });
+
+            if (TextUtils.isEmpty(footPrint.getContent())) {
+                holder.mContentTv.setVisibility(View.GONE);
+            } else {
+                holder.mContentTv.setVisibility(View.VISIBLE);
+                holder.mContentTv.setText(footPrint.getContent());
             }
-        });
+
+            //处理位置
+            if (footPrint.isShowLocation()) {
+                String address = "未知";
+                if (footPrint.getFootPrintAddress() != null) {
+                    address = footPrint.getFootPrintAddress().getCity() + "."
+                            + footPrint.getFootPrintAddress().getDistrict() + "."
+                            + footPrint.getFootPrintAddress().getStreet();
+                }
+                holder.mLocationTv.setText(address);
+            } else {
+                holder.mLocationTv.setVisibility(View.GONE);
+            }
+
+            //处理日期
+            SimpleDateFormat lsdStrFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                Date strD = lsdStrFormat.parse(footPrint.getCreatedAt());
+                DateFormat dFormat = new SimpleDateFormat("MM月dd日  HH:mm"); //HH表示24小时制；
+                String format = dFormat.format(strD);
+                holder.mTimeTv.setText(format);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            //根据媒体文件类型，数量，GridView设置布局
+            if (getType(footPrint) == 1) {
+                CircleImageViewHolder imageViewHolder = (CircleImageViewHolder) holder;
+
+                List<String> imageUrls = new ArrayList<String>();
+                for (int i = 0; i < footPrint.getFootPrintFiles().size(); i++) {
+                    imageUrls.add(footPrint.getFootPrintFiles().get(i).getFilePath());
+                }
+
+                CircleGridViewAdapter circleGridViewAdapter;
+                ViewGroup.LayoutParams layoutParams = imageViewHolder.mGradView.getLayoutParams();
+
+                switch (imageUrls.size()) {
+                    case 1:
+                        layoutParams.height = PixelUtil.dip2px(mContext, 200);
+                        layoutParams.width = PixelUtil.dip2px(mContext, 120);
+                        imageViewHolder.mGradView.setNumColumns(1);
+                        circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item1, imageUrls);
+                        imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
+                        break;
+                    case 2:
+                        layoutParams.width = PixelUtil.dip2px(mContext, 155);
+                        layoutParams.height = PixelUtil.dip2px(mContext, 75);
+                        imageViewHolder.mGradView.setNumColumns(2);
+                        circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
+                        imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
+                        break;
+                    case 3:
+                        layoutParams.width = PixelUtil.dip2px(mContext, 235);
+                        layoutParams.height = PixelUtil.dip2px(mContext, 75);
+                        imageViewHolder.mGradView.setNumColumns(3);
+                        circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
+                        imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
+                        break;
+
+                    case 4:
+                        layoutParams.width = PixelUtil.dip2px(mContext, 155);
+                        layoutParams.height = PixelUtil.dip2px(mContext, 155);
+                        imageViewHolder.mGradView.setNumColumns(2);
+                        circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
+                        imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
+                        break;
+                    case 5:
+                    case 6:
+                        layoutParams.width = PixelUtil.dip2px(mContext, 235);
+                        layoutParams.height = PixelUtil.dip2px(mContext, 155);
+                        imageViewHolder.mGradView.setNumColumns(3);
+                        circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
+                        imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
+                        break;
+
+                    default:
+                        layoutParams.width = PixelUtil.dip2px(mContext, 235);
+                        layoutParams.height = PixelUtil.dip2px(mContext, 235);
+                        imageViewHolder.mGradView.setNumColumns(3);
+                        circleGridViewAdapter = new CircleGridViewAdapter(mContext, R.layout.discover_circle_gridview_item, imageUrls);
+                        imageViewHolder.mGradView.setAdapter(circleGridViewAdapter);
+                        break;
+                }
 
 
-        //处理点赞
+            } else if (getType(footPrint) == 2) {
+                CircleVideoViewHolder videoViewHolder = (CircleVideoViewHolder) holder;
+                FootPrintFile printFile = footPrint.getFootPrintFiles().get(0);
+                GlideUtil.loadPic(mContext, printFile.getThumbnailPath(), videoViewHolder.mVideoBgImg);
+            }
 
-        holder.mPriseTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<PraiseItem>  praiseItems= mDatas.get(position).getPraises();
-                CAUser currentUser = UserHelper.getInstance().getCurrentUser();
-                if (praiseItems != null) {
-                    int index = isPrised(position);
-                    if (index != -1){
-                        //已赞
-                        mDatas.get(position).getPraises().remove(index);
-                        CircleRecyclerViewAdapter.this.notifyDataSetChanged();
-                        mDatas.get(position).update(mDatas.get(position).getObjectId(), new UpdateListener() {
+            //设置用户信息
+            String userId = footPrint.getUserId();
+            Log.d(TAG, "onBindViewHolder()-->> caUser" + userId);
+
+            UserHelper.getInstance().queryUser("objectId", userId, new UserHelper.UserQueryCallback() {
+                @Override
+                public void onResult(List<CAUser> users, BmobException e) {
+
+                    if (users != null && users.size() > 0) {
+                        CAUser caUser = users.get(0);
+                        if (caUser != null) {
+                            GlideUtil.loadPic(mContext, caUser.getUserPhoto(), holder.mUserPhotoImg);
+                            holder.mUserNameTv.setText(caUser.getUsername());
+                        }
+
+                    }
+                }
+            });
+
+
+            //处理点赞
+
+            holder.mPriseTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    List<PraiseItem> praiseItems = mDatas.get(position).getPraises();
+                    CAUser currentUser = UserHelper.getInstance().getCurrentUser();
+                    if (praiseItems != null) {
+                        int index = isPrised(position);
+                        if (index != -1) {
+                            //已赞
+                            final PraiseItem praiseItem = mDatas.get(position).getPraises().get(index);
+                            mDatas.get(position).getPraises().remove(index);
+                            CircleRecyclerViewAdapter.this.notifyDataSetChanged();
+                            mDatas.get(position).update(mDatas.get(position).getObjectId(), new UpdateListener() {
                                 @Override
                                 public void done(BmobException e) {
-                                    if (e==null) {
-                                        Toast.makeText(mContext, "已取消点赞", Toast.LENGTH_SHORT).show();
-                                    }else {
-                                        Log.d(TAG,"点赞-->>e:" + e.getMessage());
+                                    if (e != null) {
+                                        mDatas.get(position).getPraises().add(praiseItem);
+                                        CircleRecyclerViewAdapter.this.notifyDataSetChanged();
+                                    }
+
+                                }
+                            });
+                            proCommentViewShow(holder, position);
+                            holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praise_icon);
+                        } else {
+                            //未赞
+                            final PraiseItem praiseItem = new PraiseItem();
+                            praiseItem.setFootPrintId(footPrint.getObjectId());
+                            praiseItem.setUser(currentUser);
+                            mDatas.get(position).getPraises().add(praiseItem);
+                            CircleRecyclerViewAdapter.this.notifyDataSetChanged();
+                            mDatas.get(position).update(footPrint.getObjectId(), new UpdateListener() {
+                                @Override
+                                public void done(BmobException e) {
+                                    if (e != null) {
+                                        mDatas.get(position).getPraises().remove(praiseItem);
+                                        CircleRecyclerViewAdapter.this.notifyDataSetChanged();
                                     }
                                 }
-                        });
-                        proCommentViewShow(holder,position);
-                        holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praise_icon);
-                    }else{
+                            });
+                            proCommentViewShow(holder, position);
+                            holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praised_icon);
+                        }
+
+                    } else {
                         //未赞
-                        PraiseItem praiseItem = new PraiseItem();
-                        praiseItem.setFootPrintId(footPrint.getObjectId());
+                        mDatas.get(position).setPraises(new ArrayList<PraiseItem>());
+                        final PraiseItem praiseItem = new PraiseItem();
+                        praiseItem.setFootPrintId(mDatas.get(position).getObjectId());
                         praiseItem.setUser(currentUser);
                         mDatas.get(position).getPraises().add(praiseItem);
                         CircleRecyclerViewAdapter.this.notifyDataSetChanged();
-                        mDatas.get(position).update(footPrint.getObjectId(), new UpdateListener() {
+                        mDatas.get(position).update(mDatas.get(position).getObjectId(), new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
-
+                                if (e != null) {
+                                    mDatas.get(position).getPraises().remove(praiseItem);
+                                    CircleRecyclerViewAdapter.this.notifyDataSetChanged();
+                                }
                             }
                         });
-                        proCommentViewShow(holder,position);
+                        proCommentViewShow(holder, position);
                         holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praised_icon);
                     }
-
-                }else{
-                    //未赞
-                    mDatas.get(position).setPraises(new ArrayList<PraiseItem>());
-                    PraiseItem praiseItem = new PraiseItem();
-                    praiseItem.setFootPrintId(mDatas.get(position).getObjectId());
-                    praiseItem.setUser(currentUser);
-                    mDatas.get(position).getPraises().add(praiseItem);
-                    CircleRecyclerViewAdapter.this.notifyDataSetChanged();
-                    mDatas.get(position).update(mDatas.get(position).getObjectId(), new UpdateListener() {
-                        @Override
-                        public void done(BmobException e) {
-
-                        }
-                    });
-                    proCommentViewShow(holder,position);
-                    holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praised_icon);
                 }
+            });
+
+            holder.mPraiseListView.setOnItemClickListener(new PraiseListView.OnItemClickListener() {
+                @Override
+                public void onClick(int position) {
+                    Toast.makeText(mContext, "点击点赞用户-> position:" + position, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            List<PraiseItem> praiseItems = mDatas.get(position).getPraises();
+            if (praiseItems != null) {
+                holder.mPraiseListView.setDatas(praiseItems);
             }
-        });
-
-
-        List<PraiseItem>  praiseItems= mDatas.get(position).getPraises();
-        if (praiseItems != null) {
             holder.mPraiseListView.setDatas(praiseItems);
-        }
-        holder.mPraiseListView.setDatas(praiseItems);
 
-        //处理评论
-        final int footPrintPosition = position;
-        holder.mCommentTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mHandler != null) {
-                    Message message = new Message();
-                    message.what = DicoveryConstantValue.CIRCLE_COMMENT_HANDLER_MSG_KEY;
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(DicoveryConstantValue.CIRCLE_COMMENT_BUNDLE_FOOTPRINT_INDEX_KEY, footPrintPosition);
-                    message.setData(bundle);
-                    mHandler.sendMessage(message);
+            //处理评论
+            final int footPrintPosition = position;
+            holder.mCommentTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mHandler != null) {
+                        Message message = new Message();
+                        message.what = DicoveryConstantValue.CIRCLE_COMMENT_HANDLER_COMMENT_MSG_KEY;
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(DicoveryConstantValue.CIRCLE_COMMENT_BUNDLE_FOOTPRINT_INDEX_KEY, footPrintPosition);
+                        message.setData(bundle);
+                        mHandler.sendMessage(message);
+                    }
                 }
+            });
+
+            holder.mCommentListView.setOnItemLongClickListener(new CommentListView.OnItemLongClickListener() {
+                @Override
+                public void onItemLongClick(int position) {
+                    CommentItem commentItem = mDatas.get(footPrintPosition).getComments().get(position);
+                    if (commentItem != null) {
+                        if (!commentItem.getUser().getObjectId().equals(UserHelper.getInstance().getCurrentUser().getObjectId())) {
+                            Toast.makeText(mContext, "对不起，没有权限删除此条评论.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    } else {
+                        return;
+                    }
+                    showDeleteCommentDialog(footPrintPosition, position);
+                }
+            });
+
+            holder.mCommentListView.setOnItemClickListener(new CommentListView.OnItemClickListener() {
+                @Override
+                public void onItemClick(int position) {
+                    if (mHandler != null) {
+                        Message message = new Message();
+                        message.what = DicoveryConstantValue.CIRCLE_COMMENT_HANDLER_REPLY_MSG_KEY;
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(DicoveryConstantValue.CIRCLE_COMMENT_BUNDLE_FOOTPRINT_INDEX_KEY, footPrintPosition);
+                        bundle.putInt(DicoveryConstantValue.CIRCLE_COMMENT_BUNDLE_COMMENT_ITEM_INDEX_KEY, position);
+                        message.setData(bundle);
+                        mHandler.sendMessage(message);
+                    }
+                }
+            });
+
+            holder.mCommentListView.setOnItemUserClickListener(new CommentListView.OnItemUserClickListener() {
+                @Override
+                public void onItemUserClick(String userId) {
+                    Toast.makeText(mContext, "点击评论用户-> userId:" + userId, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            List<CommentItem> commentItems = mDatas.get(position).getComments();
+            if (commentItems != null) {
+                holder.mCommentListView.setDatas(commentItems);
             }
-        });
 
-        List<CommentItem>  commentItems = mDatas.get(position).getComments();
-        if (commentItems != null) {
-            holder.mCommentListView.setDatas(commentItems);
+
+
         }
-
     }
 
     private int isPrised(int  position){
@@ -329,7 +431,6 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
         }
         return ret;
     }
-
 
     private void proCommentViewShow(CircleViewHolder holder, int position){
         FootPrint footPrint = mDatas.get(position);
@@ -374,9 +475,52 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
         return false;
     }
 
+
+    private void showDeleteCommentDialog(final int footPrintPosition, final int commentIndex){
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setMessage("删除此条评论？");
+        builder.setNegativeButton("取消",null);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                final CommentItem commentItem = mDatas.get(footPrintPosition).getComments().get(commentIndex);
+                mDatas.get(footPrintPosition).getComments().remove(commentIndex);
+                CircleRecyclerViewAdapter.this.notifyDataSetChanged();
+                mDatas.get(footPrintPosition).update(mDatas.get(footPrintPosition).getObjectId(), new UpdateListener() {
+                    @Override
+                    public void done(BmobException e) {
+                        if (e==null) {
+                            Toast.makeText(mContext, "删除成功.", Toast.LENGTH_SHORT).show();
+                        }else{
+                            mDatas.get(footPrintPosition).getComments().add(commentIndex,commentItem);
+                            CircleRecyclerViewAdapter.this.notifyDataSetChanged();
+                        }
+                    }
+                });
+            }
+        });
+
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button buttonPos = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                buttonPos.setTextColor(Color.parseColor("#25b249"));
+                buttonPos.setTextSize(18);
+
+                Button buttonNeg = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                buttonNeg.setTextSize(18);
+            }
+        });
+
+        alertDialog.show();
+    }
+
+
+
     @Override
     public int getItemCount() {
-        return mDatas.size();
+        return mDatas.size() + 1;
     }
 
    public Handler mCircleAdapterHandler = new Handler(){
@@ -390,8 +534,19 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
       }
   };
 
+    public void setIsLoadMore(boolean isLoadMore) {
+        this.isLoadMore = isLoadMore;
+        notifyDataSetChanged();
+    }
 
+    public static class FootViewHolder extends RecyclerView.ViewHolder {
+        private CircleBottomRefreshView mRefreshView;
 
+        public FootViewHolder(View itemView) {
+            super(itemView);
+            mRefreshView = (CircleBottomRefreshView)itemView.findViewById(R.id.circle_bottom_refresh_view);
+        }
+    }
 
 
     public static class CircleViewHolder extends RecyclerView.ViewHolder{
@@ -406,6 +561,7 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
         private PraiseListView mPraiseListView;
         private CommentListView mCommentListView;
         private View mCommentLineView;
+        private FrameLayout mItemContainer;
 
         public CircleViewHolder(View itemView) {
             super(itemView);
@@ -421,6 +577,7 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
             mPraiseListView  = (PraiseListView)itemView.findViewById(R.id.circle_praise_listView);
             mCommentListView = (CommentListView)itemView.findViewById(R.id.circle_comment_listview);
             mCommentLineView = itemView.findViewById(R.id.circle_comment_line);
+            mItemContainer   = (FrameLayout)itemView.findViewById(R.id.circle_recyclerview_item_container);
 
         }
     }
@@ -459,4 +616,7 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<CircleRecycl
         }
         return type;
     }
+
+
+
 }
