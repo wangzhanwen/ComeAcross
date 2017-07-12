@@ -56,6 +56,7 @@ public class GlideUtil {
         Glide.with(context)
                 .load(path)
                 .placeholder(R.mipmap.meizhi0)
+                .thumbnail(0.5f)
                 .error(R.mipmap.meizhi7)
                 .centerCrop()
                 .skipMemoryCache(false)

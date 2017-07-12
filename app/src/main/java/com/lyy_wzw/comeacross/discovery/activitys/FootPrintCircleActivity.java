@@ -1,10 +1,12 @@
 package com.lyy_wzw.comeacross.discovery.activitys;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,11 +33,13 @@ import com.lyy_wzw.comeacross.discovery.DicoveryConstantValue;
 import com.lyy_wzw.comeacross.discovery.adapter.CircleRecyclerViewAdapter;
 
 import com.lyy_wzw.comeacross.discovery.widgets.CircleTopRefreshView;
+import com.lyy_wzw.comeacross.discovery.widgets.CommentListView;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.server.FootPrintServer;
 import com.lyy_wzw.comeacross.user.UserHelper;
 import com.lyy_wzw.comeacross.utils.GlideUtil;
+
 import com.lyy_wzw.comeacross.utils.SoftInputUtil;
 
 
@@ -45,9 +50,10 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UpdateListener;
 
 
-public class FootPrintCircleActivity extends AppCompatActivity implements View.OnClickListener{
+public class FootPrintCircleActivity extends AppCompatActivity implements View.OnClickListener, AppBarLayout.OnOffsetChangedListener {
     private static final String TAG = "FootPrintCircleActivity";
 
+    private CoordinatorLayout mCircleRootView;
     private Toolbar mToolbar;
     private FloatingActionButton mFab;
     private ImageView mShareFootPrintbtn;
@@ -63,6 +69,16 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
     private LinearLayoutManager mLayoutManager;
     private int mLastVisibleItem;
 
+
+    private int screenHeight;
+    private int appBarHeight;
+    private int editTextBodyHeight;
+    private int currentKeyboardH;
+    private int selectCircleItemH;
+    private int selectCommentItemOffset;
+    private int circleItemPosition;
+    private int commentItemPosition;
+
     private boolean  isLoading = false;
     private boolean  isRefreshing = false;
 
@@ -74,6 +90,7 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
     }
 
     private void initView() {
+        mCircleRootView  = (CoordinatorLayout) findViewById(R.id.circle_container_layout);
         mToolbar = (Toolbar) findViewById(R.id.circle_toolbar);
         mAppBarLayout = (AppBarLayout) findViewById(R.id.circle_app_bar);
         mBackbtn = (ImageView) findViewById(R.id.circle_back_btn);
@@ -83,6 +100,7 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
         mCommentEt = (EditText) findViewById(R.id.circle_comment_editview);
         mCommentSendTv = (TextView) findViewById(R.id.circle_comment_send_tv);
         mCommentContainerView.setVisibility(View.GONE);
+
         mTopRefreshView = (CircleTopRefreshView) findViewById(R.id.circle_top_refresh_view);
         mTopRefreshView.setVisibility(View.GONE);
         mTopRefreshView.setRefreshCallback(new CircleTopRefreshView.RefreshCallback() {
@@ -110,22 +128,15 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (mCommentContainerView.getVisibility() == View.VISIBLE) {
-                    mCommentContainerView.setVisibility(View.GONE);
-                    SoftInputUtil.hideSoftInput(FootPrintCircleActivity.this, mCommentEt);
-                }
-
-                mLastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
+                  //updateEditTextBodyVisible(View.GONE);
+                  mLastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
             }
 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (mCommentContainerView.getVisibility() == View.VISIBLE) {
-                    mCommentContainerView.setVisibility(View.GONE);
-                    SoftInputUtil.hideSoftInput(FootPrintCircleActivity.this, mCommentEt);
-                }
 
+                //updateEditTextBodyVisible(View.GONE);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && mLastVisibleItem + 1 == mRecyclerViewAdapter.getItemCount()) {
                     mRecyclerViewAdapter.setIsLoadMore(true);
                     onLoad();
@@ -156,9 +167,54 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
             }
         });
 
+        setViewTreeObserver();
         onRefresh();
 
     }
+
+
+    private void setViewTreeObserver() {
+        final ViewTreeObserver swipeRefreshLayoutVTO = mCircleRootView.getViewTreeObserver();
+        swipeRefreshLayoutVTO.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                mCircleRootView.getWindowVisibleDisplayFrame(r);
+                int statusBarH =  getStatusBarHeight();//状态栏高度
+                int screenH = mCircleRootView.getRootView().getHeight();
+                if(r.top != statusBarH ){
+                    //r.top代表的是状态栏高度，在沉浸式状态栏时r.top＝0，通过getStatusBarHeight获取状态栏高度
+                    r.top = statusBarH;
+                }
+                int keyboardH = screenH - (r.bottom - r.top);
+                Log.d(TAG, "screenH＝ "+ screenH +" &keyboardH = " + keyboardH + " &r.bottom=" + r.bottom + " &top=" + r.top + " &statusBarH=" + statusBarH);
+
+                if(keyboardH == currentKeyboardH){//有变化时才处理，否则会陷入死循环
+                    return;
+                }
+
+                currentKeyboardH = keyboardH;
+                screenHeight = screenH;//应用屏幕的高度
+                editTextBodyHeight = mCommentContainerView.getHeight();
+
+                if (keyboardH < 200) {
+                    //说明是隐藏键盘的情况
+                    return;
+                }
+
+                if(mLayoutManager!=null){
+                    mLayoutManager.scrollToPositionWithOffset(circleItemPosition,
+                            screenHeight - appBarHeight - getStatusBarHeight() -
+                                    (selectCircleItemH + currentKeyboardH) + selectCommentItemOffset ) ;
+
+                }
+
+            }
+        });
+    }
+
+
+
 
     public void onRefresh(){
         if (!isRefreshing) {
@@ -214,6 +270,64 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
         }
     }
 
+
+
+    /**
+     * 获取状态栏高度
+     * @return
+     */
+    private int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+
+    private void measureCircleItemHighAndCommentItemOffset(int circleItemPosition, int commentItemPosition){
+
+        int firstPosition = mLayoutManager.findFirstVisibleItemPosition();
+        //只能返回当前可见区域（列表可滚动）的子项
+        View selectCircleItem = mLayoutManager.getChildAt(circleItemPosition - firstPosition);
+
+        if(selectCircleItem != null){
+            selectCircleItemH = selectCircleItem.getHeight();
+        }
+
+        if (mDatas.get(circleItemPosition).getComments()==null || mDatas.get(circleItemPosition).getComments().size() < 1) {
+            selectCommentItemOffset = 0;
+            return;
+        }
+        int commentCount = mDatas.get(circleItemPosition).getComments().size();
+           //回复评论的情况
+            CommentListView commentLv = (CommentListView) selectCircleItem.findViewById(R.id.circle_comment_listview);
+            if(commentLv!=null && commentItemPosition!=-1){
+                //找到要回复的评论view,计算出该view距离所属动态底部的距离
+                selectCommentItemOffset = (commentLv.getHeight() / commentCount) * (commentCount - commentItemPosition-1);
+            }else{
+                selectCommentItemOffset = 0;
+            }
+
+    }
+
+    public void updateEditTextBodyVisible(int visibility) {
+
+        mCommentEt.setVisibility(visibility);
+        mCommentContainerView.setVisibility(visibility);
+
+        if(View.VISIBLE==visibility){
+            measureCircleItemHighAndCommentItemOffset(circleItemPosition, commentItemPosition);
+            mCommentEt.requestFocus();
+            //弹出键盘
+            SoftInputUtil.showSoftInput( mCommentEt.getContext(),  mCommentEt);
+        }else if(View.GONE==visibility){
+            //隐藏键盘
+            SoftInputUtil.hideSoftInput( mCommentEt.getContext(),  mCommentEt);
+        }
+    }
+
     Handler mHander = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -230,13 +344,9 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
                    break;
                //隐藏键盘
                case DicoveryConstantValue.CIRCLE_COMMENT_HANDLER_Hide_SOFTINPUT_KEY:
-                    if (SoftInputUtil.isShowSoftInput(FootPrintCircleActivity.this)) {
-                        mCommentContainerView.setVisibility(View.GONE);
-                        SoftInputUtil.hideSoftInput(FootPrintCircleActivity.this, mCommentEt);
-                    }
+                    updateEditTextBodyVisible(View.GONE);
                     break;
                 case DicoveryConstantValue.CIRCLE_HANDLER_REFRESH_MSG_KEY:
-                    Log.d(TAG, "接收到刷新消息");
                     if (!isRefreshing) {
                         onRefresh();
                     }
@@ -245,11 +355,6 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
         }
 
         private void proCommentMsg(final Message msg, final int type) {
-            if (mCommentContainerView.getVisibility() == View.GONE) {
-                mCommentContainerView.setVisibility(View.VISIBLE);
-                SoftInputUtil.showSoftInput(FootPrintCircleActivity.this, mCommentEt);
-
-            }
 
             Bundle bundle = msg.getData();
             if (bundle == null) {
@@ -257,7 +362,7 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
             }
 
             final int position = bundle.getInt(DicoveryConstantValue.CIRCLE_COMMENT_BUNDLE_FOOTPRINT_INDEX_KEY);
-
+            circleItemPosition = position;
             final FootPrint footPrint = mDatas.get(position);
             if (footPrint == null) {
                 return;
@@ -269,14 +374,17 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
             final CommentItem commentItem = new CommentItem();
             commentItem.setUser(UserHelper.getInstance().getCurrentUser());
             commentItem.setObjectId(footPrint.getObjectId());
+            final int commentIndex = bundle.getInt(DicoveryConstantValue.CIRCLE_COMMENT_BUNDLE_COMMENT_ITEM_INDEX_KEY,  -1);
+            commentItemPosition = commentIndex;
+
+            updateEditTextBodyVisible(View.VISIBLE);
+
             String hintTxt = "评论:";
             if (type == 1){
-                final int commentIndex = bundle.getInt(DicoveryConstantValue.CIRCLE_COMMENT_BUNDLE_COMMENT_ITEM_INDEX_KEY);
                 CAUser toReplyUser = footPrint.getComments().get(commentIndex).getUser();
                 commentItem.setToReplyUser(toReplyUser);
                 hintTxt = "回复:" + toReplyUser.getUsername();
             }
-
             mCommentEt.setHint(hintTxt);
             mCommentSendTv.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -330,9 +438,7 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
             case R.id.circle_comment_send_tv:
                 break;
             case R.id.circle_recyclerView:
-                if (mCommentContainerView.getVisibility() == View.VISIBLE) {
-                    mCommentContainerView.setVisibility(View.GONE);
-                }
+                updateEditTextBodyVisible(View.GONE);
                 break;
         }
     }
@@ -342,11 +448,7 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
 
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             if(mCommentContainerView != null && mCommentContainerView.getVisibility() == View.VISIBLE){
-                mCommentContainerView.setVisibility(View.GONE);
-                if (SoftInputUtil.isShowSoftInput(FootPrintCircleActivity.this)) {
-                    SoftInputUtil.hideSoftInput(FootPrintCircleActivity.this, mCommentEt);
-                }
-
+                updateEditTextBodyVisible(View.GONE);
                 return true;
             }
         }
@@ -354,8 +456,23 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mAppBarLayout.addOnOffsetChangedListener(this);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         mTopRefreshView.stopRefreshAnim();
+        updateEditTextBodyVisible(View.GONE);
+        mAppBarLayout.removeOnOffsetChangedListener(this);
+    }
+
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        appBarHeight = mAppBarLayout.getHeight() + verticalOffset;
+
     }
 }

@@ -20,6 +20,16 @@ public class FootPrint extends BmobObject{
     private FootPrintAddress footPrintAddress;
     private List<CommentItem> comments;
     private List<PraiseItem> praises;
+    private boolean isExpand;
+
+    public void setExpand(boolean expand) {
+        isExpand = expand;
+    }
+
+    public boolean isExpand() {
+
+        return isExpand;
+    }
 
     public List<CommentItem> getComments() {
         return comments;
@@ -127,6 +137,7 @@ public class FootPrint extends BmobObject{
                 ", footPrintAddress=" + footPrintAddress +
                 ", comments=" + comments +
                 ", praises=" + praises +
+                ", isExpand=" + isExpand +
                 '}';
     }
 }

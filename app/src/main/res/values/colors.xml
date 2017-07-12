@@ -71,5 +71,7 @@
     <color name="transparent">#00000000</color>
     <color name="color_8290AF">#8290AF</color>
     <color name="im_line_color">#dadada</color>
+    <color name="color_232323">#232323</color>
+    <color name="name_selector_color">#cccccc</color>
 
 </resources>

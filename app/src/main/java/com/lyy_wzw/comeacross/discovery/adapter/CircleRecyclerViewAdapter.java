@@ -29,8 +29,10 @@ import com.lyy_wzw.comeacross.bean.FootPrintFile;
 
 import com.lyy_wzw.comeacross.bean.PraiseItem;
 import com.lyy_wzw.comeacross.discovery.DicoveryConstantValue;
+import com.lyy_wzw.comeacross.discovery.UrlUtils;
 import com.lyy_wzw.comeacross.discovery.widgets.CircleBottomRefreshView;
 import com.lyy_wzw.comeacross.discovery.widgets.CommentListView;
+import com.lyy_wzw.comeacross.discovery.widgets.ExpandTextView;
 import com.lyy_wzw.comeacross.discovery.widgets.PraiseListView;
 import com.lyy_wzw.comeacross.user.UserHelper;
 import com.lyy_wzw.comeacross.utils.GlideUtil;
@@ -150,12 +152,30 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             });
 
+             //处理朋友圈文本
             if (TextUtils.isEmpty(footPrint.getContent())) {
                 holder.mContentTv.setVisibility(View.GONE);
             } else {
                 holder.mContentTv.setVisibility(View.VISIBLE);
                 holder.mContentTv.setText(footPrint.getContent());
             }
+
+
+            if(!TextUtils.isEmpty(footPrint.getContent())){
+                holder.mContentTv.setExpand(footPrint.isExpand());
+                holder.mContentTv.setExpandStatusListener(new ExpandTextView.ExpandStatusListener() {
+                    @Override
+                    public void statusChange(boolean isExpand) {
+                        footPrint.setExpand(isExpand);
+                    }
+                });
+
+                holder.mContentTv.setText(UrlUtils.formatUrlString(footPrint.getContent()));
+            }
+            holder.mContentTv.setVisibility(TextUtils.isEmpty(footPrint.getContent()) ? View.GONE : View.VISIBLE);
+
+
+
 
             //处理位置
             if (footPrint.isShowLocation()) {
@@ -174,7 +194,7 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             SimpleDateFormat lsdStrFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
                 Date strD = lsdStrFormat.parse(footPrint.getCreatedAt());
-                DateFormat dFormat = new SimpleDateFormat("MM月dd日  HH:mm"); //HH表示24小时制；
+                DateFormat dFormat = new SimpleDateFormat("MM月dd日  HH:mm");
                 String format = dFormat.format(strD);
                 holder.mTimeTv.setText(format);
             } catch (ParseException e) {
@@ -250,8 +270,6 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
             //设置用户信息
             String userId = footPrint.getUserId();
-            Log.d(TAG, "onBindViewHolder()-->> caUser" + userId);
-
             UserHelper.getInstance().queryUser("objectId", userId, new UserHelper.UserQueryCallback() {
                 @Override
                 public void onResult(List<CAUser> users, BmobException e) {
@@ -552,7 +570,7 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public static class CircleViewHolder extends RecyclerView.ViewHolder{
         private ImageView mUserPhotoImg;
         private TextView mUserNameTv;
-        private TextView mContentTv;
+        private ExpandTextView mContentTv;
         private TextView mLocationTv;
         private TextView mTimeTv;
         private TextView mPriseTv;
@@ -568,7 +586,7 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
             mUserPhotoImg    = (ImageView)itemView.findViewById(R.id.circle_recyclerView_item_user_photo);
             mUserNameTv      = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_user_name);
-            mContentTv       = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_content);
+            mContentTv       = (ExpandTextView)itemView.findViewById(R.id.circle_recyclerView_item_content);
             mLocationTv      = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_location);
             mTimeTv          = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_time);
             mPriseTv         = (TextView)itemView.findViewById(R.id.circle_recyclerView_item_praise);
@@ -603,7 +621,6 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         }
     }
 
-
     private int getType(FootPrint footPrint) {
         int type = 1;
         List<FootPrintFile> footPrintFiles = footPrint.getFootPrintFiles();
@@ -616,7 +633,6 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         }
         return type;
     }
-
 
 
 }
