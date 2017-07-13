@@ -30,6 +30,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private TextView mForgetPswBtn;
     private View mRootView;
     private ViewPager mViewPager;
+    private static CAUser currentUser;
 
     public LoginFragment() {
 
@@ -116,6 +117,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         UserHelper.getInstance().login(phoneNumber, psw, new UserHelper.UserCallback() {
             @Override
             public void onSuccess(CAUser user) {
+
+                currentUser = user;
                 Toast.makeText(LoginFragment.this.getContext(), "登录成功.", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 startActivity(intent);
@@ -129,4 +132,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    public static CAUser getCurrentUser() {
+        return currentUser;
+    }
 }

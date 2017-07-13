@@ -2,6 +2,7 @@ package com.lyy_wzw.comeacross.rong.server;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.lyy_wzw.comeacross.rong.server.network.http.HttpException;
 import com.lyy_wzw.comeacross.rong.server.request.AddGroupMemberRequest;
@@ -15,6 +16,7 @@ import com.lyy_wzw.comeacross.rong.server.request.DeleteGroupMemberRequest;
 import com.lyy_wzw.comeacross.rong.server.request.DismissGroupRequest;
 import com.lyy_wzw.comeacross.rong.server.request.FriendInvitationRequest;
 import com.lyy_wzw.comeacross.rong.server.request.JoinGroupRequest;
+import com.lyy_wzw.comeacross.rong.server.request.LoginRequest;
 import com.lyy_wzw.comeacross.rong.server.request.QuitGroupRequest;
 import com.lyy_wzw.comeacross.rong.server.request.RegisterRequest;
 import com.lyy_wzw.comeacross.rong.server.request.RemoveFromBlacklistRequest;
@@ -47,6 +49,7 @@ import com.lyy_wzw.comeacross.rong.server.response.GetUserInfoByIdResponse;
 import com.lyy_wzw.comeacross.rong.server.response.GetUserInfoByPhoneResponse;
 import com.lyy_wzw.comeacross.rong.server.response.GetUserInfosResponse;
 import com.lyy_wzw.comeacross.rong.server.response.JoinGroupResponse;
+import com.lyy_wzw.comeacross.rong.server.response.LoginResponse;
 import com.lyy_wzw.comeacross.rong.server.response.QiNiuTokenResponse;
 import com.lyy_wzw.comeacross.rong.server.response.QuitGroupResponse;
 import com.lyy_wzw.comeacross.rong.server.response.RegisterResponse;
@@ -78,6 +81,7 @@ import static com.lyy_wzw.comeacross.rong.server.utils.json.JsonMananger.jsonToB
  */
 
 public class WeixinAction extends BaseAction {
+    private static final String TAG = "DEBUG";
     private final String CONTENT_TYPE = "application/json";
     private final String ENCODING = "utf-8";
 
@@ -168,6 +172,34 @@ public class WeixinAction extends BaseAction {
         String result = httpManager.post(mContext,url,entity,CONTENT_TYPE);
         if (!TextUtils.isEmpty(result)) {
             response = jsonTobean(result,RegisterResponse.class);
+        }
+        return response;
+    }
+
+
+    /**
+     * 登录: 登录成功后，会设置 Cookie，后续接口调用需要登录的权限都依赖于 Cookie。
+     *
+     * @param region   国家码
+     * @param phone    手机号
+     * @param password 密码
+     * @throws HttpException
+     */
+    public LoginResponse login(String region, String phone, String password) throws HttpException {
+        String uri = getURL("user/login");
+        String json = JsonMananger.beanToJson(new LoginRequest(region, phone, password));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json, ENCODING);
+            entity.setContentType(CONTENT_TYPE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String result = httpManager.post(mContext, uri, entity, CONTENT_TYPE);
+        LoginResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("LoginResponse", result);
+            response = JsonMananger.jsonToBean(result, LoginResponse.class);
         }
         return response;
     }
@@ -351,6 +383,7 @@ public class WeixinAction extends BaseAction {
      */
     public UserRelationshipResponse getAllUserRelationship() throws HttpException {
         String url = getURL("friendship/all");
+        Log.e(TAG, "getAllUserRelationship: "+url );
         String result = httpManager.get(url);
         UserRelationshipResponse response = null;
         if (!TextUtils.isEmpty(result)) {

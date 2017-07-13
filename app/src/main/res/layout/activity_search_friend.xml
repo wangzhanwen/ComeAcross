@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_search_friend"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.lyy_wzw.comeacross.ui.SearchFriendActivity">
+
+    <LinearLayout
+        android:id="@+id/ll_result_search"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginTop="20dp"
+        android:background="#fff"
+        android:visibility="gone"
+        >
+    <EditText
+        android:id="@+id/et_phone_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="手机号"
+        android:layout_gravity="center"
+        android:gravity="center_vertical"
+        android:textColor="#222222"
+        android:textSize="22sp"
+        android:maxLines="1"
+        android:maxLength="11"
+        android:inputType="phone"
+        android:drawableLeft="@drawable/sealtalk_search"
+        android:drawablePadding="6dp"
+        />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.lyy_wzw.comeacross.rong.server.widget.SelectableRoundedImageView
+            android:id="@+id/iv_avatar_searchfriend"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="4dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_launcher_round"
+            />
+
+        <TextView
+            android:id="@+id/tv_name_searchfriend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:layout_gravity="center_vertical"
+            android:text="name"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/rp_arrow"
+            android:layout_gravity="center_vertical"
+            />
+    </LinearLayout>
+</LinearLayout>

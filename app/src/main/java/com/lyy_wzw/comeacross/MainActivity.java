@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.lyy_wzw.comeacross.addressbook.AddressBookFragment;
+import com.lyy_wzw.comeacross.addressbook.NewFriendListActivity;
 import com.lyy_wzw.comeacross.bean.CAUser;
 import com.lyy_wzw.comeacross.chat.ChatFragment;
 import com.lyy_wzw.comeacross.discovery.DiscoveryFragment;
@@ -34,7 +35,6 @@ import com.lyy_wzw.comeacross.ui.AddfriendActivity;
 import com.lyy_wzw.comeacross.user.UserHelper;
 import com.lyy_wzw.comeacross.user.activitys.LoginActivity;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,13 +45,12 @@ import io.rong.imkit.widget.adapter.ConversationListAdapter;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.UserInfo;
+import io.rong.message.ContactNotificationMessage;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, View.OnClickListener {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "DEBUG";
     private static final int REQUEST_CODE = 0x00000011;
-    private String rongToken = "TngWAHxIqJJlaoJvTfzivQvcUh0C0/rQgnE+7tbMgRXj9+prH8rB9xk/iFRvSzj8yf0GYps9IISSH3Rl/eEGkzMP1Dk3o7xV";
-
     private NavigationView navigationView;
     private DrawerLayout drawer;
     public Toolbar toolbar;
@@ -115,6 +114,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }, true);
 
+
+
     }
 
 
@@ -139,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(MainActivity.this,"连接融云服务器失败."+code,Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     private void initViews() {
@@ -242,7 +244,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(),fragments);
         viewPager.setAdapter(adapter);
 
+        initData();
+
     }
+
+    private void initData() {
+        final Conversation.ConversationType[] conversationTypes = {
+                Conversation.ConversationType.PRIVATE,
+                Conversation.ConversationType.GROUP, Conversation.ConversationType.SYSTEM,
+                Conversation.ConversationType.PUBLIC_SERVICE, Conversation.ConversationType.APP_PUBLIC_SERVICE
+        };
+
+        getConversationPush();// 获取 push 的 id 和 target
+    }
+
+    private void getConversationPush() {
+        if (getIntent() != null && getIntent().hasExtra("PUSH_CONVERSATIONTYPE") && getIntent().hasExtra("PUSH_TARGETID")) {
+
+            Log.e(TAG, "getConversationPush: 得到push消息" );
+            final String conversationType = getIntent().getStringExtra("PUSH_CONVERSATIONTYPE");
+            final String targetId = getIntent().getStringExtra("PUSH_TARGETID");
+
+
+            RongIM.getInstance().getConversation(Conversation.ConversationType.valueOf(conversationType), targetId, new RongIMClient.ResultCallback<Conversation>() {
+                @Override
+                public void onSuccess(Conversation conversation) {
+
+                    if (conversation != null) {
+
+                        if (conversation.getLatestMessage() instanceof ContactNotificationMessage) { //好友消息的push
+                            startActivity(new Intent(MainActivity.this, NewFriendListActivity.class));
+                        } else {
+                            Uri uri = Uri.parse("rong://" + getApplicationInfo().packageName).buildUpon().appendPath("conversation")
+                                    .appendPath(conversationType).appendQueryParameter("targetId", targetId).build();
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(uri);
+                            startActivity(intent);
+                        }
+                    }
+                }
+
+                @Override
+                public void onError(RongIMClient.ErrorCode e) {
+
+                }
+            });
+        }
+    }
+
+
+
 
     private Fragment initConversationList() {
         if (mConversationListFragment == null) {
@@ -251,11 +302,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Uri uri = Uri.parse("rong://"+getApplicationInfo().packageName).buildUpon()
                     .appendPath("conversationlist")
                     .appendQueryParameter(Conversation.ConversationType.PRIVATE.getName(),"false")//设置私聊会话是否聚合显示
-                    .appendQueryParameter(Conversation.ConversationType.GROUP.getName(),"true")//群组
+                    .appendQueryParameter(Conversation.ConversationType.GROUP.getName(),"false")//群组
                     .appendQueryParameter(Conversation.ConversationType.PUBLIC_SERVICE.getName(),"false")//公共服务号
-                    .appendQueryParameter(Conversation.ConversationType.APP_PUBLIC_SERVICE.getName(),"true")//订阅号
+                    .appendQueryParameter(Conversation.ConversationType.APP_PUBLIC_SERVICE.getName(),"false")//订阅号
                     .appendQueryParameter(Conversation.ConversationType.SYSTEM.getName(),"true")//系统
-                    .appendQueryParameter(Conversation.ConversationType.DISCUSSION.getName(),"true")//
+                    .appendQueryParameter(Conversation.ConversationType.DISCUSSION.getName(),"false")//
                     .build();
             mConversationTypes = new Conversation.ConversationType[]{
                     Conversation.ConversationType.GROUP,
@@ -330,6 +381,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        RongIM.getInstance().logout();
 
         if(keyCode == KeyEvent.KEYCODE_BACK){
             if(System.currentTimeMillis()- mSystemTime < 1000 && mSystemTime != 0){
@@ -343,6 +395,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
         return false;
+    }
+
+    public void getPushMessage() {
+
+        Log.e(TAG, "getPushMessage: "+getIntent().getData().toString());
+        if (getIntent() != null && getIntent().hasExtra("PUSH_CONVERSATIONTYPE") && getIntent().hasExtra("PUSH_TARGETID")) {
+
+            final String conversationType = getIntent().getStringExtra("PUSH_CONVERSATIONTYPE");
+            final String targetId = getIntent().getStringExtra("PUSH_TARGETID");
+
+
+            RongIM.getInstance().getConversation(Conversation.ConversationType.valueOf(conversationType), targetId, new RongIMClient.ResultCallback<Conversation>() {
+                @Override
+                public void onSuccess(Conversation conversation) {
+
+                    /*if (conversation != null) {
+
+                        if (conversation.getLatestMessage() instanceof ContactNotificationMessage) { //好友消息的push
+                            startActivity(new Intent(MainActivity.this, NewFriendListActivity.class));
+                        } else {
+                            Uri uri = Uri.parse("rong://" + getApplicationInfo().packageName).buildUpon().appendPath("conversation")
+                                    .appendPath(conversationType).appendQueryParameter("targetId", targetId).build();
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(uri);
+                            startActivity(intent);
+                        }
+                    }*/
+                    Log.e(TAG, "onSuccess:收到push消息 "+conversation.getLatestMessage() );
+                }
+
+                @Override
+                public void onError(RongIMClient.ErrorCode e) {
+
+                }
+            });
+        }
+
+
     }
 
 }

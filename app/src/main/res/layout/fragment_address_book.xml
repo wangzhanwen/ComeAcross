@@ -1,15 +1,53 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.lyy_wzw.comeacross.addressbook.AddressBookFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <Button
-        android:id="@+id/friend"
+
+    <!--不设置成frameLayout不会显示-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <ListView
+            android:id="@+id/listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+    </ListView>
+    <TextView
+        android:id="@+id/tv_dialog_sidebar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="朋友1"
+        android:background="#000000"
+        android:textColor="#000000"
+        android:textSize="30dp"
+        android:visibility="gone"
+        android:gravity="center"
         />
+    <io.rong.imkit.mention.SideBar
+        android:id="@+id/sidebar_address"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right|center"
+        android:visibility="gone"
+        />
+        <EditText
+            android:id="@+id/edit_search_phone"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="请输入手机号"
+            />
+        <Button
+            android:id="@+id/test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="测试接口"
+            android:layout_gravity="bottom"
+            />
+    </FrameLayout>
 
-</FrameLayout>
+
+
+</LinearLayout>

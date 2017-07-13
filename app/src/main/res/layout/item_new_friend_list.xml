@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="45dp"
+              android:background="#fff"
+
+    >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <com.lyy_wzw.comeacross.rong.server.widget.SelectableRoundedImageView
+        android:id="@+id/iv_newFriend_avatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    <TextView
+        android:id="@+id/tv_name_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/text_already_agree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="已经添加"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        />
+    <Button
+        android:id="@+id/btn_agree_invite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="接受"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        android:onClick="agreeInvite"
+        />
+
+    
+
+</RelativeLayout>

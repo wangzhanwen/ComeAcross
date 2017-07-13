@@ -14,7 +14,7 @@ import java.util.List;
 
 public class BaseAction {
 
-    private static final String DOMAIN = "http://api.sealtalk.im";
+    private static final String DOMAIN = "http://api.sealtalk.im/";
     protected Context mContext;
     protected SyncHttpClient httpManager;
 

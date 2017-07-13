@@ -6,10 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.R;
-import com.lyy_wzw.comeacross.addressbook.AddressBookFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,5 +30,7 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_chat, container, false);
     }
+
+
 
 }

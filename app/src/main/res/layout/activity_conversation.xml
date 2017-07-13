@@ -3,10 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
-    <TextView
-        android:id="@+id/tvFriendName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+
     <fragment
         android:id="@+id/conversation"
         android:name="io.rong.imkit.fragment.ConversationFragment"
