@@ -1,16 +1,9 @@
 package com.lyy_wzw.comeacross.user;
 
-import android.content.Intent;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.lyy_wzw.comeacross.MainActivity;
 import com.lyy_wzw.comeacross.bean.CAUser;
-import com.lyy_wzw.comeacross.rong.server.WeixinAction;
-import com.lyy_wzw.comeacross.user.fragments.LoginFragment;
-import com.lyy_wzw.comeacross.user.fragments.RegisterFragment;
 
-import java.io.File;
+
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;

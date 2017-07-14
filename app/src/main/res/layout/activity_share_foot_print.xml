@@ -23,8 +23,8 @@
             android:foreground="@drawable/btn_back_selector">
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:scaleType="centerInside"

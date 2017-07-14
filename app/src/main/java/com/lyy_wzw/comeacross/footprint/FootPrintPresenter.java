@@ -3,6 +3,7 @@ package com.lyy_wzw.comeacross.footprint;
 import android.content.Context;
 
 import com.baidu.mapapi.model.LatLng;
+import com.lyy_wzw.comeacross.bean.FootPrint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,7 @@ public class FootPrintPresenter implements FootPrintContract.Presenter {
 
     @Override
     public void setFootPrintMark() {
-        LatLng pt1 = new LatLng(39.53923, 116.357428);
-        mView.showFootPrintMark(pt1);
+
     }
 
     @Override
@@ -39,21 +39,10 @@ public class FootPrintPresenter implements FootPrintContract.Presenter {
 
 
     @Override
-    public void setFootPrintMarks() {
-        LatLng pt1 = new LatLng(39.93923, 116.357428);
-        LatLng pt2 = new LatLng(39.73923, 116.327428);
-        LatLng pt3 = new LatLng(39.6398, 116.347428);
-        LatLng pt4 = new LatLng(39.89923, 116.367428);
-        LatLng pt5 = new LatLng(39.91923, 116.387428);
-        List<LatLng> pts = new ArrayList<LatLng>();
+    public void setFootPrintMarks(List<FootPrint> footPrints) {
 
-        pts.add(pt1);
-        pts.add(pt2);
-        pts.add(pt3);
-        pts.add(pt4);
-        pts.add(pt5);
-        for (int i = 0; i < pts.size(); i++) {
-            mView.showFootPrintMark(pts.get(i));
+        for (int i = 0; i < footPrints.size(); i++) {
+            mView.showFootPrintMark(footPrints.get(i), i);
         }
 
     }

@@ -21,6 +21,7 @@ import com.lyy_wzw.comeacross.footprint.activity.TestActivity;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FPPopupWinValue;
 import com.lyy_wzw.comeacross.utils.EasyTransition;
 import com.lyy_wzw.comeacross.utils.EasyTransitionOptions;
+import com.lyy_wzw.comeacross.utils.GlideUtil;
 import com.lyy_wzw.comeacross.utils.PixelUtil;
 import com.lyy_wzw.imageselector.utils.ImageSelectorUtils;
 
@@ -51,9 +52,9 @@ public class FPPopupWinGridViewAdapter extends WzwBaseAdapter<String>{
         }
 
         if (url.endsWith(".gif")) {
-            loadPicAsGif(url, imageView);
+            GlideUtil.loadPicAsGif(mContext,url, imageView);
         }else{
-            loadPic(url, imageView);
+            GlideUtil.loadPic(mContext,url, imageView);
         }
 
 
@@ -70,29 +71,6 @@ public class FPPopupWinGridViewAdapter extends WzwBaseAdapter<String>{
 
             }
         });
-    }
-
-    private void loadPicAsGif(String path, ImageView imageView ){
-        Glide.with(mContext)
-                .load(path)
-                .asGif()
-                .placeholder(R.mipmap.meizhi0)
-                .error(R.mipmap.meizhi7)
-                .override(PixelUtil.dip2px(mContext, 100), PixelUtil.dip2px(mContext, 100)) // 重新改变图片大小成这些尺寸(像素)比
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imageView);
-    }
-
-    private void loadPic(String path, ImageView imageView ){
-        Glide.with(mContext)
-                .load(path)
-                .placeholder(R.mipmap.meizhi0)
-                .error(R.mipmap.meizhi7)
-                .override(PixelUtil.dip2px(mContext, 100), PixelUtil.dip2px(mContext, 100)) // 重新改变图片大小成这些尺寸(像素)比
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imageView);
     }
 
 }

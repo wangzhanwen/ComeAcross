@@ -1,13 +1,130 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical"
     tools:context="com.lyy_wzw.comeacross.footprint.FootPrintFragment">
 
-    <com.baidu.mapapi.map.MapView
-        android:id="@+id/footprint_mapView"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_footprint_current_user"
+            android:src="@mipmap/meizhi7"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            android:layout_margin="10dp"
+            android:layout_alignParentLeft="true"/>
+        <ImageView
+            android:id="@+id/img_share_footprint_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/share_camera_icon_green"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="28dp">
+
+        <FrameLayout
+            android:id="@+id/footprint_location"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/frameLayout">
+
+            <TextView
+                android:id="@+id/tv_footprint_city_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_footprint_city_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"/>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="85dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/temperature_background"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal"
+            android:id="@+id/frameLayout">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img_footprint_user_photo"
+                android:src="@mipmap/meizhi7"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="left|center_vertical"
+                android:scaleType="centerCrop" />
+
+            <TextSwitcher
+                android:id="@+id/ts_footprint_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"/>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+    <com.lyy_wzw.comeacross.footprint.ui.CardRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="210dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginStart="@dimen/recycler_view_left_offset"
+        android:clipChildren="false"
+        android:overScrollMode="never"
+        android:background="#fff"
+        app:layoutManager="com.lyy_wzw.comeacross.footprint.cardslider.CardSliderLayoutManager"
+        app:viewUpdater="com.lyy_wzw.comeacross.footprint.cards.CardsUpdater"/>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true" />
+        android:animateLayoutChanges="true">
 
-</FrameLayout>
+        <com.baidu.mapapi.map.MapView
+            android:id="@+id/footprint_mapView"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_alignParentBottom="true"
+            android:clickable="true"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:orientation="vertical"
+            android:background="@drawable/gradient_map">
+
+
+            <TextSwitcher
+                android:id="@+id/ts_footprint_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/left_offset"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

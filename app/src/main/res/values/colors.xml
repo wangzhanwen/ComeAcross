@@ -58,5 +58,20 @@
 
 
     <color name="color_blue_enable">#8800b6f8</color>
+    <color name="circle_txt_color">#8290AF</color>
+    <color name="circle_prise_color">#cccccc</color>
+    <color name="circle_prised_color">#1c4f63</color>
+
+    <!--点赞, 评论-->
+    <color name="praise_item_default">#333333</color>
+    <color name="praise_item_selector_default">#cccccc</color>
+    <color name="praise_item">#8290AF</color>
+    <color name="default_clickable_color">#cccccc</color>
+    <color name="basic_color_primary">#373b3e</color>
+    <color name="transparent">#00000000</color>
+    <color name="color_8290AF">#8290AF</color>
+    <color name="im_line_color">#dadada</color>
+    <color name="color_232323">#232323</color>
+    <color name="name_selector_color">#cccccc</color>
 
 </resources>

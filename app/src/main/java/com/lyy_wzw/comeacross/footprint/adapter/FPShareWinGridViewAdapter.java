@@ -17,6 +17,7 @@ import com.lyy_wzw.comeacross.footprint.activity.FootPrintImageLookActivity;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FPPopupWinValue;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
+import com.lyy_wzw.comeacross.utils.GlideUtil;
 import com.lyy_wzw.comeacross.utils.PixelUtil;
 
 import java.util.ArrayList;
@@ -77,6 +78,13 @@ public class FPShareWinGridViewAdapter extends WzwBaseAdapter<FootPrintFile>{
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                        if (isExitVideo()) {
+                            Toast.makeText(mContext,
+                                    "视频只能单独发送.",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         if (mFootPrintFiles.size() < FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT+1) {
                             ShareFootPrintPopupWin shareFootPrintPW = new ShareFootPrintPopupWin(mContext);
                             shareFootPrintPW.setSelectImageCount(FootPrintConstantValue.SHARE_IMAGE_MAX_COUNT+1-mFootPrintFiles.size());
@@ -91,9 +99,10 @@ public class FPShareWinGridViewAdapter extends WzwBaseAdapter<FootPrintFile>{
             });
         }else{
             if (imagePath.endsWith(".gif")) {
-                loadPicAsGif(imagePath, imageView);
+                GlideUtil.loadPicAsGif(mContext,imagePath, imageView);
+
             }else{
-                loadPic(imagePath, imageView);
+                GlideUtil.loadPic(mContext,imagePath, imageView);
             }
 
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -124,27 +133,15 @@ public class FPShareWinGridViewAdapter extends WzwBaseAdapter<FootPrintFile>{
 
     }
 
-    private void loadPicAsGif(String path, ImageView imageView ){
-        Glide.with(mContext)
-                .load(path)
-                .asGif()
-                .placeholder(R.mipmap.meizhi0)
-                .error(R.mipmap.meizhi7)
-                // 重新改变图片大小成这些尺寸(像素)比
-                .override(PixelUtil.dip2px(mContext, 100), PixelUtil.dip2px(mContext, 100))
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imageView);
+    private boolean isExitVideo(){
+        boolean ret = false;
+        for (int i = 0; i < mFootPrintFiles.size(); i++) {
+            FootPrintFile footPrintFile = mFootPrintFiles.get(i);
+            if (footPrintFile.getType() == 2) {
+                ret = true;
+            }
+        }
+        return ret;
     }
-    private void loadPic(String path, ImageView imageView ){
-        Glide.with(mContext)
-                .load(path)
-                .placeholder(R.mipmap.meizhi0)
-                .error(R.mipmap.meizhi7)
-                // 重新改变图片大小成这些尺寸(像素)比
-                .override(PixelUtil.dip2px(mContext, 100), PixelUtil.dip2px(mContext, 100))
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imageView);
-    }
+
 }

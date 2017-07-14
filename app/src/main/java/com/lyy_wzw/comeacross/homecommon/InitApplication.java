@@ -2,9 +2,9 @@ package com.lyy_wzw.comeacross.homecommon;
 
 import android.app.Application;
 import android.content.Context;
+
 import android.util.Log;
 import android.view.View;
-
 import com.baidu.mapapi.SDKInitializer;
 import com.lyy_wzw.comeacross.R;
 
@@ -29,11 +29,13 @@ import static io.rong.imkit.utils.SystemUtils.getCurProcessName;
 public class InitApplication  extends Application implements RongIM.ConversationListBehaviorListener ,RongIMClient.OnReceiveMessageListener{
     public static String APPID = "575d92ce0454363528535cf901fb9d06";
     private String TAG = "InitApplication";
-
     private static DisplayImageOptions options;
+    private static Context mContext;
     @Override
     public void onCreate() {
         super.onCreate();
+        mContext = getApplicationContext();
+
         //初始化百度地图
         SDKInitializer.initialize(getApplicationContext());
         //融云初始化
@@ -130,5 +132,9 @@ public class InitApplication  extends Application implements RongIM.Conversation
     public boolean onReceived(Message message, int i) {
         Log.e(TAG, "onConversationClick: 得到一条消息" );
         return false;
+    }
+
+    public static Context getContext(){
+        return mContext;
     }
 }

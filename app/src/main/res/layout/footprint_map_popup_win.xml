@@ -55,6 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp">
                 <TextView
+                    android:id="@+id/footprint_popupwin_content_txt"
                     android:text="尽管走下去，不必逗留着，去取鲜花来保存，因为这一路上，花自然会继续开放。尽管走下去，不必逗留着，去取鲜花来保存，因为这一路上，花自然会继续开放。"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

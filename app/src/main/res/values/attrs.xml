@@ -82,4 +82,26 @@
         <attr name="kswTextMarginH" format="dimension"/>
     </declare-styleable>
 
+
+    <declare-styleable name="CardSlider">
+        <!-- Active card offset from start of RecyclerView. Default value is 50dp. -->
+        <attr name="activeCardLeftOffset" format="dimension"/>
+        <!-- Card width. Default value is 148dp. -->
+        <attr name="cardWidth" format="dimension"/>
+        <!-- Distance between cards. Default value is 12dp. -->
+        <attr name="cardsGap" format="dimension"/>
+        <!-- ViewUpdater implementation class. If not set, DefaultViewUpdater class is used. -->
+        <attr name="viewUpdater" format="string"/>
+    </declare-styleable>
+
+    <!--点赞评论 PriseListView，CommentListView-->
+    <declare-styleable name="PraiseListView">
+        <attr name="item_color" format="color"/>
+        <attr name="item_selector_color" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="ExpandTextView">
+        <attr name="showLines" format="integer"/>
+    </declare-styleable>
+
 </resources>

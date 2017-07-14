@@ -122,9 +122,7 @@ public class UserdetailActivity extends AppCompatActivity implements View.OnClic
     };
 
     private void initView() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-       // mToolbar.setTitle("用户详情");
+
 
         mTvNickName = (TextView) findViewById(R.id.contact_below);
         mTvDispalyName = (TextView) findViewById(R.id.contact_top);
