@@ -10,26 +10,73 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <android.support.v7.widget.CardView
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="23dp"
+            app:cardElevation="10dp">
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_footprint_current_user"
             android:src="@mipmap/meizhi7"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:scaleType="centerCrop"
-            android:layout_margin="10dp"
-            android:layout_alignParentLeft="true"/>
-        <ImageView
-            android:id="@+id/img_share_footprint_btn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
+            android:layout_gravity="center"/>
+
+        </android.support.v7.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/footprint_bottom_refresh_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <com.lyy_wzw.comeacross.discovery.widgets.CircleBottomRefreshView
+                android:id="@+id/footprint_bottom_refresh_view"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:src="@mipmap/circle_rainbow_icon" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp"
+                android:textColor="@color/colorPrimary"
+                android:text="正在加载..."/>
+
+        </LinearLayout>
+
+
+        <android.support.v7.widget.CardView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
-            android:src="@mipmap/share_camera_icon_green"/>
+            android:layout_margin="10dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp">
+            <ImageView
+                android:id="@+id/img_share_footprint_btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/share_camera_icon_green"/>
+        </android.support.v7.widget.CardView>
+
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="28dp">
+        android:layout_height="34dp">
 
         <FrameLayout
             android:id="@+id/footprint_location"
@@ -57,45 +104,96 @@
 
         </FrameLayout>
 
-        <LinearLayout
-            android:layout_width="85dp"
-            android:layout_height="match_parent"
+        <android.support.v7.widget.CardView
+            android:id="@+id/frameLayout"
+            android:layout_width="100dp"
+            android:layout_height="34dp"
             android:layout_alignParentEnd="true"
-            android:background="@drawable/temperature_background"
-            android:layout_centerVertical="true"
             android:orientation="horizontal"
-            android:id="@+id/frameLayout">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/img_footprint_user_photo"
-                android:src="@mipmap/meizhi7"
-                android:layout_width="28dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/temperature_background"
+            android:layout_marginRight="-15dp"
+            app:cardBackgroundColor="#eee"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="17dp">
+            <LinearLayout
+                android:layout_width="85dp"
                 android:layout_height="28dp"
-                android:layout_gravity="left|center_vertical"
-                android:scaleType="centerCrop" />
+                android:background="@drawable/temperature_background"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="3dp"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal">
 
-            <TextSwitcher
-                android:id="@+id/ts_footprint_user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"/>
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/img_footprint_user_photo"
+                    android:src="@mipmap/meizhi7"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:scaleType="centerCrop" />
 
-        </LinearLayout>
+                <TextSwitcher
+                    android:id="@+id/ts_footprint_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"/>
 
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
     </RelativeLayout>
-    <com.lyy_wzw.comeacross.footprint.ui.CardRecyclerView
-        android:id="@+id/recycler_view"
+    
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="210dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginStart="@dimen/recycler_view_left_offset"
-        android:clipChildren="false"
-        android:overScrollMode="never"
-        android:background="#fff"
-        app:layoutManager="com.lyy_wzw.comeacross.footprint.cardslider.CardSliderLayoutManager"
-        app:viewUpdater="com.lyy_wzw.comeacross.footprint.cards.CardsUpdater"/>
-
+        android:layout_height="wrap_content">
+        <com.lyy_wzw.comeacross.footprint.ui.CardRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="@dimen/recycler_view_left_offset"
+            android:clipChildren="false"
+            android:overScrollMode="never"
+            android:background="#fff"
+            app:layoutManager="com.lyy_wzw.comeacross.footprint.cardslider.CardSliderLayoutManager"
+            app:viewUpdater="com.lyy_wzw.comeacross.footprint.cards.CardsUpdater"/>
+        
+        <android.support.v7.widget.CardView
+            android:id="@+id/footprint_refresh_btn"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="bottom"
+            app:cardCornerRadius="17dp"
+            app:cardElevation="6dp">
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/footprint_refresh_icon"/>
+        </android.support.v7.widget.CardView>
+    </FrameLayout>
+    
+    <!--<com.lyy_wzw.comeacross.footprint.ui.CardRecyclerView-->
+        <!--android:id="@+id/recycler_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="210dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:layout_marginStart="@dimen/recycler_view_left_offset"-->
+        <!--android:clipChildren="false"-->
+        <!--android:overScrollMode="never"-->
+        <!--android:background="#fff"-->
+        <!--app:layoutManager="com.lyy_wzw.comeacross.footprint.cardslider.CardSliderLayoutManager"-->
+        <!--app:viewUpdater="com.lyy_wzw.comeacross.footprint.cards.CardsUpdater"/>-->
+    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#ddd"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -108,22 +206,48 @@
             android:layout_alignParentBottom="true"
             android:clickable="true"/>
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="240dp"
+            android:layout_height="220dp"
             android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
             android:background="@drawable/gradient_map">
+            <android.support.v7.widget.CardView
+                android:id="@+id/footprint_content_container"
+                android:layout_width="wrap_content"
+                android:layout_height="105dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="-10dp"
+                app:cardBackgroundColor="#09ffffff"
+                app:cardElevation="0.5dp"
+                app:cardCornerRadius="5dp"
+                android:visibility="invisible">
+                <TextSwitcher
+                    android:id="@+id/ts_footprint_content"
+                    android:layout_width="300dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="20dp"
+                    android:background="#00000000"
+                    android:padding="10dp"/>
+            </android.support.v7.widget.CardView>
 
-
-            <TextSwitcher
-                android:id="@+id/ts_footprint_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/left_offset"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"/>
-
-        </LinearLayout>
+            <android.support.v7.widget.CardView
+                android:id="@+id/footprint_content_hide_cv"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="-20dp"
+                android:layout_gravity="center_horizontal"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="20dp">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="3dp"
+                    android:src="@mipmap/extend_icon"
+                    android:layout_gravity="bottom|center_horizontal"/>
+            </android.support.v7.widget.CardView>
+        </FrameLayout>
 
     </RelativeLayout>
 

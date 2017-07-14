@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
     </style>
+
     <style name="dialogFullscreen">
         <item name="android:windowFullscreen">true</item>
     </style>

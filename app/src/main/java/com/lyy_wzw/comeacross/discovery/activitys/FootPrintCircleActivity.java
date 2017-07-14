@@ -29,6 +29,7 @@ import com.lyy_wzw.comeacross.R;
 import com.lyy_wzw.comeacross.bean.CAUser;
 import com.lyy_wzw.comeacross.bean.CommentItem;
 import com.lyy_wzw.comeacross.bean.FootPrint;
+import com.lyy_wzw.comeacross.bean.ReleaseFootPrintEvent;
 import com.lyy_wzw.comeacross.discovery.DicoveryConstantValue;
 import com.lyy_wzw.comeacross.discovery.adapter.CircleRecyclerViewAdapter;
 
@@ -42,6 +43,10 @@ import com.lyy_wzw.comeacross.utils.GlideUtil;
 
 import com.lyy_wzw.comeacross.utils.SoftInputUtil;
 
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +92,7 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_foot_print_circle);
         initView();
+        EventBus.getDefault().register(this);
     }
 
     private void initView() {
@@ -135,7 +141,7 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
+                mLastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
                 //updateEditTextBodyVisible(View.GONE);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && mLastVisibleItem + 1 == mRecyclerViewAdapter.getItemCount()) {
                     mRecyclerViewAdapter.setIsLoadMore(true);
@@ -172,7 +178,13 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
 
     }
 
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReleaseFootPrintEvent(ReleaseFootPrintEvent event){
+        if (event!=null  && event.getFootPrint()!=null ){
+            mDatas.add(event.getFootPrint());
+            mRecyclerViewAdapter.notifyDataSetChanged();
+        }
+    }
     private void setViewTreeObserver() {
         final ViewTreeObserver swipeRefreshLayoutVTO = mCircleRootView.getViewTreeObserver();
         swipeRefreshLayoutVTO.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -218,7 +230,6 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
 
     public void onRefresh(){
         if (!isRefreshing) {
-            Log.d(TAG, "执行刷新");
             isRefreshing = true;
             mTopRefreshView.startRefreshAnim();
             FootPrintServer.getInstance().getAll(new FootPrintServer.FootPrintQueryCallback() {
@@ -469,6 +480,11 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
         mAppBarLayout.removeOnOffsetChangedListener(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {

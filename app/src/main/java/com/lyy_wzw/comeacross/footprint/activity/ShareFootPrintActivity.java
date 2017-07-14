@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,7 @@ import com.lyy_wzw.comeacross.R;
 import com.lyy_wzw.comeacross.bean.FootPrint;
 import com.lyy_wzw.comeacross.bean.FootPrintAddress;
 import com.lyy_wzw.comeacross.bean.FootPrintFile;
+import com.lyy_wzw.comeacross.bean.ReleaseFootPrintEvent;
 import com.lyy_wzw.comeacross.footprint.adapter.FPShareWinGridViewAdapter;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.utils.AddressAsyncTask;
@@ -43,6 +45,8 @@ import com.lyy_wzw.comeacross.user.UserHelper;
 import com.lyy_wzw.comeacross.utils.FileUtil;
 import com.lyy_wzw.comeacross.utils.ScreenUtils;
 
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -412,6 +416,7 @@ public class ShareFootPrintActivity extends AppCompatActivity implements View.On
                 btnSend.setEnabled(true);
                 if(e==null){
                     Log.d(TAG,"footPrint:"+footPrint.toString() );
+                    EventBus.getDefault().post(new ReleaseFootPrintEvent(System.currentTimeMillis(), footPrint));
                     Toast.makeText(ShareFootPrintActivity.this, "发送成功.", Toast.LENGTH_SHORT).show();
                     finish();
                 }else{

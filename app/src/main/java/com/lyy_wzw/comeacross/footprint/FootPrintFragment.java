@@ -1,22 +1,20 @@
 package com.lyy_wzw.comeacross.footprint;
 
 
+
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.ActivityOptions;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
+
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,6 +53,8 @@ import com.lyy_wzw.comeacross.R;
 import com.lyy_wzw.comeacross.bean.CAUser;
 import com.lyy_wzw.comeacross.bean.FootPrint;
 import com.lyy_wzw.comeacross.bean.FootPrintAddress;
+import com.lyy_wzw.comeacross.bean.ReleaseFootPrintEvent;
+import com.lyy_wzw.comeacross.discovery.widgets.CircleBottomRefreshView;
 import com.lyy_wzw.comeacross.footprint.cards.SliderAdapter;
 import com.lyy_wzw.comeacross.footprint.cardslider.CardSliderLayoutManager;
 import com.lyy_wzw.comeacross.footprint.cardslider.CardSnapHelper;
@@ -62,8 +63,13 @@ import com.lyy_wzw.comeacross.footprint.ui.ShareFootPrintPopupWin;
 import com.lyy_wzw.comeacross.footprint.utils.AddressAsyncTask;
 import com.lyy_wzw.comeacross.server.FootPrintServer;
 import com.lyy_wzw.comeacross.user.UserHelper;
+import com.lyy_wzw.comeacross.utils.Animutil;
 import com.lyy_wzw.comeacross.utils.BitmapUtil;
 import com.lyy_wzw.comeacross.utils.GlideUtil;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +108,7 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     private RecyclerView recyclerView;
     private CardSliderLayoutManager layoutManger;
     private  SliderAdapter sliderAdapter ;
-    private List<FootPrint> mDatas;
+    private List<FootPrint> mDatas = new ArrayList<>();;
 
 
     private TextSwitcher userNameSwitcher;
@@ -119,15 +125,30 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
 
     private FootPrintAddress mCurrentUserAddress;
 
+    private boolean isRsfreshing = false;
+    private boolean isOnLoading = false;
+    private CardView  mHideContentBtn;
+    private CardView  mContentContainer;
+    private long mLastTime;
+    private LinearLayout mRefreshContainer;
+    private CircleBottomRefreshView mRefreshView;
+    private CardView mRefreshBtn;
+
     public FootPrintFragment() {
 
     }
+
 
     public static FootPrintFragment instance(MainActivity activity){
         mainActivity = activity;
         return new FootPrintFragment();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -135,27 +156,47 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         mContainView = inflater.inflate(R.layout.fragment_foot_print, container, false);
         initViews(mContainView);
 
-        return mContainView;
-    }
-    @Override
-    public void initViews(View view) {
-        initMapView(view);
-        initRecyclerView(view);
-        initLocationText(view);
-        initSwitchers(view);
-
-        mCurrentUserImg = (CircleImageView) view.findViewById(R.id.img_footprint_current_user);
-        mFootPrintUserImg = (CircleImageView) view.findViewById(R.id.img_footprint_user_photo);
-        mShareFootPrintBtn = (ImageView) view.findViewById(R.id.img_share_footprint_btn);
-        mShareFootPrintBtn.setOnClickListener(this);
-        mCurrentUserImg.setOnClickListener(this);
-
         CAUser currentUser = UserHelper.getInstance().getCurrentUser();
         if (currentUser != null) {
             GlideUtil.loadPic(this.getContext(),currentUser.getUserPhoto(),mCurrentUserImg);
         }
 
+
+        return mContainView;
     }
+    @Override
+    public void initViews(View view) {
+
+        mCurrentUserImg = (CircleImageView) view.findViewById(R.id.img_footprint_current_user);
+        mFootPrintUserImg = (CircleImageView) view.findViewById(R.id.img_footprint_user_photo);
+        mShareFootPrintBtn = (ImageView) view.findViewById(R.id.img_share_footprint_btn);
+        mHideContentBtn = (CardView) view.findViewById(R.id.footprint_content_hide_cv);
+        mContentContainer = (CardView) view.findViewById(R.id.footprint_content_container);
+        mRefreshContainer = (LinearLayout) view.findViewById(R.id.footprint_bottom_refresh_container);
+        mRefreshView = (CircleBottomRefreshView) view.findViewById(R.id.footprint_bottom_refresh_view);
+        mRefreshBtn = (CardView) view.findViewById(R.id.footprint_refresh_btn);
+
+        mShareFootPrintBtn.setOnClickListener(this);
+        mCurrentUserImg.setOnClickListener(this);
+        mHideContentBtn.setOnClickListener(this);
+        mRefreshBtn.setOnClickListener(this);
+
+        refreshData();
+        initMapView(view);
+        initRecyclerView(view);
+        initLocationText(view);
+        initSwitchers(view);
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReleaseFootPrintEvent(ReleaseFootPrintEvent event){
+        if (event!=null  && event.getFootPrint()!=null ){
+            mDatas.add(event.getFootPrint());
+            sliderAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     private void initRecyclerView(final View rootView) {
 
@@ -173,27 +214,156 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         layoutManger = (CardSliderLayoutManager) recyclerView.getLayoutManager();
 
         new CardSnapHelper().attachToRecyclerView(recyclerView);
+        sliderAdapter = new SliderAdapter(FootPrintFragment.this.getContext(), mDatas, new OnCardClickListener());
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && layoutManger.getActiveCardPosition()+ 1 == layoutManger.getItemCount()) {
+                    Log.d(TAG,"onScrolled()-->> 加载");
+                    onLoadData();
+                }
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && layoutManger.getActiveCardPosition() == 0) {
+                    Log.d(TAG,"onScrolled()-->> 刷新");
+                    refreshData();
+                }
+
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+
+            }
+        });
+
+        recyclerView.setAdapter(sliderAdapter);
+
+    }
+
+    private void refreshData() {
+        if (isRsfreshing) {
+            Toast.makeText(FootPrintFragment.this.getContext(), "正在加载数据，请稍后...", Toast.LENGTH_SHORT).show();
+
+        }
+        isRsfreshing = true;
+        mRefreshContainer.setVisibility(View.VISIBLE);
+        mRefreshView.startRefreshAnim();
+
+        Animutil.moveAnimDown(FootPrintFragment.this.getContext(),
+                mRefreshContainer,
+                200,
+                400,
+                null);
 
         FootPrintServer.getInstance().getAll(new FootPrintServer.FootPrintQueryCallback() {
             @Override
             public void onSuccess(List<FootPrint> footPrints) {
+                Animutil.moveAnimUp(FootPrintFragment.this.getContext(),
+                        mRefreshContainer,
+                        200,
+                        400,
+                        new Animutil.OnAnimListener() {
+                            @Override
+                            public void onEnd() {
+                                mRefreshView.stopRefreshAnim();
+                                mRefreshContainer.setVisibility(View.GONE);
+                            }
+                        });
+
+                isRsfreshing = false;
                 if (footPrints != null){
-                    mDatas = footPrints;
-                    sliderAdapter = new SliderAdapter(FootPrintFragment.this.getContext(), mDatas, new OnCardClickListener());
-                    recyclerView.setAdapter(sliderAdapter);
+                    mDatas.clear();
+                    mDatas.addAll(footPrints);
+                    mBaiduMap.clear();
+                    mPresenter.setFootPrintMarks(mDatas);
                     //数据异步步获取成功后,初始化第一个数据
                     initSwitcherText();
-
+                    sliderAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
             public void onError(BmobException e) {
-                Log.d(TAG, "e:"+e.getMessage());
+                isRsfreshing = false;
+                Animutil.moveAnimUp(FootPrintFragment.this.getContext(),
+                        mRefreshContainer,
+                        200,
+                        400,
+                        new Animutil.OnAnimListener() {
+                            @Override
+                            public void onEnd() {
+                                mRefreshView.stopRefreshAnim();
+                                mRefreshContainer.setVisibility(View.GONE);
+                            }
+                        });
+
+                Toast.makeText(FootPrintFragment.this.getContext(), "数据加载失败:"+ e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
+    }
 
+
+    private void onLoadData() {
+
+        if (isOnLoading) {
+            Toast.makeText(FootPrintFragment.this.getContext(), "正在加载数据，请稍后...", Toast.LENGTH_SHORT).show();
+
+        }
+        isOnLoading = true;
+        mRefreshContainer.setVisibility(View.VISIBLE);
+        mRefreshView.startRefreshAnim();
+
+        Animutil.moveAnimDown(FootPrintFragment.this.getContext(),
+                mRefreshContainer,
+                200,
+                400,
+                null);
+
+        FootPrintServer.getInstance().getAll(new FootPrintServer.FootPrintQueryCallback() {
+            @Override
+            public void onSuccess(List<FootPrint> footPrints) {
+                Animutil.moveAnimUp(FootPrintFragment.this.getContext(),
+                        mRefreshContainer,
+                        200,
+                        400,
+                        new Animutil.OnAnimListener() {
+                            @Override
+                            public void onEnd() {
+                                mRefreshView.stopRefreshAnim();
+                                mRefreshContainer.setVisibility(View.GONE);
+                            }
+                        });
+
+                isOnLoading = false;
+                if (footPrints != null){
+                    mDatas.addAll(footPrints);
+                    mPresenter.setFootPrintMarks(footPrints);
+                    sliderAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onError(BmobException e) {
+                isOnLoading = false;
+                Animutil.moveAnimUp(FootPrintFragment.this.getContext(),
+                        mRefreshContainer,
+                        200,
+                        400,
+                        new Animutil.OnAnimListener() {
+                            @Override
+                            public void onEnd() {
+                                mRefreshView.stopRefreshAnim();
+                                mRefreshContainer.setVisibility(View.GONE);
+                            }
+                        });
+
+                Toast.makeText(FootPrintFragment.this.getContext(), "数据加载失败:"+ e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -218,7 +388,12 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
             return;
         }
 
-        contentSwitcher.setCurrentText(footPrint.getContent());
+        String contentText = footPrint.getContent();
+        if (contentText.length() > 50) {
+            contentText = contentText.substring(0, 50) + "...";
+
+        }
+        contentSwitcher.setCurrentText(contentText);
 
         //根据当前用户跟足迹的地址是否在一个城市，显示地址信息
         String address = footPrint.getFootPrintAddress().getCity()+"."+ footPrint.getFootPrintAddress().getDistrict();
@@ -238,8 +413,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
             }
         });
 
-
-        mPresenter.setFootPrintMarks(mDatas);
     }
 
     private void initLocationText(View rootView) {
@@ -257,8 +430,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         location1TextView.setTypeface(Typeface.createFromAsset(this.getContext().getAssets(), "open-sans-extrabold.ttf"));
         location2TextView.setTypeface(Typeface.createFromAsset(this.getContext().getAssets(), "open-sans-extrabold.ttf"));
     }
-
-
 
     private void setCountryText(String text, boolean left2right) {
         final TextView invisibleText;
@@ -292,7 +463,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         animSet.setDuration(locationAnimDuration);
         animSet.start();
     }
-
 
     private void onActiveCardChange() {
         final int pos = layoutManger.getActiveCardPosition();
@@ -344,7 +514,12 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         userNameSwitcher.setInAnimation(FootPrintFragment.this.getContext(), animH[0]);
         userNameSwitcher.setOutAnimation(FootPrintFragment.this.getContext(), animH[1]);
 
-        contentSwitcher.setText(footPrint.getContent());
+        String contentText = footPrint.getContent();
+        if (contentText.length() > 50) {
+            contentText = contentText.substring(0, 50) + "...";
+
+        }
+        contentSwitcher.setText(contentText);
 
         //将足迹所在的位置设置到中心点
         LatLng centerLatLng = new LatLng(footPrint.getLatitude(), footPrint.getLongitude());
@@ -364,14 +539,12 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         currentPosition = pos;
     }
 
-
     @Override
     public void setPresenter(FootPrintContract.Presenter presenter) {
         if (presenter != null) {
             this.mPresenter = presenter;
         }
     }
-
 
     public void initMapView(View view){
         mMapView =  (MapView) view.findViewById(R.id.footprint_mapView);
@@ -651,6 +824,36 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
                 Toast.makeText(FootPrintFragment.this.getContext(), "点击当前用户头像", Toast.LENGTH_SHORT).show();
                 mainActivity.drawer.openDrawer(GravityCompat.START);
                 break;
+            case R.id.footprint_content_hide_cv:
+                long currentTime = System.currentTimeMillis();
+                if ((currentTime - mLastTime) < 400){
+                    return;
+                }
+                mLastTime = System.currentTimeMillis();
+                if (mContentContainer.getVisibility() == View.VISIBLE) {
+                    Animutil.moveAnimUp(this.getActivity(),
+                            mContentContainer,
+                            mContentContainer.getHeight(),
+                            400,
+                            new Animutil.OnAnimListener() {
+                                @Override
+                                public void onEnd() {
+                                    mContentContainer.setVisibility(View.INVISIBLE);
+                                }
+                            });
+
+                }else{
+                    mContentContainer.setVisibility(View.VISIBLE);
+                    Animutil.moveAnimDown(this.getActivity(),
+                            mContentContainer,
+                            mContentContainer.getHeight(),
+                            400,
+                            null);
+                }
+                break;
+            case R.id.footprint_refresh_btn:
+                 refreshData();
+                break;
 
         }
     }
@@ -684,8 +887,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
             }
         }
     }
-
-
 
     private class TextViewFactory implements  ViewSwitcher.ViewFactory {
 
@@ -750,6 +951,12 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         //在onPause 取消定位操作
         mLocationClient.unRegisterLocationListener(this);
         mMapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

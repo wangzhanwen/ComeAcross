@@ -19,7 +19,7 @@
         android:id="@+id/bnv_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:translationZ="2dp"
+        android:elevation="6dp"
         android:background="@color/colorPrimary"
         android:layout_alignParentBottom="true"
         app:itemIconTint="@drawable/selector_item_color"
