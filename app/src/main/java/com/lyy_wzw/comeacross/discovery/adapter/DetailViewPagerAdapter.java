@@ -1,22 +1,25 @@
-package com.lyy_wzw.comeacross.footprint.adapter;
+package com.lyy_wzw.comeacross.discovery.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.lyy_wzw.comeacross.discovery.fragment.ImageViewPagerFragment;
 import com.lyy_wzw.comeacross.footprint.fragment.ImageLookViewPagerFragment;
 
 import java.util.List;
 
 /**
- * Created by csonezp on 15-12-28.
+ * Created by yidong9 on 17/7/20.
  */
-public class ImageViewPagerAdapter extends FragmentStatePagerAdapter {
+
+public class DetailViewPagerAdapter  extends FragmentStatePagerAdapter {
     private static final String IMAGE_URL = "image";
 
     List<String> mDatas;
 
-    public ImageViewPagerAdapter(FragmentManager fm, List data) {
+
+    public DetailViewPagerAdapter(FragmentManager fm, List data) {
         super(fm);
         mDatas = data;
     }
@@ -24,7 +27,7 @@ public class ImageViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         String url = mDatas.get(position);
-        ImageLookViewPagerFragment fragment = ImageLookViewPagerFragment.newInstance(url);
+        ImageViewPagerFragment fragment = ImageViewPagerFragment.newInstance(url);
         return fragment;
     }
 

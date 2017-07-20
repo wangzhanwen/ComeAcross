@@ -1,10 +1,12 @@
 package com.lyy_wzw.comeacross.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by yidong9 on 17/6/22.
  */
 
-public class FootPrintFile {
+public class FootPrintFile implements Serializable {
     private Integer type;          // 文件类型 1. 图片， 2.视频
     private String  filePath;      // 文件路径
     private String  thumbnailPath; // 文件缩略图路径

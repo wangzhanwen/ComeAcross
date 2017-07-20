@@ -1,5 +1,7 @@
 package com.lyy_wzw.comeacross.bean;
 
+
+import java.io.Serializable;
 import java.util.List;
 
 import cn.bmob.v3.BmobObject;
@@ -8,7 +10,7 @@ import cn.bmob.v3.BmobObject;
  * Created by yidong9 on 17/6/21.
  */
 
-public class FootPrint extends BmobObject{
+public class FootPrint extends BmobObject implements Serializable{
     private String userId;
     private String content;
     private boolean isShowLocation;
@@ -140,4 +142,6 @@ public class FootPrint extends BmobObject{
                 ", isExpand=" + isExpand +
                 '}';
     }
+
+
 }

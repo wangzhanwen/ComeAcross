@@ -2,6 +2,7 @@ package com.lyy_wzw.comeacross.discovery.widgets;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -130,4 +131,7 @@ public class ExpandTextView extends LinearLayout {
         void statusChange(boolean isExpand);
     }
 
+    public void setContentTextColor(int color){
+        contentText.setTextColor(color);
+    }
 }

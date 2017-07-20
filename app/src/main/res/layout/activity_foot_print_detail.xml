@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/circle_detail_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000"
+    tools:context="com.lyy_wzw.comeacross.discovery.activitys.FootPrintDetailActivity">
+    <FrameLayout
+        android:id="@+id/circle_detail_viewpager_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.lyy_wzw.comeacross.footprint.ui.ImageLookViewPager
+            android:id="@+id/circle_detail_imagelook_viewpager"
+            android:background="#00000000"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/circle_detail_video_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true">
+        <VideoView
+            android:id="@+id/circle_detail_video_view"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/circle_detail_video_play_btn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/icon_video_play_bg"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/circle_detail_topbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingTop="40dp"
+        android:paddingLeft="10dp"
+        android:paddingBottom="15dp"
+        android:background="#222"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/circle_detail_back_iv"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:tint="#fff"
+            android:src="@drawable/icon_back"/>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:background="#000">
+
+        </View>
+        <TextView
+            android:id="@+id/circle_detail_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:textColor="#fff"
+            android:textSize="16sp"
+            android:text="2017年7月2日  17：27"/>
+        <TextView
+            android:id="@+id/circle_detail_image_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textSize="16sp"
+            android:textColor="#fff"
+            android:text="1 / 3"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <com.lyy_wzw.comeacross.discovery.widgets.ExpandTextView
+            android:id="@+id/circle_detail_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:background="#88000000"
+            app:item_color="#fff"
+            app:showLines="4"/>
+
+        <RelativeLayout
+            android:id="@+id/circle_detail_bottom_bar_container"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:gravity="center_vertical"
+            android:background="#222">
+            <LinearLayout
+                android:id="@+id/circle_detail_prise_left_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/circle_detail_prise_iv"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@mipmap/icon_circle_praise"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:textSize="16dp"
+                    android:textColor="#fff"
+                    android:text="赞"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/circle_detail_comment_left_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:gravity="center_vertical"
+                android:layout_toEndOf="@+id/circle_detail_prise_left_container"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:tint="#fff"
+                    android:src="@mipmap/icon_circle_comment"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:textSize="16dp"
+                    android:textColor="#fff"
+                    android:text="评论"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentEnd="true"
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/circle_detail_prise_right"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:tint="#fff"
+                    android:src="@mipmap/icon_circle_praise"/>
+                <TextView
+                    android:id="@+id/circle_detail_prise_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:textSize="16dp"
+                    android:textColor="#fff"
+                    android:text="8"/>
+                <ImageView
+                    android:id="@+id/circle_detail_comment_right"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="10dp"
+                    android:tint="#fff"
+                    android:src="@mipmap/icon_circle_comment"/>
+                <TextView
+                    android:id="@+id/circle_detail_comment_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:textSize="16dp"
+                    android:textColor="#fff"
+                    android:text="16"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</FrameLayout>

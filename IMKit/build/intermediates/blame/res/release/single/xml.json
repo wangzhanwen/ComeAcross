@@ -1,9 +1,5 @@
 [
     {
-        "merged": "/Users/yidong9/SourceTree/ComeAcross/D:\\me\\yujian\\ComeAcross\\IMKit\\build\\intermediates\\res\\merged\\release\\xml\\rc_file_path.xml",
-        "source": "/Users/yidong9/SourceTree/ComeAcross/D:\\me\\yujian\\ComeAcross\\IMKit\\src\\main\\res\\xml\\rc_file_path.xml"
-    },
-    {
         "merged": "/Users/yidong9/SourceTree/ComeAcross/IMKit/build/intermediates/res/merged/release/xml/rc_file_path.xml",
         "source": "/Users/yidong9/SourceTree/ComeAcross/IMKit/src/main/res/xml/rc_file_path.xml"
     }

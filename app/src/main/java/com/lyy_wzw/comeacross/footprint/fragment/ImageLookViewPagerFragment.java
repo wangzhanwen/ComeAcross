@@ -5,14 +5,18 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.lyy_wzw.comeacross.R;
+import com.lyy_wzw.comeacross.footprint.adapter.ImageViewPagerAdapter;
+import com.lyy_wzw.comeacross.utils.GlideUtil;
 
 import uk.co.senab.photoview.PhotoView;
 
@@ -25,9 +29,11 @@ public class ImageLookViewPagerFragment extends Fragment {
     private PhotoView image;
     private String imageUrl;
 
+
     public ImageLookViewPagerFragment() {
 
     }
+
     public static ImageLookViewPagerFragment newInstance(String param1) {
         ImageLookViewPagerFragment fragment = new ImageLookViewPagerFragment();
         Bundle bundle = new Bundle();
@@ -49,12 +55,19 @@ public class ImageLookViewPagerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_image_look_view_pager, container, false);
         image = (PhotoView) view.findViewById(R.id.footprint_item_image);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               Log.d("ViewPagerFragment","onClick(ImageLookViewPagerFragment.java:61)-->>");
+            }
+        });
 
-        //Glide.with(getContext()).load(imageUrl).into(image);
+
         if (imageUrl.endsWith(".gif")) {
-            loadPicAsGif(imageUrl, image);
+            GlideUtil.loadPicAsGif(this.getContext(), imageUrl, image);
+
         }else{
-            loadPic(imageUrl, image);
+            GlideUtil.loadPic(this.getContext(), imageUrl, image);
         }
 
         return view;
@@ -75,20 +88,4 @@ public class ImageLookViewPagerFragment extends Fragment {
         super.onDestroyView();
     }
 
-    private void loadPicAsGif(String path, ImageView imageView ){
-        Glide.with(getContext())
-                .load(path)
-                .asGif()
-                .placeholder(R.mipmap.meizhi0)
-                .error(R.mipmap.meizhi7)
-                .into(imageView);
-    }
-
-    private void loadPic(String path, ImageView imageView ){
-        Glide.with(getContext())
-                .load(path)
-                .placeholder(R.mipmap.meizhi0)
-                .error(R.mipmap.meizhi7)
-                .into(imageView);
-    }
 }

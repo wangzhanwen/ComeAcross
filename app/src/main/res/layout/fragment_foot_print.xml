@@ -196,7 +196,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="220dp"
+            android:layout_height="160dp"
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/gradient_map">

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <android.support.v7.widget.CardView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="25dp">
+                <TextView
+                    android:id="@+id/personal_circle_item_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="#fff"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:text="7.14"/>
+
+            </android.support.v7.widget.CardView>
+
+            <!--<android.support.v7.widget.CardView-->
+                <!--android:layout_width="40dp"-->
+                <!--android:layout_height="5dp"-->
+                <!--android:layout_marginTop="25dp"-->
+                <!--app:cardBackgroundColor="@color/colorPrimary">-->
+
+            <!--</android.support.v7.widget.CardView>-->
+
+        </LinearLayout>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="5dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="23dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            app:cardBackgroundColor="@color/colorPrimary">
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        app:cardBackgroundColor="#eeeeee"
+        app:cardCornerRadius="3dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/personal_circle_item_pic"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/meizhi0"/>
+                <ImageView
+                    android:id="@+id/personal_circle_item_video_pic"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:tint="#ffffff"
+                    android:src="@mipmap/icon_video_play_bg"/>
+            </FrameLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/personal_circle_item_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    android:text="尽管走下去，不必都留着，去取鲜花来保存，以为这一路上，花自然会继续开放.尽管走下去，不必都留着，去取鲜花来保存，以为这一路上，花自然会继续开放"/>
+                <TextView
+                    android:id="@+id/personal_circle_item_pic_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:text="共3张"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

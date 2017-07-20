@@ -1,5 +1,7 @@
 package com.lyy_wzw.comeacross.discovery.activitys;
 
+
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -164,9 +166,8 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //mTopRefreshView.stopRefreshAnim();
-                onRefresh();
+                Intent intent = new Intent(FootPrintCircleActivity.this, PersonalCircleActivity.class);
+                startActivity(intent);
 
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();

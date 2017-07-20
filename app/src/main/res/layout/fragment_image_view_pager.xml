@@ -2,12 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.lyy_wzw.comeacross.footprint.fragment.ImageLookViewPagerFragment">
-
-    <uk.co.senab.photoview.PhotoView
-        android:id="@+id/footprint_item_image"
+    tools:context="com.lyy_wzw.comeacross.discovery.fragment.ImageViewPagerFragment">
+    <ImageView
+        android:id="@+id/circle_detail_footprint_item_image"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-
 </FrameLayout>

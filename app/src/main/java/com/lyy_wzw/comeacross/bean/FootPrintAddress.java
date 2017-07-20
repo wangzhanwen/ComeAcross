@@ -4,11 +4,13 @@ package com.lyy_wzw.comeacross.bean;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Created by yidong9 on 17/7/4.
  */
 
-public class FootPrintAddress {
+public class FootPrintAddress implements Serializable {
     private String formattedAddress;
     private String country;
     private String province;

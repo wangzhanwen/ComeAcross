@@ -26,5 +26,7 @@ public class FootPrintConstantValue {
     public static final String BAIDU_APPKEY = "mT08b9sP4x40kfxDjjTBPKusLDpaeQNG";
     public static final String BAIDU_SAFE_CODE = "E7:9C:58:A2:85:3D:ED:62:ED:17:3D:C5:E7:4C:72:A8:C1:74:D1:8A;com.lyy_wzw.comeacross";
 
+    public static final String CIRCLE_DETAIL_BUNDLE_FOOTPRINT_KEY = "circle_detail_bundle_footprint_key";
+    public static final String CIRCLE_DETAIL_BUNDLE_KEY = "circle_detail_bundle_key";
 
 }

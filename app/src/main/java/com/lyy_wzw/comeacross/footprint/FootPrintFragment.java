@@ -2,16 +2,20 @@ package com.lyy_wzw.comeacross.footprint;
 
 
 
+import android.Manifest;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.CardView;
@@ -54,6 +58,7 @@ import com.lyy_wzw.comeacross.bean.CAUser;
 import com.lyy_wzw.comeacross.bean.FootPrint;
 import com.lyy_wzw.comeacross.bean.FootPrintAddress;
 import com.lyy_wzw.comeacross.bean.ReleaseFootPrintEvent;
+import com.lyy_wzw.comeacross.discovery.activitys.FootPrintDetailActivity;
 import com.lyy_wzw.comeacross.discovery.widgets.CircleBottomRefreshView;
 import com.lyy_wzw.comeacross.footprint.cards.SliderAdapter;
 import com.lyy_wzw.comeacross.footprint.cardslider.CardSliderLayoutManager;
@@ -78,12 +83,14 @@ import java.util.Random;
 import cn.bmob.v3.exception.BmobException;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FootPrintFragment extends Fragment implements FootPrintContract.View, BDLocationListener, BaiduMap.OnMarkerClickListener, View.OnClickListener {
+public class FootPrintFragment extends Fragment implements  BDLocationListener, BaiduMap.OnMarkerClickListener, View.OnClickListener {
     private static final String TAG = "FootPrintFragment";
     private static final int REQUEST_CODE = 0x00000011;
+
 
     private static MainActivity mainActivity;
     private MapView mMapView = null;
@@ -100,7 +107,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     private BMapManager mapManager = null;
     private LayoutInflater mLayoutInflater = null;
 
-    private FootPrintContract.Presenter mPresenter;
     private View mContainView;
     private InfoWindow mFootPrintWin;
 
@@ -134,6 +140,8 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     private CircleBottomRefreshView mRefreshView;
     private CardView mRefreshBtn;
 
+
+
     public FootPrintFragment() {
 
     }
@@ -154,18 +162,13 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mContainView = inflater.inflate(R.layout.fragment_foot_print, container, false);
+
         initViews(mContainView);
-
-        CAUser currentUser = UserHelper.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            GlideUtil.loadPic(this.getContext(),currentUser.getUserPhoto(),mCurrentUserImg);
-        }
-
 
         return mContainView;
     }
-    @Override
-    public void initViews(View view) {
+
+    public void initViews(final View view) {
 
         mCurrentUserImg = (CircleImageView) view.findViewById(R.id.img_footprint_current_user);
         mFootPrintUserImg = (CircleImageView) view.findViewById(R.id.img_footprint_user_photo);
@@ -182,10 +185,17 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         mRefreshBtn.setOnClickListener(this);
 
         refreshData();
-        initMapView(view);
         initRecyclerView(view);
         initLocationText(view);
         initSwitchers(view);
+        initMapView(view);
+
+        CAUser currentUser = UserHelper.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            GlideUtil.loadPic(this.getContext(),currentUser.getUserPhoto(),mCurrentUserImg);
+        }
+
+
 
     }
 
@@ -278,7 +288,7 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
                     mDatas.clear();
                     mDatas.addAll(footPrints);
                     mBaiduMap.clear();
-                    mPresenter.setFootPrintMarks(mDatas);
+                    setFootPrintMarks(mDatas);
                     //数据异步步获取成功后,初始化第一个数据
                     initSwitcherText();
                     sliderAdapter.notifyDataSetChanged();
@@ -341,7 +351,7 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
                 isOnLoading = false;
                 if (footPrints != null){
                     mDatas.addAll(footPrints);
-                    mPresenter.setFootPrintMarks(footPrints);
+                    setFootPrintMarks(footPrints);
                     sliderAdapter.notifyDataSetChanged();
                 }
             }
@@ -539,12 +549,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         currentPosition = pos;
     }
 
-    @Override
-    public void setPresenter(FootPrintContract.Presenter presenter) {
-        if (presenter != null) {
-            this.mPresenter = presenter;
-        }
-    }
 
     public void initMapView(View view){
         mMapView =  (MapView) view.findViewById(R.id.footprint_mapView);
@@ -581,7 +585,15 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         return pts;
     }
 
-    @Override
+
+    private void setFootPrintMarks(List<FootPrint> footPrints) {
+        if (footPrints != null) {
+            for (int i = 0; i < footPrints.size(); i++) {
+                showFootPrintMark(footPrints.get(i), i);
+            }
+        }
+    }
+
     public void showFootPrintMark(FootPrint footPrint, int position) {
         LatLng point = new LatLng(footPrint.getLatitude(), footPrint.getLongitude());
         MarkerOptions options = new MarkerOptions();
@@ -642,6 +654,10 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         mLocationClient.registerLocationListener(this);
 
         setLocationOrientationListener();
+        if (!mLocationClient.isStarted()) {
+                mLocationClient.start();// 针对定位, 自定进行定位的请求
+        }
+        myOrientationListener.start();
 
     }
 
@@ -766,15 +782,7 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
 
-        if (!mLocationClient.isStarted()) {
-            mLocationClient.start();// 针对定位, 自定进行定位的请求
-        }
-        myOrientationListener.start();
-    }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -859,7 +867,6 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     }
 
 
-
     private class OnCardClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -878,6 +885,14 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
             if (clickedPosition == activeCardPosition) {
 
                 Toast.makeText(FootPrintFragment.this.getContext(), "点击card", Toast.LENGTH_SHORT).show();
+
+
+                Intent intent = new Intent(FootPrintFragment.this.getContext(), FootPrintDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(FootPrintConstantValue.CIRCLE_DETAIL_BUNDLE_FOOTPRINT_KEY, mDatas.get(clickedPosition));
+                intent.putExtra(FootPrintConstantValue.CIRCLE_DETAIL_BUNDLE_KEY, bundle);
+                startActivity(intent);
+
 
             } else if (clickedPosition > activeCardPosition) {
                 recyclerView.smoothScrollToPosition(clickedPosition);
@@ -941,7 +956,10 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
     @Override
     public void onResume() {
         super.onResume();
-        mMapView.onResume();
+        if (mMapView != null) {
+            mMapView.onResume();
+        }
+
     }
 
     @Override
@@ -949,7 +967,10 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
         super.onPause();
         isFirstIn = true;
         //在onPause 取消定位操作
-        mLocationClient.unRegisterLocationListener(this);
+        if (mLocationClient!=null){
+            mLocationClient.unRegisterLocationListener(this);
+        }
+
         mMapView.onPause();
     }
 
@@ -961,7 +982,10 @@ public class FootPrintFragment extends Fragment implements FootPrintContract.Vie
 
     @Override
     public void onDestroyView() {
-        mMapView.onDestroy();
+        if (mMapView != null) {
+            mMapView.onDestroy();
+        }
+
         mSelfMarker = null;
         super.onDestroyView();
     }

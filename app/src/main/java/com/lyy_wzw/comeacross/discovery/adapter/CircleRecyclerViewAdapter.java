@@ -131,6 +131,7 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             final CircleViewHolder holder = (CircleViewHolder)viewHolder;
             final FootPrint footPrint = mDatas.get(position);
             proCommentViewShow(holder, position);
+
             if (isPrised(position) != -1) {
                 holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praised_icon);
             } else {
@@ -304,6 +305,7 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                                 @Override
                                 public void done(BmobException e) {
                                     if (e != null) {
+                                        //数据更新失败，再将删除的数据添加回去
                                         mDatas.get(position).getPraises().add(praiseItem);
                                         CircleRecyclerViewAdapter.this.notifyDataSetChanged();
                                     }
@@ -323,6 +325,7 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                                 @Override
                                 public void done(BmobException e) {
                                     if (e != null) {
+                                        //数据更新失败，再将添加的数据删除
                                         mDatas.get(position).getPraises().remove(praiseItem);
                                         CircleRecyclerViewAdapter.this.notifyDataSetChanged();
                                     }
@@ -344,6 +347,7 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                             @Override
                             public void done(BmobException e) {
                                 if (e != null) {
+                                    //数据更新失败，再将添加的数据删除
                                     mDatas.get(position).getPraises().remove(praiseItem);
                                     CircleRecyclerViewAdapter.this.notifyDataSetChanged();
                                 }

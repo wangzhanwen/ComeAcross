@@ -355,5 +355,6 @@
 
     <string name="appbar_spring_behavior">android.support.design.widget.AppBarLayoutSpringBehavior</string>
     <string name="appbar_fling_fix_behavior">android.support.design.widget.AppBarFlingFixBehavior</string>
+    <string name="title_activity_detail_comment">DetailCommentActivity</string>
 
 </resources>

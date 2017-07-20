@@ -1,5 +1,6 @@
 package com.lyy_wzw.comeacross;
 
+import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -198,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //构造适配器
         List<Fragment> fragments=new ArrayList<Fragment>();
         mFootPrintFragment = FootPrintFragment.instance(this);
-        new FootPrintPresenter(this, mFootPrintFragment);
+        //new FootPrintPresenter(this, mFootPrintFragment);
         //mChatFragment = ChatFragment.instance(this);
         mDiscoveryFragment = DiscoveryFragment.instance(this);
         mAddressBookFragment = AddressBookFragment.instance(this);

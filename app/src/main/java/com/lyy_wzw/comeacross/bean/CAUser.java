@@ -1,12 +1,14 @@
 package com.lyy_wzw.comeacross.bean;
 
+import java.io.Serializable;
+
 import cn.bmob.v3.BmobUser;
 
 /**
  * Created by yidong9 on 17/6/19.
  */
 
-public class CAUser extends BmobUser{
+public class CAUser extends BmobUser implements Serializable{
     private boolean  sex;
     private String userPhoto;
     private String ryUserToken;
