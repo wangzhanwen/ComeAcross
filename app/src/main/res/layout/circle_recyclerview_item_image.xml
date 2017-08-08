@@ -38,12 +38,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:layout_marginRight="5dp">
-                <!--<TextView-->
-                    <!--android:id="@+id/circle_recyclerView_item_content"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:textColor="#333"-->
-                    <!--android:textSize="16sp"/>-->
 
                 <com.lyy_wzw.comeacross.discovery.widgets.ExpandTextView
                     android:id="@+id/circle_recyclerView_item_content"
@@ -155,6 +149,9 @@
 
 
     </LinearLayout>
+
+
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

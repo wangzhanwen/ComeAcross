@@ -24,9 +24,9 @@ public class SoftInputUtil {
     }
 
     public static void hideSoftInput(Context context, View view){
-        view.setFocusable(false);
-        view.setFocusableInTouchMode(false);
-        view.clearFocus();
+//        view.setFocusable(false);
+//        view.setFocusableInTouchMode(false);
+//        view.clearFocus();
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0); //强制隐藏键盘
     }

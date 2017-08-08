@@ -8,6 +8,8 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 
+import java.net.HttpURLConnection;
+
 /**
  * Created by yidong9 on 17/7/3.
  */
@@ -17,6 +19,7 @@ public class ScreenUtils {
     {
         /* cannot be instantiated */
         throw new UnsupportedOperationException("cannot be instantiated");
+
     }
 
     /**

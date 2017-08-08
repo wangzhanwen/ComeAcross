@@ -24,6 +24,7 @@ import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -132,6 +133,9 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
         mRecyclerViewAdapter = new CircleRecyclerViewAdapter(FootPrintCircleActivity.this, mDatas, mHander);
         mRecyClerView.setAdapter(mRecyclerViewAdapter);
 
+        mLayoutManager.findFirstVisibleItemPosition();
+
+
         mRecyClerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -171,11 +175,14 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
 
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                mRecyclerViewAdapter.notifyDataSetChanged();
             }
         });
 
         setViewTreeObserver();
         onRefresh();
+        
 
     }
 
@@ -200,7 +207,7 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
                     r.top = statusBarH;
                 }
                 int keyboardH = screenH - (r.bottom - r.top);
-                Log.d(TAG, "screenH＝ "+ screenH +" &keyboardH = " + keyboardH + " &r.bottom=" + r.bottom + " &top=" + r.top + " &statusBarH=" + statusBarH);
+                //Log.d(TAG, "screenH＝ "+ screenH +" &keyboardH = " + keyboardH + " &r.bottom=" + r.bottom + " &top=" + r.top + " &statusBarH=" + statusBarH);
 
                 if(keyboardH == currentKeyboardH){//有变化时才处理，否则会陷入死循环
                     return;
@@ -222,10 +229,11 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
 
                 }
 
+               
+
             }
         });
     }
-
 
 
 
@@ -268,6 +276,9 @@ public class FootPrintCircleActivity extends AppCompatActivity implements View.O
                         mDatas.addAll(footPrints);
                     }
                     mRecyclerViewAdapter.notifyDataSetChanged();
+
+                    Log.d(TAG,"FirstVisibleItemPosition -->>" + mLayoutManager.findFirstVisibleItemPosition());
+                    Log.d(TAG,"LastVisibleItemPosition -->>" + mLayoutManager.findLastVisibleItemPosition());
                 }
 
                 @Override

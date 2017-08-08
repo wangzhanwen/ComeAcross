@@ -117,6 +117,7 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
+
         if (position == getItemCount()-1){
             FootViewHolder footViewHolder = (FootViewHolder)viewHolder;
             if (isLoadMore){
@@ -128,15 +129,21 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 footViewHolder.itemView.setVisibility(View.GONE);
             }
         }else {
+
+
             final CircleViewHolder holder = (CircleViewHolder)viewHolder;
             final FootPrint footPrint = mDatas.get(position);
             proCommentViewShow(holder, position);
+
+            holder.mLocationTv.setVisibility(View.VISIBLE);
 
             if (isPrised(position) != -1) {
                 holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praised_icon);
             } else {
                 holder.mPriseTv.setBackgroundResource(R.mipmap.circle_praise_icon);
             }
+
+
             if (position == 0) {
                 holder.mItemContainer.setPadding(0, PixelUtil.dip2px(mContext, 20), 0, 0);
             }
@@ -144,12 +151,17 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holder.mItemContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Toast.makeText(mContext, "点击了mItemContainer", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "点击了mItemContainer", Toast.LENGTH_SHORT).show();
                     if (mHandler != null) {
                         Message message = new Message();
                         message.what = DicoveryConstantValue.CIRCLE_COMMENT_HANDLER_Hide_SOFTINPUT_KEY;
                         mHandler.sendMessage(message);
                     }
+
+                    notifyDataSetChanged();
+
+                    holder.mLocationTv.setVisibility(View.INVISIBLE);
+
                 }
             });
 
@@ -288,7 +300,6 @@ public class CircleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
 
             //处理点赞
-
             holder.mPriseTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

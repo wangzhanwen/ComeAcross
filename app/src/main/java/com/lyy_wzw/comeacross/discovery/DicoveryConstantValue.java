@@ -11,4 +11,8 @@ public class DicoveryConstantValue {
     public static final String CIRCLE_COMMENT_BUNDLE_FOOTPRINT_INDEX_KEY = "circle_comment_bundle_footprint_index_key";
     public static final String CIRCLE_COMMENT_BUNDLE_COMMENT_ITEM_INDEX_KEY = "circle_comment_bundle_comment_item_index_key";
 
+    public static final String DETAIL_COMMENT_BUNDLE_KEY = "circle_comment_bundle_key";
+    public static final String DETAIL_COMMENT_BUNDLE_FOOTPRINT_KEY = "circle_comment_bundle_footprint_key";
+
+
 }

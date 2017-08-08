@@ -177,6 +177,10 @@
         <activity android:name=".discovery.activitys.FootPrintCircleActivity" />
         <activity android:name=".discovery.activitys.PersonalCircleActivity" />
         <activity android:name=".discovery.activitys.FootPrintDetailActivity" />
+        <activity
+            android:name=".discovery.activitys.DetailCommentImgActivity"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".discovery.activitys.DetailCommentVideoActivity" />
     </application>
 
 </manifest>

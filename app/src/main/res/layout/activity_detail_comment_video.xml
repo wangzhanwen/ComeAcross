@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/detail_video_root_view"
+    tools:context="com.lyy_wzw.comeacross.discovery.activitys.DetailCommentVideoActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/detail_video_topbar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingTop="40dp"
+            android:paddingLeft="10dp"
+            android:paddingBottom="15dp"
+            android:background="#222"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/detail_video_back_iv"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:tint="#fff"
+                android:src="@drawable/icon_back"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:background="#000">
+
+            </View>
+            <TextView
+                android:id="@+id/detail_video_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:textColor="#fff"
+                android:textSize="16sp"
+                android:text="详情"/>
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+            <ImageView
+                android:id="@+id/detail_video_recyclerView_item_user_photo"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:scaleType="centerCrop"/>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp">
+                <TextView
+                    android:id="@+id/detail_video_recyclerView_item_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="@color/circle_txt_color"
+                    android:textSize="16sp"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_marginRight="5dp">
+
+                    <com.lyy_wzw.comeacross.discovery.widgets.ExpandTextView
+                        android:id="@+id/detail_video_recyclerView_item_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:showLines="2"/>
+
+                    <FrameLayout
+                        android:layout_width="120dp"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="10dp">
+                        <ImageView
+                            android:id="@+id/detail_video_recyclerView_item_video_bg"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@mipmap/meizhi0"/>
+                        <ImageView
+                            android:id="@+id/detail_video_recyclerView_item_video_play"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:layout_gravity="center"
+                            android:tint="#fff"
+                            android:src="@mipmap/icon_video_play_bg"/>
+                    </FrameLayout>
+                    <TextView
+                        android:id="@+id/detail_video_recyclerView_item_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="@color/circle_txt_color"/>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:id="@+id/detail_video_recyclerView_item_time"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"/>
+                        <LinearLayout
+                            android:layout_alignParentRight="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true">
+                            <TextView
+                                android:id="@+id/detail_video_recyclerView_item_praise"
+                                android:background="@mipmap/circle_praise_icon"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginRight="20dp"/>
+                            <TextView
+                                android:id="@+id/detail_video_recyclerView_item_comment"
+                                android:background="@mipmap/footprint_popupwin_comment"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:backgroundTint="#1c4f63"/>
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <!--点赞，评论-->
+        <LinearLayout
+            android:id="@+id/detail_video_comment_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            android:minHeight="10dip"
+            android:paddingLeft="12dip"
+            android:paddingTop="12dip"
+            android:paddingRight="12dip"
+            android:paddingBottom="8dip"
+            android:background="@drawable/im_distribute_comm_bg"
+            android:orientation="vertical" >
+
+            <com.lyy_wzw.comeacross.discovery.widgets.PraiseListView
+                android:id="@+id/detail_video_praise_listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:lineSpacingMultiplier="1.1"
+                android:textSize="14sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/praise_item"
+                app:item_color="@color/praise_item" />
+
+            <View
+                android:id="@+id/detail_video_comment_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="@color/im_line_color" />
+
+            <com.lyy_wzw.comeacross.discovery.widgets.CommentListView
+                android:id="@+id/detail_video_comment_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:item_color="@color/praise_item"
+                android:paddingTop="10dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/detail_video_comment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#eee"
+        android:padding="6dp"
+        android:layout_gravity="bottom">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginBottom="10dp">
+            <EditText
+                android:id="@+id/detail_video_comment_editview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:padding="10dp"
+                android:background="@null"
+                android:hint="说点什么..."
+                android:maxLines="3"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/holo_green_light" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/detail_video_comment_send_tv"
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_green_shape"
+            android:layout_gravity="bottom|right"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:padding="6dp"
+            android:text="发送"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:layout_marginBottom="10dp"/>
+    </LinearLayout>
+
+
+</FrameLayout>

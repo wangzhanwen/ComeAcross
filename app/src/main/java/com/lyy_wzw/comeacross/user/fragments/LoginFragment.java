@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import cn.bmob.v3.exception.BmobException;
 
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = "LoginFragment";
     private EditText mPhoneNumberView;
     private EditText mPswView;
     private TextView mLoginBtn;

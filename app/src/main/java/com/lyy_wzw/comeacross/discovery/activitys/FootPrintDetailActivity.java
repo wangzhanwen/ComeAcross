@@ -26,12 +26,14 @@ import com.lyy_wzw.comeacross.bean.FootPrint;
 import com.lyy_wzw.comeacross.bean.FootPrintFile;
 import com.lyy_wzw.comeacross.bean.ImageClickEvent;
 import com.lyy_wzw.comeacross.bean.PraiseItem;
+import com.lyy_wzw.comeacross.discovery.DicoveryConstantValue;
 import com.lyy_wzw.comeacross.discovery.adapter.DetailViewPagerAdapter;
 import com.lyy_wzw.comeacross.discovery.widgets.ExpandTextView;
 import com.lyy_wzw.comeacross.footprint.finalvalue.FootPrintConstantValue;
 import com.lyy_wzw.comeacross.footprint.ui.ImageLookViewPager;
 import com.lyy_wzw.comeacross.user.UserHelper;
 import com.lyy_wzw.comeacross.utils.Animutil;
+import com.lyy_wzw.comeacross.utils.GlideUtil;
 
 
 import org.greenrobot.eventbus.EventBus;
@@ -72,6 +74,7 @@ public class FootPrintDetailActivity extends AppCompatActivity implements View.O
     private FrameLayout mViewPagerContainer;
     private ImageView mPriseView;
     private ImageView mBackView;
+    private ImageView mVideoBgView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +95,7 @@ public class FootPrintDetailActivity extends AppCompatActivity implements View.O
         }
 
         intView();
+        initData();
 
 
         if (mFootPrint != null) {
@@ -125,10 +129,19 @@ public class FootPrintDetailActivity extends AppCompatActivity implements View.O
         mCommentCountTv = (TextView) findViewById(R.id.circle_detail_comment_count);
         mPriseCountTv = (TextView) findViewById(R.id.circle_detail_prise_count);
         mBackView = (ImageView) findViewById(R.id.circle_detail_back_iv);
+        mVideoBgView = (ImageView) findViewById(R.id.circle_detail_video_bg);
 
         mBackView.setOnClickListener(this);
         mPriseLeftBtn.setOnClickListener(this);
+        mPriseRightBtn.setOnClickListener(this);
 
+        mCommentRightBtn.setOnClickListener(this);
+
+
+
+    }
+
+    private void initData() {
         mDateTv.setText(mFootPrint.getCreatedAt());
         mContentView.setContentTextColor(Color.parseColor("#ffffff"));
         if (!TextUtils.isEmpty(mFootPrint.getContent())) {
@@ -157,13 +170,14 @@ public class FootPrintDetailActivity extends AppCompatActivity implements View.O
         }else{
             mPriseView.setImageResource(R.mipmap.icon_circle_praise);
         }
-
     }
 
     private void initImageView() {
         mVideoContainer.setVisibility(View.GONE);
         mPlayBtn.setVisibility(View.GONE);
         mVideoView.setVisibility(View.GONE);
+        mVideoBgView.setVisibility(View.GONE);
+
         mImgViewPager.setVisibility(View.VISIBLE);
         mAdapter = new DetailViewPagerAdapter(getSupportFragmentManager(), getImageUrls(mFootPrint));
         mImgViewPager.setAdapter(mAdapter);
@@ -196,9 +210,13 @@ public class FootPrintDetailActivity extends AppCompatActivity implements View.O
     private void initVideoView() {
         mVideoContainer.setVisibility(View.VISIBLE);
         mPlayBtn.setVisibility(View.VISIBLE);
-        mVideoView.setVisibility(View.VISIBLE);
+        mVideoBgView.setVisibility(View.VISIBLE);
+        mVideoView.setVisibility(View.GONE);
 
         mImgViewPager.setVisibility(View.GONE);
+
+        GlideUtil.loadPic(FootPrintDetailActivity.this, mFootPrint.getFootPrintFiles().get(0).getThumbnailPath(), mVideoBgView);
+
         MediaController mediaController = new MediaController(this);
         mediaController.setVisibility(View.GONE);
 
@@ -245,7 +263,11 @@ public class FootPrintDetailActivity extends AppCompatActivity implements View.O
         mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                mVideoBgView.setVisibility(View.GONE);
+                mVideoView.setVisibility(View.VISIBLE);
+
                 mVideoView.start();
+
             }
         });
     }
@@ -455,6 +477,36 @@ public class FootPrintDetailActivity extends AppCompatActivity implements View.O
                 }
 
                 break;
+            case R.id.circle_detail_comment_right:
+            case R.id.circle_detail_prise_right:
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(DicoveryConstantValue.DETAIL_COMMENT_BUNDLE_FOOTPRINT_KEY, mFootPrint);
+                if (getType(mFootPrint) == 1) {
+                    Intent intent = new Intent(this, DetailCommentImgActivity.class);
+                    intent.putExtra(DicoveryConstantValue.DETAIL_COMMENT_BUNDLE_KEY, bundle);
+                    startActivity(intent);
+                }else if(getType(mFootPrint) == 2){
+                    Intent intent = new Intent(this, DetailCommentVideoActivity.class);
+                    intent.putExtra(DicoveryConstantValue.DETAIL_COMMENT_BUNDLE_KEY, bundle);
+                    startActivity(intent);
+                }
+
+                break;
         }
+    }
+
+
+    private int getType(FootPrint footPrint) {
+        int type = 1;
+        List<FootPrintFile> footPrintFiles = footPrint.getFootPrintFiles();
+        if (footPrintFiles != null && footPrintFiles.size() > 0){
+            for (int i = 0; i < footPrintFiles.size(); i++) {
+                if (footPrintFiles.get(i).getType() == 2){
+                    type = 2;
+                }
+            }
+        }
+        return type;
     }
 }
